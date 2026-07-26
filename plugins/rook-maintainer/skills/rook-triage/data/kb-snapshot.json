@@ -1,0 +1,2542 @@
+{
+ "generated": "2026-07-23",
+ "source": {
+  "git": "24mo origin/master per-area shortlog",
+  "reviews": "2247 merged PRs back to 2024-07-23 (rebucketed 2026-07-23: +build/design/discover, core broadened)",
+  "issues": "not mined in v1"
+ },
+ "roster": {
+  "approvers": [
+   "BlaineEXE",
+   "galexrt",
+   "jbw976",
+   "jhoblitt",
+   "leseb",
+   "parth-gr",
+   "satoru-takeuchi",
+   "sp98",
+   "subhamkrai",
+   "travisn"
+  ],
+  "reviewers": [
+   "Madhu-1",
+   "arttor"
+  ]
+ },
+ "areas": {
+  "block": {
+   "paths": [
+    "pkg/operator/ceph/pool/**"
+   ],
+   "keywords": [
+    "rbd",
+    "pool",
+    "mirroring",
+    "blockpool"
+   ],
+   "labels": [
+    "block"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 6,
+     "reviews": 213,
+     "score": 216.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 102,
+     "score": 85.8,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 55,
+     "score": 44.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 10,
+     "reviews": 38,
+     "score": 41.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 12,
+     "reviews": 35,
+     "score": 35.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 10,
+     "score": 15.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 10,
+     "score": 6.4,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "Oded Viner",
+     "tier": "contributor",
+     "commits": 7,
+     "reviews": 0,
+     "score": 4.5,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17971,
+     "title": "external: add watcher to the rns controler for watching csi and clien\u2026"
+    },
+    {
+     "number": 17978,
+     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+    },
+    {
+     "number": 17896,
+     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+    },
+    {
+     "number": 17887,
+     "title": "csi: Add supported files for krbd QoS"
+    },
+    {
+     "number": 17328,
+     "title": "CI: Check markdown links"
+    }
+   ]
+  },
+  "build": {
+   "paths": [
+    "go.mod",
+    "go.sum",
+    "build/**",
+    "images/**",
+    "Makefile",
+    "*.mk",
+    ".golangci*",
+    ".commitlintrc*"
+   ],
+   "keywords": [
+    "build",
+    "makefile",
+    "dependency",
+    "golangci",
+    "toolchain"
+   ],
+   "labels": [
+    "build"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 365,
+     "score": 437.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 147,
+     "score": 184.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 153,
+     "score": 147.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 24,
+     "score": 39.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 34,
+     "score": 32.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 23,
+     "score": 21.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 20,
+     "score": 13.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "score": 5.0,
+     "last_active": "2026-03"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18026,
+     "title": "core: Update the go text module (backport #18024)"
+    },
+    {
+     "number": 18027,
+     "title": "core: Update the go text module (backport #18024)"
+    },
+    {
+     "number": 17991,
+     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+    },
+    {
+     "number": 18024,
+     "title": "core: Update the go text module"
+    },
+    {
+     "number": 17989,
+     "title": "build: exclude helm dep archives from chart package prerequisites"
+    }
+   ]
+  },
+  "ceph-dashboard": {
+   "paths": [
+    "pkg/operator/ceph/cluster/mgr/dashboard*"
+   ],
+   "keywords": [
+    "dashboard"
+   ],
+   "labels": [
+    "ceph-dashboard"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 14,
+     "score": 18.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 11,
+     "score": 9.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 4,
+     "score": 8.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 1,
+     "score": 3.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 4,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Sunnatillo",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "score": 1.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "texasich",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "score": 1.0,
+     "last_active": "2026-05"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "score": 1.0,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17963,
+     "title": "mgr: use dashboard port 1024 as requested"
+    },
+    {
+     "number": 17567,
+     "title": "core: rm unused consts (backport #17530)"
+    },
+    {
+     "number": 17530,
+     "title": "core: rm unused consts"
+    },
+    {
+     "number": 17550,
+     "title": "build: fix gosec and go vet lint errors for Go 1.26  (backport #17547)"
+    },
+    {
+     "number": 17547,
+     "title": "build: fix gosec and go vet lint errors for Go 1.26 "
+    }
+   ]
+  },
+  "ceph-external": {
+   "paths": [
+    "pkg/operator/ceph/cluster/external/**"
+   ],
+   "keywords": [
+    "external cluster"
+   ],
+   "labels": [
+    "ceph-external"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 152,
+     "score": 175.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 101,
+     "score": 97.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 43,
+     "score": 38.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 25,
+     "score": 31.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 18,
+     "score": 29.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 20,
+     "score": 17.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "score": 6.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "score": 5.0,
+     "last_active": "2026-03"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17960,
+     "title": "external: import script should create mon secret before rns"
+    },
+    {
+     "number": 17979,
+     "title": "external: resolve node secret names via annotations for external cluster"
+    },
+    {
+     "number": 17978,
+     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+    },
+    {
+     "number": 17969,
+     "title": "external: add the controller publish secret for the ec sc"
+    },
+    {
+     "number": 17896,
+     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+    }
+   ]
+  },
+  "ceph-mgr": {
+   "paths": [
+    "pkg/operator/ceph/cluster/mgr/**"
+   ],
+   "keywords": [
+    "mgr",
+    "dashboard",
+    "module"
+   ],
+   "labels": [
+    "ceph-mgr"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 84,
+     "score": 67.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 36,
+     "score": 26.8,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 3,
+     "score": 9.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 5,
+     "score": 8.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 7,
+     "score": 8.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 12,
+     "score": 6.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 7,
+     "score": 3.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 2,
+     "score": 2.8,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17963,
+     "title": "mgr: use dashboard port 1024 as requested"
+    },
+    {
+     "number": 17849,
+     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+    },
+    {
+     "number": 17834,
+     "title": "docs: fix function comments to match their declaration names"
+    },
+    {
+     "number": 17821,
+     "title": "core: use slices.Contains to simplify code"
+    },
+    {
+     "number": 17694,
+     "title": "mgr: remove unused IsModuleInSpec function (backport #17669)"
+    }
+   ]
+  },
+  "ceph-mon": {
+   "paths": [
+    "pkg/operator/ceph/cluster/mon/**"
+   ],
+   "keywords": [
+    "mon",
+    "quorum",
+    "monitor"
+   ],
+   "labels": [
+    "ceph-mon"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 168,
+     "score": 181.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 65,
+     "score": 62.2,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 33,
+     "score": 44.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 29,
+     "score": 37.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 12,
+     "score": 17.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 4,
+     "score": 11.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 1,
+     "reviews": 12,
+     "score": 8.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 5,
+     "score": 8.9,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18016,
+     "title": "mon: fix data race on failedMonSchedule during scheduling (backport #17968)"
+    },
+    {
+     "number": 17968,
+     "title": "mon: fix data race on failedMonSchedule during scheduling"
+    },
+    {
+     "number": 17921,
+     "title": "mon: update how hostname was set for drbd (backport #17689)"
+    },
+    {
+     "number": 17689,
+     "title": "mon: update how hostname was set for drbd"
+    },
+    {
+     "number": 17849,
+     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+    }
+   ]
+  },
+  "ceph-nfs": {
+   "paths": [
+    "pkg/operator/ceph/nfs/**"
+   ],
+   "keywords": [
+    "nfs",
+    "ganesha"
+   ],
+   "labels": [
+    "ceph-nfs"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 63,
+     "score": 54.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 47,
+     "score": 47.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 9,
+     "score": 16.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 13,
+     "score": 10.1,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 6,
+     "score": 6.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 6,
+     "score": 5.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 2,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 3,
+     "score": 1.6,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17821,
+     "title": "core: use slices.Contains to simplify code"
+    },
+    {
+     "number": 17598,
+     "title": "core: reference all containers in a spec by name instead of index (backport #17561)"
+    },
+    {
+     "number": 17561,
+     "title": "core: reference all containers in a spec by name instead of index"
+    },
+    {
+     "number": 17055,
+     "title": "build(deps): bump sigs.k8s.io/controller-runtime from 0.22.4 to 0.23.0 in the k8s-dependencies group (backport #16963)"
+    },
+    {
+     "number": 17058,
+     "title": "test: fix unit test code to remove extra comma"
+    }
+   ]
+  },
+  "ceph-osd": {
+   "paths": [
+    "pkg/operator/ceph/cluster/osd/**",
+    "pkg/daemon/ceph/osd/**"
+   ],
+   "keywords": [
+    "osd",
+    "bluestore",
+    "device",
+    "disk"
+   ],
+   "labels": [
+    "ceph-osd"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 9,
+     "reviews": 258,
+     "score": 268.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 90,
+     "score": 88.2,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 43,
+     "score": 51.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 10,
+     "reviews": 40,
+     "score": 46.6,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 8,
+     "reviews": 30,
+     "score": 30.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 23,
+     "score": 27.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 9,
+     "reviews": 12,
+     "score": 26.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 11,
+     "score": 12.4,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18013,
+     "title": "osd: skip upgrades for OSDs pending migration when the last migration is incomplete"
+    },
+    {
+     "number": 18011,
+     "title": "osd: archive crash on OSD removal"
+    },
+    {
+     "number": 17861,
+     "title": "osd-replacement-1: rename internal OSD migration field to migrateOSD"
+    },
+    {
+     "number": 17898,
+     "title": "core: replace Split in loops with more efficient SplitSeq"
+    },
+    {
+     "number": 17876,
+     "title": "docs: fix typos and grammar in code comments (backport #17838)"
+    }
+   ]
+  },
+  "ci": {
+   "paths": [
+    ".github/workflows/**",
+    "tests/scripts/**"
+   ],
+   "keywords": [
+    "ci",
+    "workflow",
+    "github actions",
+    "flake"
+   ],
+   "labels": [
+    "ci"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 23,
+     "reviews": 455,
+     "score": 521.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 40,
+     "reviews": 276,
+     "score": 352.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 188,
+     "score": 182.8,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 46,
+     "reviews": 28,
+     "score": 81.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 39,
+     "reviews": 32,
+     "score": 63.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 8,
+     "reviews": 39,
+     "score": 36.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 26,
+     "score": 24.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 27,
+     "score": 15.0,
+     "last_active": "2026-06"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18035,
+     "title": "Ci canary arm64 add v19 v20"
+    },
+    {
+     "number": 17947,
+     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+    },
+    {
+     "number": 17974,
+     "title": "ci: Simplify canary-arm64 image selection to a matrix variable "
+    },
+    {
+     "number": 18014,
+     "title": "ci: adding ceph v21 to the daily ci test image list"
+    },
+    {
+     "number": 17999,
+     "title": "build(deps): bump github/codeql-action/upload-sarif from 4.37.0 to 4.37.1"
+    }
+   ]
+  },
+  "core": {
+   "paths": [
+    "pkg/operator/ceph/** (non-area)",
+    "pkg/operator/k8sutil/**",
+    "pkg/daemon/ceph/{client,cleanup,util}/**",
+    "pkg/util/**",
+    "pkg/clusterd/**",
+    "cmd/**"
+   ],
+   "keywords": [
+    "operator",
+    "reconcile",
+    "cluster",
+    "exec"
+   ],
+   "labels": [
+    "operator"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 13,
+     "reviews": 567,
+     "score": 546.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 301,
+     "score": 283.1,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 8,
+     "reviews": 89,
+     "score": 93.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 93,
+     "score": 89.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 39,
+     "score": 68.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 60,
+     "score": 62.2,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 4,
+     "reviews": 64,
+     "score": 50.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 15,
+     "score": 14.4,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17785,
+     "title": "fix(ceph): deduplicate external MGR endpoints in EndpointSlice"
+    },
+    {
+     "number": 17980,
+     "title": "core: parse subvolumegroup bytes_quota reported as \"infinite\""
+    },
+    {
+     "number": 17959,
+     "title": "test: assert preferred anti-affinity count in testPodSpecPlacement"
+    },
+    {
+     "number": 17958,
+     "title": "test: assert retained capacity LastUpdated in TestCephStatus"
+    },
+    {
+     "number": 17956,
+     "title": "test: assert cephfs CSI directory removal in cleanCSIDirs test"
+    }
+   ]
+  },
+  "crd": {
+   "paths": [
+    "pkg/apis/**"
+   ],
+   "keywords": [
+    "crd",
+    "api",
+    "spec field"
+   ],
+   "labels": [
+    "crd",
+    "api"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 13,
+     "reviews": 387,
+     "score": 381.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 360,
+     "score": 366.2,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 21,
+     "reviews": 73,
+     "score": 103.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 10,
+     "reviews": 57,
+     "score": 60.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 15,
+     "reviews": 32,
+     "score": 42.8,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 5,
+     "reviews": 50,
+     "score": 36.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 15,
+     "reviews": 19,
+     "score": 34.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Oded Viner",
+     "tier": "contributor",
+     "commits": 13,
+     "reviews": 0,
+     "score": 9.0,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18026,
+     "title": "core: Update the go text module (backport #18024)"
+    },
+    {
+     "number": 18027,
+     "title": "core: Update the go text module (backport #18024)"
+    },
+    {
+     "number": 18024,
+     "title": "core: Update the go text module"
+    },
+    {
+     "number": 17947,
+     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+    },
+    {
+     "number": 18005,
+     "title": "docs: fix mirror Placement comments naming rgw pods (backport #17961)"
+    }
+   ]
+  },
+  "csi": {
+   "paths": [
+    "pkg/operator/ceph/csi/**"
+   ],
+   "keywords": [
+    "csi",
+    "pvc",
+    "provisioner",
+    "snapshot",
+    "cephcsi"
+   ],
+   "labels": [
+    "csi"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 15,
+     "reviews": 237,
+     "score": 234.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 18,
+     "reviews": 74,
+     "score": 77.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 84,
+     "score": 69.1,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 19,
+     "reviews": 65,
+     "score": 57.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 24,
+     "score": 24.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 3,
+     "score": 7.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Praveen M",
+     "tier": "contributor",
+     "commits": 10,
+     "reviews": 0,
+     "score": 7.2,
+     "last_active": "2026-05"
+    },
+    {
+     "login": "Rakshith-R",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "score": 4.0,
+     "last_active": "2025-04"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18007,
+     "title": "csi: do not log peer bootstrap token secret (backport #17965)"
+    },
+    {
+     "number": 17957,
+     "title": "csi: fix compareJSON to compare actual output"
+    },
+    {
+     "number": 17965,
+     "title": "csi: do not log peer bootstrap token secret"
+    },
+    {
+     "number": 17979,
+     "title": "external: resolve node secret names via annotations for external cluster"
+    },
+    {
+     "number": 17896,
+     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+    }
+   ]
+  },
+  "design": {
+   "paths": [
+    "design/**"
+   ],
+   "keywords": [
+    "design doc",
+    "proposal"
+   ],
+   "labels": [
+    "design"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 111,
+     "score": 121.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 83,
+     "score": 119.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 46,
+     "score": 83.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 18,
+     "score": 23.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 11,
+     "score": 15.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 13,
+     "score": 11.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 9,
+     "score": 6.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Lykos153",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 10,
+     "score": 5.0,
+     "last_active": "2024-12"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17931,
+     "title": "docs: fix 'an another' -> 'another' in ceph-nfs-ganesha design doc"
+    },
+    {
+     "number": 17927,
+     "title": "CI: Check markdown links (backport #17328)"
+    },
+    {
+     "number": 17328,
+     "title": "CI: Check markdown links"
+    },
+    {
+     "number": 17850,
+     "title": "docs: fix typos and grammar in documentation and design docs (backport #17837)"
+    },
+    {
+     "number": 17837,
+     "title": "docs: fix typos and grammar in documentation and design docs"
+    }
+   ]
+  },
+  "discover": {
+   "paths": [
+    "pkg/operator/discover/**",
+    "pkg/daemon/discover/**"
+   ],
+   "keywords": [
+    "discover daemon",
+    "device discovery"
+   ],
+   "labels": [
+    "discover"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 35,
+     "score": 26.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 10,
+     "score": 6.4,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 5,
+     "score": 2.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 4,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "score": 1.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 1,
+     "score": 0.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "score": 0.4,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17821,
+     "title": "core: use slices.Contains to simplify code"
+    },
+    {
+     "number": 17598,
+     "title": "core: reference all containers in a spec by name instead of index (backport #17561)"
+    },
+    {
+     "number": 17561,
+     "title": "core: reference all containers in a spec by name instead of index"
+    },
+    {
+     "number": 16276,
+     "title": "operator: delete ceph-volume logs to reduce discover daemon log size"
+    },
+    {
+     "number": 16107,
+     "title": "operator: add missing udev env to discover pod (backport #16105)"
+    }
+   ]
+  },
+  "docs": {
+   "paths": [
+    "Documentation/**"
+   ],
+   "keywords": [
+    "docs",
+    "documentation"
+   ],
+   "labels": [
+    "docs"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 32,
+     "reviews": 871,
+     "score": 963.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 20,
+     "reviews": 491,
+     "score": 481.8,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 32,
+     "reviews": 128,
+     "score": 163.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 19,
+     "reviews": 100,
+     "score": 93.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 19,
+     "reviews": 98,
+     "score": 93.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 21,
+     "reviews": 48,
+     "score": 81.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 12,
+     "reviews": 46,
+     "score": 55.5,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 19,
+     "reviews": 15,
+     "score": 24.2,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18002,
+     "title": "docs: update node loss handling instructions (backport #17790)"
+    },
+    {
+     "number": 17947,
+     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+    },
+    {
+     "number": 18005,
+     "title": "docs: fix mirror Placement comments naming rgw pods (backport #17961)"
+    },
+    {
+     "number": 17961,
+     "title": "docs: fix mirror Placement comments naming rgw pods"
+    },
+    {
+     "number": 17790,
+     "title": "docs: update node loss handling instructions"
+    }
+   ]
+  },
+  "filesystem": {
+   "paths": [
+    "pkg/operator/ceph/file/**"
+   ],
+   "keywords": [
+    "cephfs",
+    "mds",
+    "filesystem",
+    "subvolume"
+   ],
+   "labels": [
+    "filesystem",
+    "ceph-mds"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 9,
+     "reviews": 162,
+     "score": 176.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 66,
+     "score": 58.4,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 10,
+     "reviews": 34,
+     "score": 40.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 32,
+     "score": 26.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 21,
+     "score": 17.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 7,
+     "score": 6.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 5,
+     "score": 5.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 2,
+     "score": 2.5,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17896,
+     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+    },
+    {
+     "number": 17935,
+     "title": "file: reveal swallowed errors on cephfs reconciliation (backport #17920)"
+    },
+    {
+     "number": 17934,
+     "title": "file: reveal swallowed errors on cephfs reconciliation (backport #17920)"
+    },
+    {
+     "number": 17920,
+     "title": "file: reveal swallowed errors on cephfs reconciliation"
+    },
+    {
+     "number": 17849,
+     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+    }
+   ]
+  },
+  "helm": {
+   "paths": [
+    "deploy/charts/**"
+   ],
+   "keywords": [
+    "helm",
+    "chart",
+    "values.yaml"
+   ],
+   "labels": [
+    "helm"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 22,
+     "reviews": 666,
+     "score": 690.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 414,
+     "score": 411.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 29,
+     "reviews": 93,
+     "score": 123.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 19,
+     "reviews": 79,
+     "score": 67.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 14,
+     "reviews": 69,
+     "score": 62.8,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 19,
+     "reviews": 34,
+     "score": 62.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 13,
+     "reviews": 28,
+     "score": 36.4,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 10,
+     "score": 12.2,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17948,
+     "title": "monitoring: deduplicate pool growth prediction series (backport #17919)"
+    },
+    {
+     "number": 17947,
+     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+    },
+    {
+     "number": 17940,
+     "title": "object: option to update rgw caps with account"
+    },
+    {
+     "number": 17949,
+     "title": "helm: add multisite CR support to rook-ceph-cluster chart (backport #17917)"
+    },
+    {
+     "number": 17917,
+     "title": "helm: add multisite CR support to rook-ceph-cluster chart"
+    }
+   ]
+  },
+  "monitoring": {
+   "paths": [
+    "pkg/operator/ceph/reporting/**"
+   ],
+   "keywords": [
+    "prometheus",
+    "metrics",
+    "exporter",
+    "monitoring"
+   ],
+   "labels": [
+    "monitoring",
+    "ceph-exporter"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 151,
+     "score": 182.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 76,
+     "score": 67.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 17,
+     "score": 26.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 21,
+     "score": 22.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 11,
+     "score": 19.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 6,
+     "score": 9.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "consideRatio",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "score": 3.0,
+     "last_active": "2025-09"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 3,
+     "score": 2.0,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17948,
+     "title": "monitoring: deduplicate pool growth prediction series (backport #17919)"
+    },
+    {
+     "number": 17919,
+     "title": "monitoring: deduplicate pool growth prediction series"
+    },
+    {
+     "number": 17927,
+     "title": "CI: Check markdown links (backport #17328)"
+    },
+    {
+     "number": 17328,
+     "title": "CI: Check markdown links"
+    },
+    {
+     "number": 17916,
+     "title": "build: set the release version to v1.20.2"
+    }
+   ]
+  },
+  "networking": {
+   "paths": [
+    "multus/network paths"
+   ],
+   "keywords": [
+    "multus",
+    "hostnetwork",
+    "network"
+   ],
+   "labels": [
+    "networking",
+    "multus"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 48,
+     "score": 51.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 45,
+     "score": 47.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 38,
+     "score": 45.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 9,
+     "score": 13.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 7,
+     "score": 11.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 8,
+     "score": 7.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "score": 4.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 3,
+     "score": 2.4,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17991,
+     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+    },
+    {
+     "number": 17996,
+     "title": "build(deps): bump actions/setup-go from 6.5.0 to 7.0.0"
+    },
+    {
+     "number": 17903,
+     "title": "ci: convert integration and canary CI from minikube to kind (backport #17822)"
+    },
+    {
+     "number": 17822,
+     "title": "ci: convert integration and canary CI from minikube to kind"
+    },
+    {
+     "number": 17876,
+     "title": "docs: fix typos and grammar in code comments (backport #17838)"
+    }
+   ]
+  },
+  "nvmeof": {
+   "paths": [
+    "nvmeof paths"
+   ],
+   "keywords": [
+    "nvmeof",
+    "nvme"
+   ],
+   "labels": [
+    "nvmeof"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 50,
+     "score": 96.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 19,
+     "score": 36.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 22,
+     "score": 27.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 11,
+     "score": 16.0,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "score": 3.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "score": 2.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "score": 2.0,
+     "last_active": "unknown"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17947,
+     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+    },
+    {
+     "number": 17978,
+     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+    },
+    {
+     "number": 17721,
+     "title": "nvmeof: fetch gateway image from ceph config when not in CR (backport #17701)"
+    },
+    {
+     "number": 17701,
+     "title": "nvmeof: fetch gateway image from ceph config when not in CR"
+    },
+    {
+     "number": 17668,
+     "title": "docs: add rook compatible ceph csi driver values (backport #17665)"
+    }
+   ]
+  },
+  "object": {
+   "paths": [
+    "pkg/operator/ceph/object/**",
+    "pkg/daemon/ceph/rgw/**"
+   ],
+   "keywords": [
+    "rgw",
+    "s3",
+    "radosgw",
+    "bucket",
+    "objectstore"
+   ],
+   "labels": [
+    "object",
+    "ceph-rgw"
+   ],
+   "maintainers": [
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 341,
+     "score": 363.1,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 219,
+     "score": 219.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 33,
+     "reviews": 51,
+     "score": 94.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 6,
+     "reviews": 28,
+     "score": 34.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 29,
+     "score": 26.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 14,
+     "score": 23.2,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 20,
+     "reviews": 6,
+     "score": 12.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Oded Viner",
+     "tier": "contributor",
+     "commits": 13,
+     "reviews": 0,
+     "score": 10.5,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 18004,
+     "title": "rgw: rgw account deletion should remove account from ceph (backport #17962)"
+    },
+    {
+     "number": 18022,
+     "title": "object: clobber bucket policy on modify instead of merging (backport #17643)"
+    },
+    {
+     "number": 18025,
+     "title": "rgw: Fix an object store comment typo (backport #18023)"
+    },
+    {
+     "number": 18023,
+     "title": "rgw: Fix an object store comment typo"
+    },
+    {
+     "number": 18009,
+     "title": "object: return an error when reconciled rgw user has no keys"
+    }
+   ]
+  },
+  "object-bucket-claims": {
+   "paths": [],
+   "keywords": [],
+   "labels": [],
+   "maintainers": [
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 52,
+     "score": 42.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 26,
+     "score": 21.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 8,
+     "score": 13.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 6,
+     "score": 6.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "score": 4.4,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 5,
+     "score": 3.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 3,
+     "score": 1.6,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17874,
+     "title": "object: use passed context for S3 v2 API calls"
+    },
+    {
+     "number": 17849,
+     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+    },
+    {
+     "number": 17834,
+     "title": "docs: fix function comments to match their declaration names"
+    },
+    {
+     "number": 17609,
+     "title": "object: remove AWS SDK v1 dependency (backport #17572)"
+    },
+    {
+     "number": 17572,
+     "title": "object: remove AWS SDK v1 dependency"
+    }
+   ]
+  },
+  "object-cosi": {
+   "paths": [
+    "pkg/operator/ceph/cosi/**"
+   ],
+   "keywords": [
+    "cosi"
+   ],
+   "labels": [
+    "object-cosi"
+   ],
+   "maintainers": [
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 50,
+     "score": 43.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 39,
+     "score": 32.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 11,
+     "score": 14.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "score": 8.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 9,
+     "score": 7.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Lykos153",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 10,
+     "score": 5.0,
+     "last_active": "2024-12"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 5,
+     "score": 2.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "score": 2.0,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17978,
+     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+    },
+    {
+     "number": 17854,
+     "title": "test: convert the COSI driver suite to the object test toolkit"
+    },
+    {
+     "number": 17850,
+     "title": "docs: fix typos and grammar in documentation and design docs (backport #17837)"
+    },
+    {
+     "number": 17837,
+     "title": "docs: fix typos and grammar in documentation and design docs"
+    },
+    {
+     "number": 17567,
+     "title": "core: rm unused consts (backport #17530)"
+    }
+   ]
+  },
+  "object-multisite": {
+   "paths": [],
+   "keywords": [],
+   "labels": [],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 33,
+     "score": 42.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 43,
+     "score": 38.0,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 10,
+     "score": 15.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 10,
+     "score": 8.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 4,
+     "score": 3.6,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "score": 1.6,
+     "last_active": "unknown"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "score": 0.4,
+     "last_active": "2026-06"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17876,
+     "title": "docs: fix typos and grammar in code comments (backport #17838)"
+    },
+    {
+     "number": 17838,
+     "title": "docs: fix typos and grammar in code comments"
+    },
+    {
+     "number": 17773,
+     "title": "object: generate URL-safe realm access keys (backport #17710)"
+    },
+    {
+     "number": 17710,
+     "title": "object: generate URL-safe realm access keys"
+    },
+    {
+     "number": 17126,
+     "title": "rgw: force objectStore controller to wait until zone and sharedPools are (backport #17101)"
+    }
+   ]
+  },
+  "test": {
+   "paths": [
+    "tests/**"
+   ],
+   "keywords": [
+    "integration test",
+    "suite"
+   ],
+   "labels": [
+    "test"
+   ],
+   "maintainers": [
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 34,
+     "reviews": 202,
+     "score": 274.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 10,
+     "reviews": 142,
+     "score": 167.6,
+     "last_active": "2026-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 69,
+     "reviews": 34,
+     "score": 110.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 21,
+     "reviews": 40,
+     "score": 60.4,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 13,
+     "reviews": 11,
+     "score": 25.2,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 14,
+     "score": 23.9,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 10,
+     "score": 20.2,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 12,
+     "score": 14.5,
+     "last_active": "2026-07"
+    }
+   ],
+   "recent_items": [
+    {
+     "number": 17894,
+     "title": "test: convert the object bucket lifecycle suite to the shared store"
+    },
+    {
+     "number": 17991,
+     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+    },
+    {
+     "number": 17949,
+     "title": "helm: add multisite CR support to rook-ceph-cluster chart (backport #17917)"
+    },
+    {
+     "number": 17917,
+     "title": "helm: add multisite CR support to rook-ceph-cluster chart"
+    },
+    {
+     "number": 17857,
+     "title": "test: build the smoke object store with the shared store fixture"
+    }
+   ]
+  }
+ }
+}

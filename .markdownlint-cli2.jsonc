@@ -1,0 +1,17 @@
+{
+  // Lint everything except the plain-text LICENSE.
+  "globs": ["**/*.md"],
+  "config": {
+    // Skill prose is deliberately dense: long table rows and reference
+    // lines, tight lists/headings/fences, <placeholder> tokens, and
+    // agent files that legitimately have no H1 after their frontmatter.
+    "MD013": false,
+    "MD022": false,
+    "MD029": false,
+    "MD031": false,
+    "MD032": false,
+    "MD033": false,
+    "MD041": false,
+    "MD046": false
+  }
+}

@@ -1,0 +1,32 @@
+#!/bin/sh
+# UserPromptSubmit hook: warn when the remote default branch has advanced past
+# the current branch, so a session in a stale worktree knows a rebase is
+# needed. Injects the notice via hookSpecificOutput.additionalContext. Silent
+# (exit 0, no output) when on the default branch, detached, outside a repo,
+# or already up to date.
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || exit 0
+[ "$branch" = "HEAD" ] && exit 0
+# Default branch from origin/HEAD when the clone recorded it; else whichever
+# of main/master exists. No candidate -> stay silent rather than guess.
+def=$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null)
+def=${def#origin/}
+if [ -z "$def" ]; then
+  for b in main master; do
+    if git show-ref -q --verify "refs/remotes/origin/$b"; then def=$b; break; fi
+  done
+fi
+[ -n "$def" ] || exit 0
+[ "$branch" = "$def" ] && exit 0
+# Throttle fetches to at most once / 3 min, shared across a repo's worktrees.
+# stat -c is GNU, stat -f is BSD/macOS; both absent or no stamp -> 0.
+stamp="$(git rev-parse --git-common-dir 2>/dev/null)/.rebase-notice-fetch"
+now=$(date +%s)
+last=$(stat -c %Y "$stamp" 2>/dev/null || stat -f %m "$stamp" 2>/dev/null || echo 0)
+if [ $((now - last)) -gt 180 ]; then
+  git fetch -q origin "$def" 2>/dev/null || true
+  touch "$stamp" 2>/dev/null || true
+fi
+behind=$(git rev-list --count "HEAD..origin/$def" 2>/dev/null || echo 0)
+[ "${behind:-0}" -gt 0 ] 2>/dev/null || exit 0
+printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"origin/%s is %s commit(s) ahead of this branch (%s); a rebase onto %s is recommended before pushing/merging."}}\n' "$def" "$behind" "$branch" "$def"
+exit 0

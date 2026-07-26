@@ -1,0 +1,18 @@
+{
+  "name": "rook-claude",
+  "description": "Claude Code plugins for rook (github.com/rook/*) maintainers: maintainer-grade code review, backlog triage, systemic-PR campaigns, and rook house conventions",
+  "owner": {
+    "name": "Joshua Hoblitt",
+    "url": "https://github.com/jhoblitt"
+  },
+  "plugins": [
+    {
+      "name": "rook-maintainer",
+      "source": "./plugins/rook-maintainer",
+      "description": "Maintainer-grade skills and agents for rook: code review (diff / pre-PR gate / bulk sweep / takeover), metadata triage of issues and PRs, systemic-change PR campaigns, and the rook house conventions they all enforce",
+      "author": {
+        "name": "Joshua Hoblitt"
+      }
+    }
+  ]
+}

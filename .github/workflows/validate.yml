@@ -1,0 +1,44 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate marketplace and plugin
+        run: |
+          claude plugin validate .
+          claude plugin validate plugins/rook-maintainer
+
+      - name: Compile Python scripts
+        run: python3 -m py_compile plugins/rook-maintainer/skills/rook-triage/scripts/*.py
+
+      - name: shellcheck hooks
+        run: shellcheck plugins/rook-maintainer/hooks/*.sh
+
+      - name: markdownlint
+        run: npx --yes markdownlint-cli2@0.18.1
+
+      - name: actionlint
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+          "$(go env GOPATH)/bin/actionlint" -color
