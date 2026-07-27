@@ -57,6 +57,30 @@ stale worktree knows a rebase is needed. Default-branch aware
 repo-scoped: it runs in every repo you use Claude Code in, and no-ops
 everywhere it doesn't apply.
 
+## Example prompts
+
+`rook-code-review`:
+
+- "review PR 12345"
+- "check this branch before I open a PR"
+- "sweep the open PRs and draft review comments"
+- "audit the assert vs require usage in this diff"
+- "take over PR 12345 — fix its description in place or supersede it"
+
+`rook-triage`:
+
+- "triage the issue backlog"
+- "triage pr 12345 — who should review it?"
+- "what info is missing from issue 12345?"
+- "find duplicates of issue 12345"
+- "refresh the triage kb"
+
+`rook-systemic-prs`:
+
+- "find another 3 PRs worth of dead-code elimination"
+- "sweep the repo to replace wait.Poll with wait.PollUntilContextTimeout"
+- "look for dead code under pkg/operator/ceph/object — propose removals, don't open PRs yet"
+
 ## Safety model
 
 The skills never write to GitHub on their own. Every comment, label, close,
