@@ -34,18 +34,29 @@ it. Never hardcode a username.
   git log --format=%B -1 <sha> | npx -p @commitlint/cli \
     -p @commitlint/config-conventional commitlint --config .commitlintrc.json
   ```
-- commitlint infers a trailer from the SHAPE of a line; anything it reads as
-  a trailer must be preceded by a blank line or the commit fails
-  `footer-leading-blank`. Body traps:
-  - a line beginning `word:` — including when sentence WRAP lands such a
-    word at line start; rewrap to fix;
-  - an issue-closing reference (`Closes #N`, `Fixes #N`) mid-body;
-  - any body line containing a bare `#NNNN`: the commitlint 19.1 bundled in
-    rook CI's wagoid/commitlint-github-action v6.2.1 starts the footer at
-    the first such line and fails in CI even when current commitlint passes
-    locally (verified 2026-07-20 on rook PR 18006). Write issue numbers in
-    bodies without the `#` ("rook issue 17983"); keep `#NNNN` only in the
-    footer trailer block (`Fixes #NNNN` directly above `Signed-off-by:`).
+
+  That runs CURRENT commitlint (21.x), which catches type/shape errors but
+  NOT the footer trap below — rook's CI runs 19.x (bundled by
+  wagoid/commitlint-github-action v6.2.1). Pinning inline does NOT work
+  (`npx -p @commitlint/cli@19 …` fails to resolve config-conventional); to
+  actually reproduce CI, run
+  `npm i @commitlint/cli@19 @commitlint/config-conventional@19` in a temp
+  dir alongside a copy of `.commitlintrc.json` and use its
+  `./node_modules/.bin/commitlint`.
+- commitlint infers a trailer from the SHAPE of a line, and anything it
+  reads as a trailer must be preceded by a blank line or the commit fails
+  `footer-leading-blank`. Only a body line that BEGINS with one of these
+  triggers it (verified 2026-07-26 against 19.8.1):
+  - an issue reference — bare, parenthesized, or issue-closing: `#NNNN`,
+    `(#NNNN)`, `Closes #NNNN`, `Fixes #NNNN`;
+  - `BREAKING CHANGE:`.
+
+  POSITION is what matters, not presence. A `#NNNN` mid-sentence is fine,
+  and so is an arbitrary `word:` at a line start (`Note:`, `anywhere:`) —
+  both pass 19.x. The hazard is a sentence that WRAPS so an issue
+  reference lands at the start of a line; rewrap to fix (that is what
+  broke rook PR 18006, 2026-07-20). Keep `#NNNN` trailers in the footer
+  block (`Fixes #NNNN` directly above `Signed-off-by:`).
 - When amending, `git add` first and confirm the amend captured the files
   (`git show --stat HEAD`) before force-pushing — `--amend` with nothing
   staged silently rewrites only the message.
