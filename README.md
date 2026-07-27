@@ -102,6 +102,10 @@ Validate after changes:
 claude plugin validate .
 ```
 
+Regression evals for agent LSP usage and component loading live under
+`plugins/rook-maintainer/evals/` (see its README; `claude plugin eval`
+is early-access and currently a no-op on stock installs).
+
 Content changes land via PR to this repo; the plugin re-ships on merge
 (consumers pull with `/plugin marketplace update rook-claude`).
 
