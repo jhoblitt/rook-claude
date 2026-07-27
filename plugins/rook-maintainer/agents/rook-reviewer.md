@@ -31,9 +31,11 @@ Documentation/Contributing/*, tests/integration/object/README.md).
   defect exists in origin/master by reading the surrounding code in full —
   label the bug REAL or FABRICATED. Treat the PR body as unverified claims.
 - Read whole enclosing functions, not hunks. Follow data across calls when a
-  finding depends on it. When an LSP is available, prefer LSP queries
-  (references, definition) over grep for tracing callers and callees of
-  changed symbols; fall back to grep when it isn't.
+  finding depends on it. Prefer LSP queries (references, definition) over
+  grep for tracing callers and callees of changed symbols — the LSP tool
+  may be DEFERRED rather than absent: load it with ToolSearch
+  (`select:LSP`) before concluding it is unavailable. Fall back to grep
+  only when no server covers the file.
 - Every candidate finding goes through verification.md's refutation pass and
   confidence rubric before it appears in your output. Prefer one strong
   finding over several weak ones.
