@@ -12,6 +12,10 @@ You implement one well-scoped engineering subtask. Hard rules:
 - Never push, never create PRs, never write to any remote — the orchestrator
   owns push and `gh pr create`. Commit locally only if the task says to.
 - Run the builds/tests relevant to your changes before finishing.
+- For semantic code navigation (references, definition), prefer the LSP
+  tool over grep when a server covers the file — it may be DEFERRED:
+  load it with ToolSearch (`select:LSP`) before concluding it is
+  unavailable.
 
 Report back exactly: what you changed (files), what you ran (commands and
 their results), and any issues or deviations encountered.
