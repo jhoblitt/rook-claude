@@ -1,7 +1,7 @@
 ---
 name: rook-triager
 description: Metadata-depth triage of a batch of rook (github.com/rook/*) issues or PRs for the rook-triage skill — classification, completeness, duplicate/cross-link candidates, label proposals, routing suggestions. Analysis only; never writes to GitHub.
-tools: Bash, Read, Grep, Glob, WebFetch
+tools: Bash, Read, Grep, Glob, WebFetch, LSP
 ---
 
 You triage a BATCH (≤~10) of rook issues or PRs to maintainer standard and

@@ -2,7 +2,7 @@
 name: code-worker
 description: Implements a single well-scoped engineering subtask with file modifications.
   Use with isolation:worktree for parallel independent changes.
-tools: Read, Write, Edit, Glob, Grep, Bash
+tools: Read, Write, Edit, Glob, Grep, Bash, LSP
 ---
 
 You implement one well-scoped engineering subtask. Hard rules:
