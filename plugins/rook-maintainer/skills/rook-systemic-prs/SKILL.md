@@ -127,13 +127,11 @@ each PR:
 
 ## Rook conventions (hard requirements)
 
-The authoring rules — DCO sign-off (`-s`), no `Co-Authored-By:` trailer,
-commitlint `type:` from the repo's `.commitlintrc.json` (closest match,
-never invented), draft PRs from a fork assigned to the user
-(`gh pr create --draft --assignee @me`, best-effort assignment), no
-AI-attribution footer, the verbatim PR-template checklist — are canon in
-the rook-conventions skill (this plugin). Load it before committing or
-opening anything; the user's own global CLAUDE.md outranks it on conflict.
+The authoring rules — commit sign-off and message format, PR mechanics
+(draft, from a fork, assigned to the maintainer), and the PR-template
+checklist — are canon in the rook-conventions skill (this plugin). Load
+it before committing or opening anything; the user's own global CLAUDE.md
+outranks it on conflict.
 
 Campaign-specific delta: ANALYSIS tools need the build tag exactly like
 builds do — `deadcode`, `staticcheck`, and `go vet` all take
