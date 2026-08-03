@@ -1,7 +1,7 @@
 {
   "name": "rook-maintainer",
   "displayName": "Rook Maintainer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Maintainer-grade skills for rook (github.com/rook/*): code review, backlog triage, systemic-PR campaigns, and the rook house conventions they enforce",
   "author": {
     "name": "Joshua Hoblitt",
@@ -11,5 +11,11 @@
   "homepage": "https://github.com/jhoblitt/rook-claude",
   "repository": "https://github.com/jhoblitt/rook-claude",
   "license": "Apache-2.0",
-  "keywords": ["rook", "ceph", "kubernetes", "code-review", "triage"]
+  "keywords": [
+    "rook",
+    "ceph",
+    "kubernetes",
+    "code-review",
+    "triage"
+  ]
 }
