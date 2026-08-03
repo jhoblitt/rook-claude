@@ -80,16 +80,23 @@ sweep.json                  # scope, filters, per-PR status (reviewed/verified/t
 report.md                   # the aggregate report
 pr-<N>/report.md            # per-PR report
 pr-<N>/findings.json        # verified findings
-pr-<N>/drafts/f1.md         # one file per draft comment (frontmatter below)
+pr-<N>/drafts/c3.md         # one draft comment per finding, named by its ID (frontmatter below)
 dashboard.html              # regenerated each phase
 ```
 
-Draft file frontmatter: `pr, path, line, side, severity, domain, confidence,
-status: pending|approved|edited|dropped|posted`; body = exactly the comment
-text to post. The user edits these files directly.
+Assign finding IDs (SKILL.md "Finding IDs") when writing `findings.json`:
+per-PR numbering over the verified survivors, recorded as each finding's
+`id`.
+
+Draft file frontmatter: `pr, id, path, line, side, severity, domain,
+confidence, status: pending|approved|edited|dropped|posted`; body = exactly
+the comment text to post, opening with the bold ID tag (`**C3/bug** — …`)
+so the posted comment is addressable from the PR thread. The user edits
+these files directly.
 
 Aggregate report: TLDR verdict counts; tables grouped
-ACCEPT / REQUEST CHANGES / REJECT (PR, one-line what-it-does, key finding);
+ACCEPT / REQUEST CHANGES / REJECT (PR, one-line what-it-does, key finding
+by ID);
 a **Backport candidates** list (every PR with `backport.eligible` — PR,
 label, one-line reason — for the maintainer to confirm and label);
 cross-cutting observations (recurring defect patterns, contributor-level
@@ -113,7 +120,7 @@ comment (numbered). Ask via AskUserQuestion:
   editor works — the files are plain markdown). On "continue", RE-READ every
   draft from disk (frontmatter `status` + body may have changed) and confirm
   what will post.
-- **Post subset** — e.g. "f1,f3"; the rest → dropped.
+- **Post subset** — e.g. "B1,C3"; the rest → dropped.
 - **Skip PR** — nothing posts; recorded in sweep.json.
 - **Mark for takeover** — recorded in sweep.json; after triage completes,
   run `references/takeover.md` for each marked PR (adopt in place, or
@@ -162,4 +169,6 @@ Per PR with ≥1 approved draft:
   re-reviewed (note "re-review; prior verdict X at <sha>"); unchanged PRs
   reuse the stored review unless the user asks otherwise. Re-reviews START
   with the review-thread audit: what did prior reviews (ours included)
-  demand, and did the new head actually address it.
+  demand, and did the new head actually address it. Carry the prior round's
+  finding IDs forward per SKILL.md — open with the ledger and continue the
+  sequences from `pr-<N>/findings.json`.

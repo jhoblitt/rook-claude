@@ -76,7 +76,9 @@ inference. All findings still pass verification.md before reporting.
   optional pickup.
 - **NOT READY** — the must-fix list, each item in the finding contract.
   After fixes, re-run the attack pass on the NEW diff (fresh agent again);
-  do not carry verdicts across edits.
+  do not carry verdicts across edits. Finding IDs do carry (SKILL.md
+  "Finding IDs"): the re-run opens with the prior round's ledger and
+  continues the numbering.
 
 Close with the standard "audited and clean" statement — the surfaces
 attacked and survived are the evidence the gate ran.

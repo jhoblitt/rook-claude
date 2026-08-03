@@ -172,22 +172,51 @@ Verdicts:
 Every reported finding:
 
 ```text
-<severity>/<domain> file:line — <what is wrong, one sentence>
+<id>/<domain> file:line — <what is wrong, one sentence>
   failure: <concrete scenario: inputs/state → wrong outcome>
   fix: <shape of the correction, one line>
   confidence: CONFIRMED (>=80) | PLAUSIBLE (50-79, labeled reasoning)
 ```
 
+## Finding IDs
+
+The ID is the severity initial plus an ordinal — `B1` (blocker), `C3`
+(changes-requested), `N2` (nit) — so a finding can be named in follow-up
+work ("investigate C3") without quoting `file:line` anchors that drift as
+the author pushes. The domain tag stays orthogonal: a test-coverage gap is
+`C5/test-coverage`, not a fourth namespace.
+
+- Assign IDs at report assembly, after verification has culled candidates:
+  IDs number what is published, with no gaps for refuted findings. In
+  fan-out modes the assembling session assigns them, never the parallel
+  agents.
+- The namespace is the target: numbering restarts per PR/branch, and
+  cross-target references qualify the ID (`#17953 B1`).
+- An ID permanently names its finding for the life of the target — never
+  renumbered, never reused. Later rounds continue each sequence (`C11`)
+  and never refill holes left by resolved findings.
+- Reclassification keeps the name. If `C4` proves blocker-grade on
+  re-review, it stays `C4`, listed under the new severity with an
+  "escalated" note. The ID is a name, not a live severity claim.
+- A re-review of a previously reviewed target starts from the prior
+  round's report (the posted review, the report gist, the sweep state dir,
+  or user-provided) and opens with a ledger — `B1 resolved (<commit>) ·
+  C2 open · C5 withdrawn (re-check refuted it)` — before any new findings.
+  If no prior report can be found, start a fresh round 1 and say so.
+
 ## Output format
 
-1. **Verdict line** (per target) with one-sentence rationale.
-2. **Findings** grouped blocker → changes-requested → nit, in the contract
+1. **Verdict line** (per target) with one-sentence rationale, citing
+   finding IDs ("one confirmed blocker (B1)").
+2. **Findings index**, when more than ~3 findings: one row per finding —
+   ID, domain, `file:line`, one-line summary, confidence.
+3. **Findings** grouped blocker → changes-requested → nit, in the contract
    above. No finding without a failure scenario.
-3. **Audited and clean** — what was checked and found correct, briefly. An
+4. **Audited and clean** — what was checked and found correct, briefly. An
    audit that only lists problems hides its own coverage.
-4. PR targets add: CI classification (REAL / KNOWN-FLAKE / INFRA per check),
+5. PR targets add: CI classification (REAL / KNOWN-FLAKE / INFRA per check),
    PR-template checklist audit, existing maintainer signals (who reviewed,
    weighted by CODE-OWNERS), and backport eligibility — flag a bug/security
    fix present in the latest `release-X.Y` as `backport-release-X.Y`-eligible
    (test-only, refactor, feature, and breaking changes are not).
-5. Raw data, no pleasantries; `file:line` on everything.
+6. Raw data, no pleasantries; `file:line` on everything.
