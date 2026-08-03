@@ -1,6 +1,7 @@
 {
-  // Lint everything except the plain-text LICENSE.
-  "globs": ["**/*.md"],
+  // Lint everything except the plain-text LICENSE and the
+  // semantic-release-generated CHANGELOG.
+  "globs": ["**/*.md", "!CHANGELOG.md"],
   "config": {
     // Skill prose is deliberately dense: long table rows and reference
     // lines, tight lists/headings/fences, <placeholder> tokens, and
