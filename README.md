@@ -106,8 +106,16 @@ Regression evals for agent LSP usage and component loading live under
 `plugins/rook-maintainer/evals/` (see its README; `claude plugin eval`
 is early-access and currently a no-op on stock installs).
 
-Content changes land via PR to this repo; the plugin re-ships on merge
-(consumers pull with `/plugin marketplace update rook-claude`).
+Content changes land via PR to this repo. Commit messages follow
+[Conventional Commits](https://www.conventionalcommits.org/) — commitlint
+enforces this on every PR — and releasing is automated: on each merge to
+`main`, [semantic-release](https://github.com/semantic-release/semantic-release)
+derives the next version from the commit types in the changeset (`fix:`,
+`docs:`, `refactor:`, `perf:` → patch; `feat:` → minor; a breaking change →
+major; other types cut no release), writes it into the plugin manifest and
+`CHANGELOG.md`, tags, and publishes a GitHub release. Never bump the plugin
+version in a PR — the release commit owns that field. Consumers pull updates
+with `/plugin marketplace update rook-claude`.
 
 ## License
 
