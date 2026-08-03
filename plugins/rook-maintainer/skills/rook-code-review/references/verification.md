@@ -103,3 +103,5 @@ A verified finding states: `file:line`, what is wrong (one sentence), the
 concrete failure scenario (inputs/state → wrong outcome), the fix shape (one
 line), confidence with label. If any conclusion rests on an inference rather
 than traced evidence, say so explicitly and keep the confidence honest.
+Finding IDs are assigned later, at report assembly (SKILL.md "Finding
+IDs"); verification refers to candidates by `file:line`.
