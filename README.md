@@ -27,7 +27,17 @@ claude plugin marketplace add jhoblitt/rook-claude
 claude plugin install rook-maintainer@rook-claude
 ```
 
-To pick up updates later: `/plugin marketplace update rook-claude`.
+To pick up updates later:
+
+```sh
+claude plugin marketplace update rook-claude      # refresh the index
+claude plugin update rook-maintainer@rook-claude  # install the new version
+```
+
+(or the same two `/plugin …` commands inside Claude Code), then
+`/reload-plugins` in running sessions — a restart also works. The
+marketplace step alone only refreshes the index; it does not update the
+installed plugin.
 
 ## What's inside
 
@@ -174,8 +184,9 @@ derives the next version from the commit types in the changeset (`fix:`,
 `docs:`, `refactor:`, `perf:` → patch; `feat:` → minor; a breaking change →
 major; other types cut no release), writes it into the plugin manifest and
 `CHANGELOG.md`, tags, and publishes a GitHub release. Never bump the plugin
-version in a PR — the release commit owns that field. Consumers pull updates
-with `/plugin marketplace update rook-claude`.
+version in a PR — the release commit owns that field. Consumers pull
+updates with the marketplace-refresh + plugin-update pair in the Install
+section.
 
 ## License
 
