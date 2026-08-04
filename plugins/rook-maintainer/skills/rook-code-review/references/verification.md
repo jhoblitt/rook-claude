@@ -40,6 +40,23 @@ severity would be blocker or changes-requested — and say exactly which link
 is unverified. Below 50: drop silently. Prefer one strong finding over three
 weak ones; do not dilute a serious report with filler.
 
+## Design findings verify differently
+
+Candidates in the `design` domain (architecture.md's contract) have no
+failure path to trace: refute them with architecture.md's rubric —
+deliberate precedent, alternative-fails, cost-contradicted, generic taste —
+instead of questions 1–4 above. The numeric bands map onto that rubric:
+CONFIRMED (>= 80) requires precedent cited AND the cost traced; PLAUSIBLE
+(50–79) reports at changes-requested weight only; below 50, reshape into a
+QUESTION when author knowledge would resolve it, else drop — but never
+reshape an unverified load-bearing enforcement claim: architecture.md
+holds it as a blocking concern regardless of score. QUESTIONs are
+exempt from the numeric gates entirely — no confidence claim, severity
+`question` in transport — their gates are the needs-author-knowledge test
+and the caps. architecture.md's caps are enforced at report/ID assembly,
+the only stage that sees the whole target (sweep shards verification
+across agents).
+
 ## False-positive exclusions
 
 Do not report, regardless of confidence:
@@ -57,9 +74,15 @@ Do not report, regardless of confidence:
   banned outright; some staticcheck QF rules are off). Respect them.
 - **Pedantic nits a senior maintainer would not raise** — micro-style,
   hypothetical performance, "consider extracting a helper" with no concrete
-  benefit.
+  benefit. A `design` finding meeting architecture.md's contract — named
+  cost, named alternative, precedent — is not this class; that contract is
+  exactly what separates design judgment from taste.
 - **Intentional behavior changes** that the PR body/commits document as the
-  point of the change.
+  point of the change — as correctness findings claiming the behavior is
+  accidental. Whether a deliberate, documented decision is the right one
+  is exactly the `design` domain's question: cost/alternative findings
+  are never excluded by documented intent, only refuted by
+  architecture.md's rubric.
 - **Style contrary to incumbent style**: if the surrounding package does it
   this way consistently, the diff matching the package is correct even when
   another guide disagrees.

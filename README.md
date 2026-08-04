@@ -36,7 +36,7 @@ Skills (invoked automatically by task context, or explicitly as
 
 | Skill | What it does |
 |---|---|
-| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; bulk sweeps of open PRs with human-approved comment posting; PR takeover/supersede flows. |
+| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; adversarial design review of proposals and design docs with per-decision verdicts; bulk sweeps of open PRs with human-approved comment posting; PR takeover/supersede flows. |
 | `rook-triage` | Metadata-depth triage of issues and PRs: classify, label, dedupe, cross-link, route to reviewers. Advise-first; every GitHub write is human-approved per item. |
 | `rook-systemic-prs` | Drive a sweeping change (dead code, lint cleanups, migrations) as many small, independently reviewable PRs with aggressive subagent fan-out. |
 | `rook-conventions` | The house rules the other skills assume: DCO/commitlint mechanics, fork-only pushes, draft PRs, backport labeling, CRD regeneration, CI watching and burn-in policy. |
@@ -46,8 +46,65 @@ Agents (spawned by the skills; addressable as `rook-maintainer:<name>`):
 | Agent | Role |
 |---|---|
 | `rook-reviewer` | Context-isolated review of one PR or branch, returning structured findings. |
+| `design-attacker` | Single-perspective adversarial attack on a design proposal or major-decision diff — migration, version skew, security boundary, API evolution, operations, multisite, cost, upstream fit. |
 | `rook-triager` | Metadata triage of a batch of issues/PRs; analysis only, never writes. |
 | `code-worker` | Scoped implementation subtasks for systemic-PR fan-out (worktree isolation). |
+
+### How a review executes
+
+```mermaid
+flowchart TD
+    T["target: working tree · branch · PR · open-PR sweep · design proposal"] --> M{mode}
+
+    M -->|"diff (default)"| S1
+    M -->|pre-pr| G1
+    M -->|sweep| W0
+    M -->|proposal| P1
+    M -->|takeover| K1["adopt in place, or supersede +<br/>per-ID outcome ledger"]
+
+    subgraph SPINE["the review spine — every diff-shaped target"]
+        S1["scope + route references"] --> S2[["evidence passes a–i — parallel agents<br/>(i: design read on decision-magnitude triggers)"]]
+        S2 --> S3[["verify — refutation + confidence gates,<br/>verifier agents per finding group"]]
+        S3 --> S4["gap sweep — one fresh agent attacks<br/>the review's own coverage claim"]
+        S4 --> S5["report — verdict + B/C/N/Q findings"]
+    end
+
+    subgraph GATE["pre-pr gate"]
+        G1["one fresh isolated agent: spine + decision-first<br/>and failure-surface attacks<br/>(large branches: split across a parallel panel)"] -->|major-decision diff| G4["NEEDS_PROPOSAL_REVIEW"]
+        G1 -->|else| G3["READY / NOT READY"]
+    end
+
+    subgraph SWEEP["sweep — many PRs"]
+        W0["scope + cost confirm"] --> W1["pre-gate, one haiku-class agent:<br/>skip automated / trivial / already-reviewed"]
+        W1 --> W2[["reviewer agent per PR — parallel;<br/>+ PR extras: CI, checklist, threads, backport"]]
+        W2 -->|as each completes| W3[["outer verify layer + gap sweep —<br/>pipelined per reviewer"]]
+        W3 --> W4["aggregate report + dashboard"]
+        W4 --> W5["per-PR human triage —<br/>only approved comments post"]
+    end
+
+    subgraph PROP["proposal mode — a document, PR or not"]
+        P1["intake: FULL doc at head OID<br/>(or local path / issue section)"] --> P2["enumerate decisions D1…"]
+        P2 --> P3[["claim audit — concurrent<br/>with the attacker wave"]]
+        P2 --> P4[["hostile-perspective attackers — parallel:<br/>migration · skew · security · evolution ·<br/>ops · multisite · cost · upstream fit"]]
+        P4 -->|as each completes| P5[["fresh verifiers — pipelined per attacker"]]
+        P3 --> P6["synthesize: dedupe, caps,<br/>per-decision ledger"]
+        P5 --> P6
+        P6 --> P7["SOUND / NEEDS-REVISION / UNSOUND"]
+    end
+
+    G1 -.->|"runs the spine inline"| S1
+    W2 -.->|"each runs the spine inline —<br/>passes serial, verify two-layered"| S1
+    G4 -.->|"escalates; verdict maps back"| P1
+    W4 -.->|"design-doc PR only (needs_proposal_review);<br/>findings merge back, IDs continue"| P1
+    W5 -.->|"mark for takeover"| K1
+    K1 -.->|"supersede: pre-pr gate<br/>before any push"| G1
+```
+
+Solid arrows are a mode's own pipeline; dashed arrows are invocations
+(of the shared spine, or of proposal mode). Double-edged boxes fan out
+as parallel agents, and "as each completes" edges are pipelined — no
+barrier. Small inline reviews collapse the double-edged spine steps
+into a single context.
 
 One hook, `rebase-notice` (`UserPromptSubmit`): warns when the repo's
 default branch has advanced past your current branch, so a session in a
@@ -66,6 +123,8 @@ everywhere it doesn't apply.
 - "sweep the open PRs and draft review comments"
 - "audit the assert vs require usage in this diff"
 - "take over PR 12345 — fix its description in place or supersede it"
+- "adversarially review this design proposal: ~/drafts/rgw-pools.md"
+- "design review of design PR 12345"
 
 `rook-triage`:
 
@@ -102,7 +161,8 @@ Validate after changes:
 claude plugin validate .
 ```
 
-Regression evals for agent LSP usage and component loading live under
+Regression evals for agent LSP usage, component loading, and design
+review live under
 `plugins/rook-maintainer/evals/` (see its README; `claude plugin eval`
 is early-access and currently a no-op on stock installs).
 

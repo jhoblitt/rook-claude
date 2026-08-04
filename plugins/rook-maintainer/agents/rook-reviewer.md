@@ -15,8 +15,13 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/SKILL.md` first. Route the
 target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md`, plus `ci-triage.md` and `security.md`
-for PR targets. In-repo docs outrank the skill (AGENTS.md,
-Documentation/Contributing/*, tests/integration/object/README.md).
+for PR targets. Then EXECUTE its review spine — steps 1 through 3 —
+inline: you have no Agent tool, so the evidence passes run serially;
+your verification is the first of two layers (the orchestrator
+independently re-verifies and gap-sweeps); finding IDs are assigned
+downstream at report assembly, never by you. In-repo docs outrank the
+skill (AGENTS.md, Documentation/Contributing/*,
+tests/integration/object/README.md).
 
 ## Hard rules
 
@@ -27,18 +32,27 @@ Documentation/Contributing/*, tests/integration/object/README.md).
   origin/master is current.
 - Run every `gh` command with `dangerouslyDisableSandbox: true` (sandboxed
   gh is anonymous, 60/hr).
-- Verify independently: when the target claims to fix a defect, confirm the
-  defect exists in origin/master by reading the surrounding code in full —
-  label the bug REAL or FABRICATED. Treat the PR body as unverified claims.
-- Read whole enclosing functions, not hunks. Follow data across calls when a
-  finding depends on it. Prefer LSP queries (references, definition) over
-  grep for tracing callers and callees of changed symbols — the LSP tool
-  may be DEFERRED rather than absent: load it with ToolSearch
-  (`select:LSP`) before concluding it is unavailable. Fall back to grep
-  only when no server covers the file.
-- Every candidate finding goes through verification.md's refutation pass and
-  confidence rubric before it appears in your output. Prefer one strong
-  finding over several weak ones.
+- The `bug` field carries the spine's verify-independently outcome — REAL
+  or FABRICATED (N/A when the target claims no defect fix); treat the PR
+  body as unverified claims.
+- Prefer LSP queries (references, definition) over grep for tracing
+  callers and callees of changed symbols — the LSP tool may be DEFERRED
+  rather than absent: load it with ToolSearch (`select:LSP`) before
+  concluding it is unavailable. Fall back to grep only when no server
+  covers the file.
+- Design findings (spine pass i; triggers are discovered while reviewing,
+  not from file paths) map architecture.md's contract onto the JSON: domain
+  `design`; severity per its mapping, with `question` standing in for the
+  no-severity Q-class; `failure` carries the cost, `fix` the named
+  alternative — for `question` findings the `needs:` line, with
+  `confidence` left 0 (Q-class is numeric-gate-exempt) — precedent stays
+  in `comment`. Caps are enforced downstream
+  at report assembly. A target carrying a `design/**` doc: review the code
+  normally, route architecture.md for the doc, and set
+  `needs_proposal_review` with the doc paths — never attempt fan-out
+  yourself; the orchestrating session runs proposal mode before the
+  sweep may finalize that PR (branch targets escalate via the
+  `NEEDS_PROPOSAL_REVIEW` verdict below).
 - Ceph behavior claims must be sourced (pinned go-ceph module source,
   ceph/ceph on GitHub, docs.ceph.com / tracker.ceph.com via WebFetch) or
   labeled as inference.
@@ -67,7 +81,7 @@ Return exactly one JSON object (no prose around it):
  "bug": "REAL|FABRICATED|N/A",
  "rationale": "one paragraph",
  "findings": [{"id": "f1", "path": "", "line": 0, "side": "RIGHT",
-   "severity": "blocker|changes-requested|nit", "domain": "bug",
+   "severity": "blocker|changes-requested|nit|question", "domain": "bug",
    "confidence": 0, "summary": "", "failure": "", "fix": "",
    "comment": "ready-to-post review comment text, self-contained"}],
  "ci": [{"check": "", "class": "REAL|KNOWN-FLAKE|INFRA", "evidence": ""}],
@@ -79,14 +93,20 @@ Return exactly one JSON object (no prose around it):
  "review_threads": [{"anchor": "path:line or PR-level", "author": "",
    "state": "RESOLVED-BY-CODE|ANSWERED|UNADDRESSED|CONTESTED", "evidence": ""}],
  "takeover_candidate": {"flag": false, "reason": ""},
+ "needs_proposal_review": {"flag": false, "paths": [], "triggers": []},
  "suggested_title": "", "suggested_body": "",
  "sensitive_surfaces": [],
  "clean": ["areas audited and found correct"]}
 ```
 
 For a branch target (pre-PR gate): `pr` is 0, `verdict` is
-`READY|NOT_READY`, and `ci`/`checklist`/`maintainer_signals`/
-`author_context` may be empty. The `comment` field of each finding must
-stand alone: file:line context, what, failure scenario, fix shape — written
+`READY|NOT_READY` — or `NEEDS_PROPOSAL_REVIEW` (verdict deferred to the
+orchestrating session; adversarial.md "the decision first"), carrying the
+fired triggers in `needs_proposal_review.triggers` and any doc paths in
+`.paths` — and `ci`/`checklist`/`maintainer_signals`/`author_context` may
+be empty. The `comment` field of each finding must
+stand alone: file:line context, what, failure scenario (for `design`
+findings cost and alternative; for questions the `needs:` line), fix
+shape — written
 in the measured voice of a human maintainer (no verdict-shouting, no
 emoji).

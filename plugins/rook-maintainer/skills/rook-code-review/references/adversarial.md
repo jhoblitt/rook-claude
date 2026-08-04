@@ -16,13 +16,51 @@ contains ONLY:
   (read-only),
 - the stated requirements/intent (one paragraph — what the change is
   supposed to do, from the user or the draft PR body),
-- the instruction to run this skill's diff-mode procedure (routing table,
-  evidence passes, verification) PLUS the attack pass below.
+- the instruction to run this skill's review spine, steps 1–3 (routing
+  table, evidence passes, verification), PLUS the attack passes below.
+
+The spine's gap sweep needs a fresh agent the gate agent cannot spawn:
+the authoring session launches it on the gate's report — mechanical
+orchestration, never judging — and its candidates verify like any
+others before joining the gate's findings.
 
 Never pass the authoring conversation, design discussion, or "what I tried".
 The agent reports back; the authoring session relays findings without
 re-litigating them away — if a finding seems wrong, verify it the hard way
 (verification.md), don't dismiss it.
+
+On a large branch (SKILL.md's scale gate), one agent is not enough: split
+the gate across parallel fresh agents — evidence passes and the attack
+pass as separate agents, each receiving only the diff, the intent, and
+its assignment — with refutation in fresh verifiers. The authoring
+session orchestrates mechanically (spawn, relay, assemble) and never
+judges; the single-agent gate stays the default for ordinary branches.
+
+## Attack pass — the decision first
+
+Before attacking the implementation, attack the choice: would a maintainer
+say "right bug, wrong fix"? Run architecture.md's design pass on every
+fired decision-magnitude trigger — layer and root cause, named
+alternatives (including "this belongs upstream in Ceph/go-ceph"),
+sibling consistency, evolution steelman, standing constraints. On a
+major-decision diff (several triggers, or a change that is really an
+unwritten proposal) — or a branch adding or editing a `design/**` doc —
+do not attack the design alone: return the `NEEDS_PROPOSAL_REVIEW`
+verdict with the fired triggers in `needs_proposal_review.triggers` and
+any doc paths in `.paths` (rook-reviewer.md's contract), verdict
+deferred. Deferring the verdict defers only the verdict: the gate agent
+still completes the spine and the failure-surface attack, and its
+code-level findings return alongside the escalation — the mapped
+verdict folds them in (proposal.md intake). The orchestrating session then runs proposal.md's procedure —
+enumeration through report — on the escalated target (proposal.md
+intake's escalated-diff form: the diff and draft PR body as the
+document), and the gate's verdict comes from that report, mapped back to
+the gate verdicts (proposal.md). The isolation logic that makes this
+gate a fresh agent applies throughout, not only per attacker: the
+authoring session may mechanically orchestrate — enumerate, spawn,
+relay — but refutation stays with fresh verifier agents (proposal.md
+step 6), and it never drops or down-ranks a surviving attack on its own
+change beyond the caps' by-cost force-rank.
 
 ## Attack pass — operator failure surfaces
 
@@ -73,12 +111,19 @@ inference. All findings still pass verification.md before reporting.
 ## Verdict
 
 - **READY** — no blockers or changes-requested findings; nits listed for
-  optional pickup.
+  optional pickup. Open design QUESTIONs never block READY on their own —
+  list them for the author. An unverified load-bearing enforcement
+  claim is a concern, not a question (architecture.md), and does
+  block.
 - **NOT READY** — the must-fix list, each item in the finding contract.
   After fixes, re-run the attack pass on the NEW diff (fresh agent again);
   do not carry verdicts across edits. Finding IDs do carry (SKILL.md
   "Finding IDs"): the re-run opens with the prior round's ledger and
   continues the numbering.
+- **NEEDS_PROPOSAL_REVIEW** — major-decision diff or `design/**` doc on
+  the branch ("the decision first" above): verdict deferred; the final
+  READY/NOT READY comes from the proposal-mode report combined with the
+  gate's code-level findings (proposal.md intake).
 
 Close with the standard "audited and clean" statement — the surfaces
 attacked and survived are the evidence the gate ran.
