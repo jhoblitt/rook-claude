@@ -86,6 +86,16 @@ Do not report, regardless of confidence:
 - **Style contrary to incumbent style**: if the surrounding package does it
   this way consistently, the diff matching the package is correct even when
   another guide disagrees.
+- **Out-of-band admin mutation.** rook owns the Ceph control plane it
+  manages; a scenario that needs an administrator mutating that state
+  concurrently (toolbox `ceph`/`radosgw-admin` writes racing a reconcile)
+  is not a finding — the space is unbounded, it indicts any reconcile
+  equally, and the operator cannot lock Ceph against its admins. Still
+  reportable: rook's OWN concurrency (parallel reconciles, multiple
+  operators, restart mid-flight); races against a procedure rook's docs
+  direct the user to run; external-mode clusters, where shared control is
+  the deployment model; and data-plane client IO (S3/RBD) racing
+  control-plane changes.
 - **Speculative DoS / missing-hardening** observations, and lowered bars for
   test-only code (a test may take shortcuts production code may not).
 
