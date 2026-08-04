@@ -22,7 +22,8 @@ All `gh` calls: `dangerouslyDisableSandbox: true`.
    - additional filters: author, label, paths, updated-since, explicit PR
      numbers, count cap;
    - show the resulting PR list and the cost estimate
-     (~1 reviewer agent per PR + ~1 verifier per 2–3 findings; observed
+     (~1 reviewer agent per PR + ~1 verifier per 2–3 findings + ~1
+     gap-sweep agent per PR, whose candidates add verifiers; observed
      ≈50k tokens per reviewer agent) and get explicit confirmation.
 
 A `rook-triage` run may supply the explicit PR list (its
@@ -31,6 +32,17 @@ independently usable without a prior triage pass.
 
 ## Phase 1 — fan out reviewers
 
+- **Pre-gate** (haiku-class agent, one for the whole batch — SKILL.md
+  "Tier models by role"): STATE checks only — the candidate is still
+  open and non-draft, and not already carrying the user's review at the
+  current head unless re-review was chosen at phase 0. Author identity
+  and file class never skip: dependency and version bumps are
+  supply-chain surfaces (security.md), and generated-file-only churn is
+  a provenance question (legit regen vs hand-edit) that only the full
+  reviewer can answer — bot-authored PRs get the same reviewer as
+  everyone else. Skips are listed with reasons in the report — never
+  silently dropped — and an explicit user-supplied PR list is never
+  pre-gated.
 - One **rook-reviewer** agent per PR (`subagent_type:
   "rook-maintainer:rook-reviewer"`;
   fall back to `general-purpose` carrying the same contract inline if the
@@ -40,36 +52,53 @@ independently usable without a prior triage pass.
   (READ-ONLY — `git show origin/master:<path>` for pre-change content, never
   checkout/build), which reference files to read (route from the PR's
   changed files against SKILL.md's table, always + verification.md +
-  ci-triage.md + security.md's author-context screen), and the output
+  ci-triage.md + security.md's author-context screen; reviewers self-route
+  architecture.md when a decision-magnitude trigger fires, since triggers
+  emerge during review, not from paths), and the output
   contract below.
 - Orchestrator sets a ScheduleWakeup fallback heartbeat (≥1200s) and
   otherwise waits on completion notifications. Persist each agent's raw
   output to the state dir AS IT ARRIVES — a crashed session must not lose
   finished reviews.
+- Reviewer and verifier agents inherit the session model; the pre-gate,
+  phase-5 staleness and anchor validation, and dashboard regeneration
+  are haiku-class work (SKILL.md "Tier models by role").
 - If the Workflow tool is available, an equivalent
   `pipeline(prs, review, verify)` orchestration is preferred (no barrier
   between stages); the Agent-tool flow above is the portable default.
 
 Per-PR reviewer contract: the rook-reviewer agent definition
-(`${CLAUDE_PLUGIN_ROOT}/agents/rook-reviewer.md`) is canonical — it
-verifies the claimed defect against origin/master (REAL/FABRICATED),
-judges the fix, runs the routed domain passes, audits house rules +
-PR-template checklist, classifies CI per ci-triage.md, reads existing
-reviews (CODE-OWNERS weighting), collects author context and
-sensitive-surface flags per security.md, and returns exactly the JSON
-object specified there (verdict, bug, findings[] with ready-to-post
-comment text, ci[], checklist, maintainer_signals, backport,
-author_context, review_threads[], takeover_candidate,
+(`${CLAUDE_PLUGIN_ROOT}/agents/rook-reviewer.md`) is canonical — each
+reviewer executes SKILL.md's review spine inline plus the PR extras
+(CI triage, checklist audit, existing-review weighting, author context
+and sensitive surfaces per security.md, backport assessment) and
+returns exactly the JSON object specified there (verdict, bug,
+findings[] with ready-to-post comment text, ci[], checklist,
+test_coverage, maintainer_signals, backport, author_context,
+review_threads[], takeover_candidate, needs_proposal_review,
 suggested_title/body, sensitive_surfaces[], clean[]).
 
 ## Phase 2 — verify findings
 
-For each reviewer's candidate findings, spawn verifier agents (group 2–3
-related findings per agent) that attempt to REFUTE per verification.md and
-re-score confidence. Drop <50; keep 50–79 as PLAUSIBLE only at
-changes-requested severity or above; ≥80 CONFIRMED. Verdicts are recomputed
+Spawn each PR's verifier agents AS ITS REVIEWER COMPLETES — never after
+the whole reviewer wave; the Agent-tool default and the Workflow
+pipeline behave identically here. Group 2–3 related findings per agent;
+verifiers attempt to REFUTE per verification.md —
+design findings via architecture.md's rubric — and re-score confidence. Drop <50; keep 50–79 as PLAUSIBLE only at
+changes-requested severity or above; ≥80 CONFIRMED. Two classes are
+exempt from the numeric gates (verification.md): Q-class findings, where
+verifiers test only the needs-author-knowledge claim, and unverified
+load-bearing enforcement claims, which survive as needs-evidence
+concerns regardless of score (architecture.md's security canon — never
+dropped by score or caps, never question-graded, until the enforcement
+point is traced; a landed refutation still kills the candidate); the
+caps land at report assembly. Verdicts are recomputed
 from surviving findings (a REQUEST_CHANGES whose blockers all died becomes
-ACCEPT — note when this happens).
+ACCEPT — note when this happens). After a PR's verification completes,
+spawn its **gap sweep** (SKILL.md's gap-sweep step): one fresh agent
+takes the diff, the surviving findings, and the clean list, and hunts
+what both missed; its candidates verify like any others before joining
+the report.
 
 ## Phase 3 — aggregate
 
@@ -77,6 +106,9 @@ State dir: `~/.cache/rook-code-review/sweeps/<YYYY-MM-DD>-<slug>/`
 
 ```text
 sweep.json                  # scope, filters, per-PR status (reviewed/verified/triaged/posted)
+                            # + per-PR proposal state: {status: none|offered|declined|running|merged,
+                            #   sha, doc_sha256} — the phase-3 batch offer and re-aggregation skip
+                            #   PRs merged at the current head; declined holds until the head moves
 report.md                   # the aggregate report
 pr-<N>/report.md            # per-PR report
 pr-<N>/findings.json        # verified findings
@@ -97,6 +129,14 @@ these files directly.
 Aggregate report: TLDR verdict counts; tables grouped
 ACCEPT / REQUEST CHANGES / REJECT (PR, one-line what-it-does, key finding
 by ID);
+a **Proposal review required** list (every PR whose reviewer set
+`needs_proposal_review` — its verdict is provisional until proposal mode
+has run on the doc and the merged findings recompute it; when the list
+is non-empty, offer ONCE via AskUserQuestion, with the combined cost
+estimate, to run proposal mode on every flagged PR in parallel now —
+the runs overlap with the user reading the report and the merged
+findings recompute verdicts before triage; declined PRs keep the
+phase-4 gate);
 a **Backport candidates** list (every PR with `backport.eligible` — PR,
 label, one-line reason — for the maintainer to confirm and label);
 cross-cutting observations (recurring defect patterns, contributor-level
@@ -112,7 +152,23 @@ stays stable. Keep the favicon stable.
 ## Phase 4 — approve drafts (interactive, per PR)
 
 Present the report, then iterate PR by PR (order: REJECT, REQUEST_CHANGES,
-ACCEPT — worst first). For each PR show: verdict + rationale + each draft
+ACCEPT — worst first). A PR flagged `needs_proposal_review` cannot be
+approved for posting until proposal mode has run on its doc: on reaching
+that PR (unless already run via the phase-3 batch offer), the
+orchestrating session offers **Run proposal mode**
+(`references/proposal.md` on the flagged paths; its own cost-confirmation
+gate applies) as the PR's first action, alongside Skip and Mark for
+takeover. After the run, merge the surviving concerns and questions into
+`pr-<N>/findings.json` continuing that PR's ID sequences (SKILL.md
+"Finding IDs" — never restart). Dedupe the merge against the reviewer's
+existing design findings on the same doc — same decision, keep the
+stronger, record the loser withdrawn in the ledger — and proposal-mode's
+caps govern the doc's decisions. A merged concern without a file:line
+anchors on the doc path when the diff carries that line; otherwise it is
+PR-level and folds into the review body at phase 5. Then re-run phase 3
+for that PR (verdict, drafts, dashboard) and present the normal menu.
+For each PR show:
+verdict + rationale + each draft
 comment (numbered). Ask via AskUserQuestion:
 
 - **Post all** — mark all drafts approved.

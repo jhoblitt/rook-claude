@@ -62,7 +62,14 @@ a local branch.
    user's own sign-off (`-s`) — never strip theirs.
 2. Fix commit messages (message ↔ diff sync per `naming-and-comments.md`);
    apply the code fixes the review found, keeping the series coherent. The PR
-   body uses the verbatim template checklist (`docs-sync.md`).
+   body uses the verbatim template checklist (`docs-sync.md`). Close the
+   loop on the review that justified the takeover: re-state its finding
+   ledger with an outcome per ID — `fixed` (cite the commit), `skipped`
+   (why), or `no_change_needed` (the re-check refuted it) — in the report
+   to the user; the pre-pr gate then verifies the `fixed` claims like any
+   other diff. In later SKILL.md ledgers `fixed` reads as resolved,
+   `no_change_needed` as withdrawn, and `skipped` stays open with its
+   reason — a deliberate skip is not a refutation.
 3. Gate before pushing: rebase onto the current master tip (fetch first —
    rook-conventions "## Updating open rook/* PRs"; before opening AND before every
    later repush); the pre-pr adversarial pass (fresh agent); `make test` and
