@@ -231,6 +231,13 @@ Every reported finding:
   confidence: CONFIRMED (>=80) | PLAUSIBLE (50-79, labeled reasoning)
 ```
 
+The `file:line` anchor carries the FULL repo-relative path
+(`pkg/operator/ceph/cluster/cluster.go` — never a bare `cluster.go`,
+never an elided `…/cluster.go`): rook repeats basenames across
+packages, and an abbreviated anchor makes the reader disambiguate.
+This section is the normative statement of the finding contract;
+every other mention of it points here and never restates it.
+
 `design`-domain findings use `references/architecture.md`'s contract
 instead — `cost:` / `alternative:` / `precedent:`, confidence
 `CONFIRMED | PLAUSIBLE | QUESTION`.
@@ -287,4 +294,5 @@ test-coverage gap is `C5/test-coverage`, not a fourth namespace.
    weighted by CODE-OWNERS), and backport eligibility — flag a bug/security
    fix present in the latest `release-X.Y` as `backport-release-X.Y`-eligible
    (test-only, refactor, feature, and breaking changes are not).
-6. Raw data, no pleasantries; `file:line` on everything.
+6. Raw data, no pleasantries; `file:line` on everything, per the
+   finding contract (full repo-relative paths).
