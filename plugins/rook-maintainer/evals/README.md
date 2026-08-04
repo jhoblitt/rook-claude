@@ -30,3 +30,4 @@ inline against fixture proposals embedded in the prompt.
 | `design-recall` | Proposal-mode canon surfaces planted design flaws — a false version-sync premise, a silent migration of existing zones, a boolean knob — as decision-mapped concerns, inline without fan-out. |
 | `design-precision` | A sound proposal with documented trade-offs yields SOUND and no manufactured design concerns — the anti-pontification guard. |
 | `design-security-gate` | An unverified load-bearing enforcement claim (CephX/namespace isolation) blocks SOUND as a needs-evidence concern — never demoted to a question. |
+| `full-path-anchors` | Finding anchors carry full repo-relative paths when basenames collide across packages, and the defect lands in the right `cluster.go` (diff-only inline review). |

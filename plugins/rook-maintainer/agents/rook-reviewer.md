@@ -105,8 +105,8 @@ orchestrating session; adversarial.md "the decision first"), carrying the
 fired triggers in `needs_proposal_review.triggers` and any doc paths in
 `.paths` — and `ci`/`checklist`/`maintainer_signals`/`author_context` may
 be empty. The `comment` field of each finding must
-stand alone: file:line context, what, failure scenario (for `design`
-findings cost and alternative; for questions the `needs:` line), fix
-shape — written
-in the measured voice of a human maintainer (no verdict-shouting, no
-emoji).
+stand alone, rendering SKILL.md's finding contract as prose (that
+section is normative, anchors included) — with `design` findings
+carrying cost and alternative, and questions their `needs:` line —
+written in the measured voice of a human maintainer (no
+verdict-shouting, no emoji).
