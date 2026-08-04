@@ -34,10 +34,17 @@ claude plugin marketplace update rook-claude      # refresh the index
 claude plugin update rook-maintainer@rook-claude  # install the new version
 ```
 
-(or the same two `/plugin …` commands inside Claude Code), then
-`/reload-plugins` in running sessions — a restart also works. The
-marketplace step alone only refreshes the index; it does not update the
-installed plugin.
+or inside Claude Code:
+
+```text
+/plugin marketplace update rook-claude
+/plugin update rook-maintainer@rook-claude
+/reload-plugins
+```
+
+After the shell form, run `/reload-plugins` in running sessions — a
+restart also works. The marketplace step alone only refreshes the
+index; it does not update the installed plugin.
 
 ## What's inside
 
