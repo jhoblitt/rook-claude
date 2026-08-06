@@ -16,11 +16,13 @@ claude plugin eval rook-maintainer@rook-claude      # against the install
 ```
 
 Prerequisites: a Go toolchain and a configured Go language server (e.g.
-the `gopls-lsp` plugin) — the LSP cases build their own throwaway Go
-fixture module, so no rook checkout is needed and expected answers never
-drift with rook master. The design-review cases are fully hermetic — no
-toolchain, checkout, or network; they exercise the proposal-mode canon
-inline against fixture proposals embedded in the prompt.
+the `gopls-lsp` plugin) — the LSP and reuse cases build their own
+throwaway Go fixture modules, so no rook checkout is needed and expected
+answers never drift with rook master. Those fixtures pull no third-party
+modules, so they resolve without network access. The design-review cases
+are fully hermetic — no toolchain, checkout, or network; they exercise
+the proposal-mode canon inline against fixture proposals embedded in the
+prompt.
 
 | Case | Guards |
 |---|---|
@@ -31,3 +33,5 @@ inline against fixture proposals embedded in the prompt.
 | `design-precision` | A sound proposal with documented trade-offs yields SOUND and no manufactured design concerns — the anti-pontification guard. |
 | `design-security-gate` | An unverified load-bearing enforcement claim (CephX/namespace isolation) blocks SOUND as a needs-evidence concern — never demoted to a question. |
 | `full-path-anchors` | Finding anchors carry full repo-relative paths when basenames collide across packages, and the defect lands in the right `cluster.go` (diff-only inline review). |
+| `reuse-reinvention` | Spine pass j reports a name-reachable re-implementation of an existing `k8sutil` helper as a `duplication` finding naming the bypassed mechanism, and scopes its clean claim to what name queries can reach. |
+| `reuse-parallel-siblings` | A new per-resource controller mirroring a sibling's structure is NOT flagged as duplication — the anti-pontification guard for pass j. |
