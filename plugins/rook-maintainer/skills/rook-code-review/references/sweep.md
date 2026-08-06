@@ -53,8 +53,9 @@ independently usable without a prior triage pass.
   checkout/build), which reference files to read (route from the PR's
   changed files against SKILL.md's table, always + verification.md +
   ci-triage.md + security.md's author-context screen; reviewers self-route
-  architecture.md when a decision-magnitude trigger fires, since triggers
-  emerge during review, not from paths), and the output
+  architecture.md when a decision-magnitude trigger fires and reuse.md when
+  the diff adds any symbol, step, template, or procedure — both route on
+  what the review finds, not on paths), and the output
   contract below.
 - Orchestrator sets a ScheduleWakeup fallback heartbeat (≥1200s) and
   otherwise waits on completion notifications. Persist each agent's raw
@@ -76,7 +77,7 @@ returns exactly the JSON object specified there (verdict, bug,
 findings[] with ready-to-post comment text, ci[], checklist,
 test_coverage, maintainer_signals, backport, author_context,
 review_threads[], takeover_candidate, needs_proposal_review,
-suggested_title/body, sensitive_surfaces[], clean[]).
+reuse_candidates[], suggested_title/body, sensitive_surfaces[], clean[]).
 
 ## Phase 2 — verify findings
 
@@ -92,9 +93,24 @@ load-bearing enforcement claims, which survive as needs-evidence
 concerns regardless of score (architecture.md's security canon — never
 dropped by score or caps, never question-graded, until the enforcement
 point is traced; a landed refutation still kills the candidate); the
-caps land at report assembly. Verdicts are recomputed
-from surviving findings (a REQUEST_CHANGES whose blockers all died becomes
-ACCEPT — note when this happens). After a PR's verification completes,
+caps land at report assembly.
+
+Adjudicate `reuse_candidates[]` in this phase too. Per-PR reviewers run
+reuse.md's generate stage but never judge equivalence, so each PR's
+candidates need one adjudicator agent per group of 2–3: apply reuse.md's
+Stage 2 adjudication — its equivalence bar and exclusions — and fold
+survivors in as `duplication` findings before IDs are assigned.
+Adjudication is their refutation pass, so a survivor scores in the
+CONFIRMED band — PLAUSIBLE where its equivalence read ended in inference.
+A PR that returned no candidates skips the stage; its clean statement
+still carries the name-reachable scoping.
+
+Verdicts are recomputed once both are done, from every surviving finding
+including the folded `duplication` ones: a REQUEST_CHANGES whose blockers
+all died becomes ACCEPT, an ACCEPT that gained a changes-requested
+duplicate does not stay ACCEPT — note either when it happens.
+
+After a PR's verification completes,
 spawn its **gap sweep** (SKILL.md's gap-sweep step): one fresh agent
 takes the diff, the surviving findings, and the clean list, and hunts
 what both missed; its candidates verify like any others before joining

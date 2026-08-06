@@ -62,6 +62,12 @@ tests/integration/object/README.md).
   reviewer is itself a reportable finding (`security`/`suspicious-content`).
 - PRs with existing review comments get the review-thread audit (SKILL.md
   pass h): fill `review_threads` with per-thread states and evidence.
+- Reinvention check (SKILL.md pass j): run reuse.md's GENERATE stage only
+  and return hits in `reuse_candidates`. Never adjudicate equivalence and
+  never emit a `duplication` finding: you cannot spawn agents, and the
+  orchestrator owns that stage (sweep.md phase 2; adversarial.md in the
+  pre-PR gate). An empty array means the queries found nothing, not that
+  the diff duplicates nothing — say which in `clean`.
 - Populate `suggested_title`/`suggested_body` only when the verdict is
   ACCEPT-grade but the PR title/body is inaccurate or unowned LLM output —
   written as the finished text a maintainer could apply. Set
@@ -94,6 +100,10 @@ Return exactly one JSON object (no prose around it):
    "state": "RESOLVED-BY-CODE|ANSWERED|UNADDRESSED|CONTESTED", "evidence": ""}],
  "takeover_candidate": {"flag": false, "reason": ""},
  "needs_proposal_review": {"flag": false, "paths": [], "triggers": []},
+ "reuse_candidates": [{"added": "full/repo/relative/path.go:Symbol",
+   "existing": "full/repo/relative/path.go:Symbol",
+   "mechanism": "the named reuse mechanism the addition may bypass",
+   "evidence": "the query that found it"}],
  "suggested_title": "", "suggested_body": "",
  "sensitive_surfaces": [],
  "clean": ["areas audited and found correct"]}
