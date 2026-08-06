@@ -77,10 +77,15 @@ is left alone.**
 
 - Greenfield code and updated lines are EXPECTED to be modern: `any` not
   `interface{}`, `slices`/`maps` helpers over hand-rolled loops, `min`/`max`
-  builtins, range-over-int, `strings.CutPrefix` over HasPrefix+TrimPrefix.
+  builtins, range-over-int, `strings.CutPrefix` over HasPrefix+TrimPrefix,
+  `new(expr)` (1.26) over a `tmp := T(v); &tmp` pointer-to-literal dance.
   An archaic construct on an added or updated line is a changes-requested
   finding (`style` tag) — not a nit to wave through. If the archaic form is
   also wrong, report it as the correctness finding it is.
+  For a pointer to a literal, new code uses `new(expr)`. `ptr.To` from
+  `k8s.io/utils/ptr` is acceptable where it already stands — converting
+  existing call sites is not a finding — but a `ptr.To` introduced on an
+  added line gets the same `style` finding as the two-line temporary.
 - When a change updates a line or function, modernizing what it touches is
   PART of the update — expected, never scope creep. Scope creep is only
   rewriting logic the change does not otherwise touch; untouched code
@@ -90,9 +95,16 @@ is left alone.**
   `.golangci.yaml`) are refactor-shape rewrites, not modernization — those
   shapes stay unraised; the suppression does not excuse archaic idiom in
   new code.
-- Oracle: run the modernize analyzer in report (non-writing) mode over the
-  changed packages and filter to added/updated lines — never a writing
-  `go fix` against a review target; remember `-tags ceph_preview`.
+- Oracle: `GOFLAGS=-tags=ceph_preview go fix -diff ./<changed-pkgs>/...`.
+  `-diff` prints the patch instead of applying it, so it is safe against a
+  read-only review target; never a writing `go fix`. Filter to added and
+  updated lines. `go tool fix help` lists the fixers.
+- A fixer's NAME is not its coverage. `newexpr` sounds like it covers every
+  `new(expr)` opportunity; it only rewrites `varOf`-shaped wrapper functions
+  and their call sites, and is silent on an inline `tmp := T(v); &tmp`. A
+  clean `go fix` run means the fixers found nothing THEY look for — never
+  that the added lines are modern. Read `go tool fix help <fixer>` before
+  treating silence as a pass, and judge by hand the idioms no fixer claims.
 
 ## Test-quality checks (unit tests)
 
