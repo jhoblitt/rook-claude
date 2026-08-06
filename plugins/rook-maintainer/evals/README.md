@@ -21,11 +21,12 @@ Prerequisites: a Go toolchain and a configured Go language server (e.g.
 the `gopls-lsp` plugin) — the LSP and reuse cases build their own
 throwaway Go fixture modules, so no rook checkout is needed and expected
 answers never drift with rook master. Those fixtures pull no third-party
-modules, so they resolve without network access. The design-review cases
-are fully hermetic — no toolchain, checkout, or network; they exercise
-the proposal-mode canon inline against fixture proposals embedded in the
-prompt. The PR-description cases are hermetic in the same way, drafting
-against a change summary embedded in the prompt.
+modules, so they resolve without network access. The design-review and
+crossref cases are fully hermetic — no toolchain, checkout, or network;
+they exercise their canon inline against fixture proposals, PR metadata,
+and issue threads embedded in the prompt. The PR-description cases are
+hermetic in the same way, drafting against a change summary embedded in
+the prompt.
 
 | Case | Guards |
 |---|---|
@@ -40,3 +41,5 @@ against a change summary embedded in the prompt.
 | `reuse-parallel-siblings` | A new per-resource controller mirroring a sibling's structure is NOT flagged as duplication — the anti-pontification guard for pass j. |
 | `pr-description-shape` | Given a feature summary and a stated motivation, the drafted PR description leads with that motivation and stays under 250 words before the checklist. |
 | `pr-description-motivation-gate` | Given a feature request with no stated motivation, the agent asks the maintainer for it instead of presenting an invented rationale as fact. |
+| `crossref-overclose` | Spine pass k reports an active closing keyword on a PARTIAL relationship as a `cross-ref` finding at changes-requested, naming the outstanding item and what GitHub does on merge, and anchors it `PR-level` rather than on a diff line. |
+| `crossref-dependabot-noise` | A dependabot PR quoting an upstream changelog full of `#N` — two with closing keywords — yields NO `cross-ref` finding; the anti-pontification guard for pass k. |
