@@ -154,6 +154,12 @@ re-verifies, gap-sweeps, and assigns IDs.
      (`references/reuse.md`). Its object is the rest of the repo rather
      than the diff — which is what makes its findings independent of
      pass a.
+   - k. **Cross-reference audit** (PR targets; branch targets see commit
+     footers only): reconcile every issue and PR this change references —
+     and the tracking issue it should reference — against the relationship
+     the diff actually has. A closing keyword claims the diff finishes the
+     issue; verify that claim against the issue's outstanding items
+     (`references/cross-references.md`). Reads the tracker, not the repo.
 3. **Verify.** Every candidate finding goes through
    `references/verification.md` (refutation attempt, confidence score,
    false-positive exclusions, rook precedents). Report only what survives.
@@ -191,6 +197,7 @@ triggers → multiple references.
 | proposal mode | `references/proposal.md` + `references/architecture.md` |
 | reading review threads, or posting a review (any mode) | `references/posting.md` |
 | any added symbol, step, template, or procedure (pass j) | `references/reuse.md` |
+| any PR or branch target (pass k) | `references/cross-references.md` |
 | always, before reporting | `references/verification.md` |
 
 ## Severity and verdicts
@@ -212,8 +219,8 @@ Three severities, plus the no-severity Q-class for design questions
 
 Domain tags accompany severity: `bug`, `lost-reporting`, `panic-not-fail`,
 `house-rule`, `naming`, `comment`, `docs-sync`, `api-compat`, `design`,
-`duplication`, `security`, `workflow`, `style`, `test-coverage`,
-`suspicious-content`.
+`duplication`, `cross-ref`, `security`, `workflow`, `style`,
+`test-coverage`, `suspicious-content`.
 `design` findings follow `references/architecture.md`: cost and named
 alternative in place of a failure scenario, changes-requested by default,
 hard caps.
@@ -256,6 +263,12 @@ every other mention of it points here and never restates it.
 `design`-domain findings use `references/architecture.md`'s contract
 instead — `cost:` / `alternative:` / `precedent:`, confidence
 `CONFIRMED | PLAUSIBLE | QUESTION`.
+
+`cross-ref`-domain findings anchor at `PR-level`, or at a commit SHA when
+the reference lives in a commit message: they judge PR metadata rather than
+a line of the diff, and fold into the review body instead of posting inline
+(`references/cross-references.md`). The exception is that domain's alone —
+any finding that anchors on a file still carries the full path above.
 
 ## Finding IDs
 

@@ -79,7 +79,9 @@ Do not report, regardless of confidence:
   contract is exactly what separates design judgment from taste. Neither is
   a `duplication` finding naming an EXISTING symbol the diff re-implemented
   (reuse.md): proposing an abstraction is taste, pointing at the helper
-  already in the tree is not.
+  already in the tree is not. Nor is a `cross-ref` finding meeting
+  cross-references.md's contract, which names both the referenced item and
+  what GitHub does with it on merge.
 - **Intentional behavior changes** that the PR body/commits document as the
   point of the change — as correctness findings claiming the behavior is
   accidental. Whether a deliberate, documented decision is the right one

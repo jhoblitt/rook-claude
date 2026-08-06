@@ -25,9 +25,10 @@ Skip conditions:
 CI rollup (green/red/pending, which checks) · mergeable/conflicts · size
 (files, ±lines) · template checklist present AND conforming (verbatim
 template, only boxes toggled — the rook-code-review docs-sync canon) ·
-links an issue (`Fixes`/`Closes`) · duplicate-of-open-PR · author trust
-(association, history, burst pattern). **Trust changes review depth, never
-the merge decision.**
+links an issue (any closing keyword — `Resolves` is the one rook's PR
+template ships) · duplicate-of-open-PR · author trust (association,
+history, burst pattern). **Trust changes review depth, never the merge
+decision.**
 
 ## Card (report format)
 
@@ -42,7 +43,7 @@ nonconforming · unlinked-issue · untrusted-diff (burst/AI pattern → deep
 review) · duplicate-of-#N · unclear-direction (`needs-design-document`).
 
 **Next verbs:** route-to-deep-review · request-reviewers · needs-rebase
-comment · fill-template comment · suggest-Fixes-#N comment · dup-link
+comment · fill-template comment · addresses-#N comment · dup-link
 (+ recommend close, refuted first) · recommend-close (out-of-scope /
 superseded / spam; refuted first) · flag-takeover-candidate ·
 approve-CI-run (report-only; a maintainer act in the UI).
@@ -69,5 +70,14 @@ let CI judge the real change. Happy to re-triage after the push."
 — please fill it in verbatim (only the boxes toggled), and link the issue
 this addresses if there is one."
 
-**addresses-#N:** "This looks like it fixes #N — adding `Fixes #N` to the
-description will link them and auto-close the issue on merge."
+**addresses-#N.** Triage reads metadata, not diffs, so it usually cannot tell
+whether the PR finishes the issue. Propose the CLOSING form only when the
+issue tracks a single item this PR plainly completes; otherwise propose the
+non-closing form and leave the completeness question to
+`rook-code-review` pass k, which reads the diff.
+
+- *finishes it:* "This looks like it resolves #N — adding `Resolves #N` to
+  the description will link them and close the issue on merge."
+- *partial or unsure:* "This looks like it addresses part of #N —
+  `Part of #N` in the description links them without closing the issue while
+  the rest is outstanding."

@@ -12,8 +12,11 @@ All `gh` calls: `dangerouslyDisableSandbox: true`.
 1. Candidate pool:
    ```sh
    gh pr list --repo rook/rook --state open --draft=false --limit 200 \
-     --json number,title,author,createdAt,updatedAt,labels,additions,deletions,reviews,authorAssociation,isDraft
+     --json number,title,author,createdAt,updatedAt,labels,additions,deletions,reviews,authorAssociation,isDraft,baseRefName
    ```
+   Pass k adds no per-PR call: the `gh pr view --json` each reviewer already
+   makes for its checklist and maintainer signals carries `body` and
+   `baseRefName` too (`references/cross-references.md`).
 2. Present the pool: total count; how many already have a review from the
    user; breakdown by author / label / age; total diff size.
 3. Prompt (AskUserQuestion) before ANY fan-out:
@@ -48,10 +51,11 @@ independently usable without a prior triage pass.
   fall back to `general-purpose` carrying the same contract inline if the
   type is unavailable). Launch in the background, ~6–8 concurrent; queue the
   rest as slots free.
-- Each agent receives ONLY: the PR number/repo, the local checkout path
-  (READ-ONLY — `git show origin/master:<path>` for pre-change content, never
-  checkout/build), which reference files to read (route from the PR's
-  changed files against SKILL.md's table, always + verification.md +
+- Each agent receives ONLY: the PR number/repo, its pooled `baseRefName` from
+  phase 0, the local checkout path (READ-ONLY — `git show
+  origin/master:<path>` for pre-change content, never checkout/build), which
+  reference files to read (route from the PR's changed files against
+  SKILL.md's table, always + verification.md + cross-references.md +
   ci-triage.md + security.md's author-context screen; reviewers self-route
   architecture.md when a decision-magnitude trigger fires and reuse.md when
   the diff adds any symbol, step, template, or procedure — both route on
