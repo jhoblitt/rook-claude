@@ -1,3 +1,5 @@
+## [0.5.1](https://github.com/jhoblitt/rook-claude/compare/v0.5.0...v0.5.1) (2026-08-06)
+
 ## [0.5.0](https://github.com/jhoblitt/rook-claude/compare/v0.4.4...v0.5.0) (2026-08-06)
 
 ## [0.4.4](https://github.com/jhoblitt/rook-claude/compare/v0.4.3...v0.4.4) (2026-08-04)
