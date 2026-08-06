@@ -25,7 +25,7 @@ the author is a separate step, each post explicitly approved
    is new, and step 2 marks which decisions the change touches —
    unchanged decisions are incumbent context, attacked only where the
    change alters their cost. Posting anything from the review requires
-   the head OID unchanged (sweep.md phase 5 staleness check). For an
+   the head OID unchanged (posting.md's staleness check). For an
    escalated pre-PR diff there is no head OID or posting path: the
    document IS the diff plus the stated intent (the full-file rule
    applies only to `design/**` docs) — snapshot both, and map the
