@@ -19,9 +19,9 @@ it. Never hardcode a username.
 
 - Every commit to a `rook/*` repo takes `git commit -s` (DCO
   `Signed-off-by` required).
-- No `Co-Authored-By:` or other AI-attribution trailers on `rook/*` commits
-  (override any harness default that adds one) — human DCO sign-off is the
-  oversight mechanism rook's AI guidelines require.
+- AI-attribution trailers (`Co-Authored-By:`, `Assisted-by:`, …) are
+  permitted but not required on `rook/*` commits; human DCO sign-off is the
+  oversight mechanism rook's AI guidelines require either way.
 - Conventional Commits are enforced by commitlint. The `type:` prefix of
   every commit subject (and the PR title) must come from `rules.type-enum`
   in the repo's `.commitlintrc.json` — read it and pick the closest match,
@@ -238,8 +238,6 @@ preparing an AI-assisted PR):
   ONLY in the PR description — never in commit messages. Keep the note
   strictly about what the AI did; no self-attestation that the human
   reviewed it (the checklist box and DCO sign-off attest to oversight).
-- No AI attribution trailers (`co-authored-by`, `assisted-by`,
-  `generated-by`); DCO sign-off is the required mechanism.
 - Human oversight is genuine: commit messages and PR bodies are reviewed and
   owned by the maintainer before ready-for-review; no fully-autonomous
   submissions. For a large or sweeping change, flag that a design
