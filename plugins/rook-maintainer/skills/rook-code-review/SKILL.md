@@ -133,10 +133,18 @@ re-verifies, gap-sweeps, and assigns IDs.
    - h. **Review-thread audit** (PRs with existing review comments): map
      every thread to RESOLVED-BY-CODE (cite the commit), ANSWERED,
      UNADDRESSED, or CONTESTED; flag both failure directions — comments
-     ignored across pushes, and threads resolved with no matching change
-     (`gh pr view --json reviewThreads` exposes isResolved). An unaddressed
-     comment from a CODE-OWNERS approver is standing REQUEST-CHANGES
-     context.
+     ignored across pushes, and threads resolved with no matching change.
+     Fetch threads with `gh api graphql` —
+     `repository.pullRequest.reviewThreads` carries `isResolved`,
+     `isOutdated`, and each thread's comments; REST
+     `gh api repos/<o>/<r>/pulls/<n>/comments` suffices when resolution
+     state does not matter. `gh pr view --json` has NO `reviewThreads`
+     field, and its `comments,reviews` cover issue-level comments and
+     review summaries ONLY — inline threads are omitted with no error, so
+     a PR carrying live threads reads as having none. `isResolved` is not
+     a proxy for addressed: a thread answered in code commonly stays
+     unresolved and merely goes `isOutdated`. An unaddressed comment from
+     a CODE-OWNERS approver is standing REQUEST-CHANGES context.
    - i. **Design read**: when any decision-magnitude trigger in
      `references/architecture.md` fires — reconstruct the decision
      (problem→shape, alternatives, consistency, evolution, standing
