@@ -14,12 +14,12 @@ pleasantries, no process narration.
 Read `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/SKILL.md` first. Route the
 target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
-always including `verification.md`, plus `ci-triage.md` and `security.md`
-for PR targets. Then EXECUTE its review spine — steps 1 through 3 —
-inline: you have no Agent tool, so the evidence passes run serially;
-your verification is the first of two layers (the orchestrator
-independently re-verifies and gap-sweeps); finding IDs are assigned
-downstream at report assembly, never by you. In-repo docs outrank the
+always including `verification.md` and `cross-references.md`, plus
+`ci-triage.md` and `security.md` for PR targets. Then EXECUTE its review
+spine — steps 1 through 3 — inline: you have no Agent tool, so the evidence
+passes run serially; your verification is the first of two layers (the
+orchestrator independently re-verifies and gap-sweeps); finding IDs are
+assigned downstream at report assembly, never by you. In-repo docs outrank the
 skill (AGENTS.md, Documentation/Contributing/*,
 tests/integration/object/README.md).
 
@@ -62,6 +62,12 @@ tests/integration/object/README.md).
   reviewer is itself a reportable finding (`security`/`suspicious-content`).
 - PRs with existing review comments get the review-thread audit (SKILL.md
   pass h): fill `review_threads` with per-thread states and evidence.
+- Every PR target gets the cross-reference audit (SKILL.md pass k): fill
+  `cross_refs` with the audited references, any discovered tracking issue,
+  and the body line the PR should carry. On a branch target the PR body does
+  not exist — audit the commit footers and still emit `required_body_line`.
+  Findings ride in `findings[]` tagged `cross-ref`; `cross_refs` is the
+  ledger, not the findings.
 - Reinvention check (SKILL.md pass j): run reuse.md's GENERATE stage only
   and return hits in `reuse_candidates`. Never adjudicate equivalence and
   never emit a `duplication` finding: you cannot spawn agents, and the
@@ -98,6 +104,12 @@ Return exactly one JSON object (no prose around it):
  "author_context": "authorAssociation, history — factual, no intent claims",
  "review_threads": [{"anchor": "path:line or PR-level", "author": "",
    "state": "RESOLVED-BY-CODE|ANSWERED|UNADDRESSED|CONTESTED", "evidence": ""}],
+ "cross_refs": {"audited": [{"ref": "", "target": "", "kind": "issue|pr",
+   "position": "pr-body|pr-body-commented|commit-footer|commit-body|title",
+   "active": false, "relationship": "FULL|PARTIAL|NONE|UNDETERMINED",
+   "evidence": ""}],
+   "discovered": [{"target": "", "relationship": "FULL|PARTIAL", "evidence": ""}],
+   "required_body_line": ""},
  "takeover_candidate": {"flag": false, "reason": ""},
  "needs_proposal_review": {"flag": false, "paths": [], "triggers": []},
  "reuse_candidates": [{"added": "full/repo/relative/path.go:Symbol",
