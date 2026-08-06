@@ -17,6 +17,22 @@ claude plugin eval plugins/rook-maintainer          # from the repo root
 claude plugin eval rook-maintainer@rook-claude      # against the install
 ```
 
+Until that gate opens, `run-manual.sh` exercises one case against THIS
+checkout's canon, in two separate `claude -p` passes — a subject and a grader:
+
+```sh
+./run-manual.sh crossref-overclose        # both passes, verdict on stdout
+./run-manual.sh design-precision -s       # subject only, grade it yourself
+```
+
+The passes stay separate on purpose: a session that has read
+`graders/criteria.md` writes a report that satisfies it, and a session that
+just wrote the canon cannot grade it honestly. The script also points the
+subject at this checkout rather than the installed plugin — an un-redirected
+run grades whatever release is on disk and fails for the wrong reason.
+`component-loading` is refused, since session registration is a property of
+the installed plugin and no file redirect can test it.
+
 Prerequisites: a Go toolchain and a configured Go language server (e.g.
 the `gopls-lsp` plugin) — the LSP and reuse cases build their own
 throwaway Go fixture modules, so no rook checkout is needed and expected
