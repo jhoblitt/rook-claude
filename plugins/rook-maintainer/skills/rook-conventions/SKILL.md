@@ -245,6 +245,14 @@ or changing exported symbols there without explicit instruction.
 - Before any push that feeds a rook PR and changes Go code: run BOTH
   `make test` and `make golangci-lint` and confirm they pass. Never push
   code that fails either. Docs- or workflow-only pushes may skip both.
+- A `make golangci-lint` failure in code the change never touched is usually
+  a stale cache, not a real finding. A branch switch — or another session's
+  worktree being deleted out from under it — leaves `~/.cache/golangci-lint`
+  breaking the generated-file filter, so issues surface in files that are
+  verbatim `origin/master`. Run `rm -rf ~/.cache/golangci-lint` and re-run
+  before believing any such finding; the fresh-cache result is the
+  authoritative one. Never edit untouched code to satisfy a lint error that
+  has not been re-confirmed against a cleared cache.
 
 ## Regenerating rook CRDs and generated code
 
