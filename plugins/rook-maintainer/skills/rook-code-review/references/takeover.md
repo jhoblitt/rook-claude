@@ -72,8 +72,8 @@ a local branch.
    reason — a deliberate skip is not a refutation.
 3. Gate before pushing: rebase onto the current master tip (fetch first —
    rook-conventions "## Updating open rook/* PRs"; before opening AND before every
-   later repush); the pre-pr adversarial pass (fresh agent); `make test` and
-   `make golangci-lint`. Never push code that fails either or trails master.
+   later repush); the pre-pr adversarial pass (fresh agent); and the local
+   verification gate in rook-conventions "## Building and testing rook".
 4. Push the branch to the fork and open the draft PR — a real
    `git push <fork>` + `gh pr create` (draft, from fork, assigned to me,
    truthful checklist, AI disclosure). The body credits the source:
