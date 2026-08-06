@@ -9,14 +9,15 @@ Review rook changes the way an expert rook maintainer would: verify claims
 independently, judge against the project's own conventions, and report only
 findings that survive an attempt to refute them. Findings are REPORTED —
 never change code unless the user explicitly asks for fixes, and never post
-anything to GitHub except through the sweep triage flow after the user has
-approved each comment.
+anything to GitHub unless the user explicitly asked for that post, with
+each comment approved in-session. When a post is authorized, follow
+`references/posting.md`.
 
 ## Modes
 
 | Mode | Trigger | What it is |
 |---|---|---|
-| **diff** (default) | "review this change / branch / PR N" | One target: working tree, current branch vs `origin/master` (`git diff origin/master...HEAD`), an explicit range, or a PR (`gh pr diff N`). |
+| **diff** (default) | "review this change / branch / PR N" | One target: working tree, current branch vs `origin/master` (`git diff origin/master...HEAD`), an explicit range, or a PR (`gh pr diff N`). Reports; posts only on an explicit request, per `references/posting.md`. |
 | **pre-pr** | "check this before I open a PR", adversarial review of own work | The review spine PLUS an adversarial attack pass, run in a context-isolated agent. Read `references/adversarial.md`. |
 | **sweep** | "sweep/review the open PRs", bulk contributor review | Fan-out review of many PRs → local report → interactive draft approval → post approved comments. Read `references/sweep.md`. |
 | **takeover** | "take over / adopt / supersede PR N" | Maintainer assumes responsibility for an otherwise-worthwhile PR (abandoned, unresponsive, or AI-burst author): fix its title/description in place, or supersede it with a new PR carrying the commits. Read `references/takeover.md`. |
@@ -185,6 +186,7 @@ triggers → multiple references.
 | sweep mode | `references/sweep.md` |
 | takeover mode | `references/takeover.md` |
 | proposal mode | `references/proposal.md` + `references/architecture.md` |
+| reading review threads, or posting a review (any mode) | `references/posting.md` |
 | always, before reporting | `references/verification.md` |
 
 ## Severity and verdicts

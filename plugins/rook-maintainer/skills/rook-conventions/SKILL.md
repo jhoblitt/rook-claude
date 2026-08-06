@@ -110,8 +110,10 @@ Four sanctioned exceptions, all approval-gated:
 
 1. Fixing a mergify-opened backport PR of a PR the maintainer authored
    (below).
-2. `rook-code-review` sweep triage posting — each comment approved
-   in-session; always `COMMENT` events, never APPROVE/REQUEST_CHANGES.
+2. `rook-code-review` review posting — sweep triage, or a single-PR
+   review the maintainer explicitly asked to post; each comment approved
+   in-session. Mechanics, including the COMMENT-only rule, live in that
+   skill's `references/posting.md`.
 3. `rook-code-review` takeover writes — each write shown and approved
    in-session.
 4. `rook-triage` actions — each action approved per item or as an
