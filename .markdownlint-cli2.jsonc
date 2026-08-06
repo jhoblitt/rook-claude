@@ -3,6 +3,10 @@
   // semantic-release-generated CHANGELOG.
   "globs": ["**/*.md", "!CHANGELOG.md"],
   "config": {
+    // Go fixtures embedded in eval prompts are gofmt-formatted, so they
+    // carry hard tabs. Indentation inside a fenced block belongs to the
+    // fenced language, not to the markdown around it.
+    "MD010": { "code_blocks": false },
     // Skill prose is deliberately dense: long table rows and reference
     // lines, tight lists/headings/fences, <placeholder> tokens, and
     // agent files that legitimately have no H1 after their frontmatter.

@@ -73,10 +73,13 @@ Do not report, regardless of confidence:
   (e.g. the aws-sdk-go-v1 deprecation text is suppressed because v1 is
   banned outright; some staticcheck QF rules are off). Respect them.
 - **Pedantic nits a senior maintainer would not raise** — micro-style,
-  hypothetical performance, "consider extracting a helper" with no concrete
-  benefit. A `design` finding meeting architecture.md's contract — named
-  cost, named alternative, precedent — is not this class; that contract is
-  exactly what separates design judgment from taste.
+  hypothetical performance, "consider extracting a helper" where no such
+  helper exists. A `design` finding meeting architecture.md's contract —
+  named cost, named alternative, precedent — is not this class; that
+  contract is exactly what separates design judgment from taste. Neither is
+  a `duplication` finding naming an EXISTING symbol the diff re-implemented
+  (reuse.md): proposing an abstraction is taste, pointing at the helper
+  already in the tree is not.
 - **Intentional behavior changes** that the PR body/commits document as the
   point of the change — as correctness findings claiming the behavior is
   accidental. Whether a deliberate, documented decision is the right one
@@ -121,7 +124,8 @@ mechanical refactor is not.
   don't either.
 - Editing a godoc comment under `pkg/apis` requires regenerating CRDs — the
   comments are emitted verbatim into CRD `description` fields.
-- Generated files are never hand-edited: `zz_generated.deepcopy.go`,
+- Generated files are never hand-edited: `zz_generated.deepcopy.go`, the
+  whole `pkg/client/**` clientset/listers/informers tree (`make codegen`),
   `deploy/examples/crds.yaml`, `deploy/charts/rook-ceph/templates/resources.yaml`,
   `Documentation/CRDs/specification.md`, the helm-docs chart pages.
 - Consuming the return value of a `wait4.Assert*` helper is a real bug

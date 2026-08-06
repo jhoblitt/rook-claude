@@ -24,6 +24,15 @@ the authoring session launches it on the gate's report — mechanical
 orchestration, never judging — and its candidates verify like any
 others before joining the gate's findings.
 
+Pass j takes the same handoff: the gate agent runs reuse.md's generate
+stage only, so the authoring session launches fresh adjudicators on the
+returned candidates — mechanical orchestration again, never judging.
+They apply reuse.md's adjudicate stage and its exclusions, and survivors
+verify like any others before joining the gate's findings. The
+generate-only stop is rook-reviewer.md's; a general-purpose fallback gate
+carries no such bound and may adjudicate inline, returning `duplication`
+findings instead of candidates — expect either shape.
+
 Never pass the authoring conversation, design discussion, or "what I tried".
 The agent reports back; the authoring session relays findings without
 re-litigating them away — if a finding seems wrong, verify it the hard way
