@@ -1,7 +1,7 @@
 {
   "name": "rook-maintainer",
   "displayName": "Rook Maintainer",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Maintainer-grade skills for rook (github.com/rook/*): code review, backlog triage, systemic-PR campaigns, and the rook house conventions they enforce",
   "author": {
     "name": "Joshua Hoblitt",
