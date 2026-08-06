@@ -3,7 +3,9 @@
 Regression gates for the plugin's own behavior. The LSP and
 component-loading cases were captured from the v0.2.0/v0.2.1 dogfooding
 round (2026-07-27); the design-review cases guard the proposal-mode
-canon shipped with the design-review feature.
+canon shipped with the design-review feature. The PR-description cases
+guard the description-shape canon, captured from the kubectl-rook-ceph
+PR 461 postmortem (2026-08-03).
 
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
@@ -22,7 +24,8 @@ answers never drift with rook master. Those fixtures pull no third-party
 modules, so they resolve without network access. The design-review cases
 are fully hermetic — no toolchain, checkout, or network; they exercise
 the proposal-mode canon inline against fixture proposals embedded in the
-prompt.
+prompt. The PR-description cases are hermetic in the same way, drafting
+against a change summary embedded in the prompt.
 
 | Case | Guards |
 |---|---|
@@ -35,3 +38,5 @@ prompt.
 | `full-path-anchors` | Finding anchors carry full repo-relative paths when basenames collide across packages, and the defect lands in the right `cluster.go` (diff-only inline review). |
 | `reuse-reinvention` | Spine pass j reports a name-reachable re-implementation of an existing `k8sutil` helper as a `duplication` finding naming the bypassed mechanism, and scopes its clean claim to what name queries can reach. |
 | `reuse-parallel-siblings` | A new per-resource controller mirroring a sibling's structure is NOT flagged as duplication — the anti-pontification guard for pass j. |
+| `pr-description-shape` | Given a feature summary and a stated motivation, the drafted PR description leads with that motivation and stays under 250 words before the checklist. |
+| `pr-description-motivation-gate` | Given a feature request with no stated motivation, the agent asks the maintainer for it instead of presenting an invented rationale as fact. |

@@ -75,6 +75,26 @@ descriptions (see "rook AI guidelines" below). Never mention running
 `make codegen`/`make crds` anywhere — regenerated files in the diff are
 self-explanatory.
 
+A PR description is, in order:
+
+1. **Motivation** — one short paragraph: the problem or need that drove
+   this PR, as the maintainer experienced it. For a feature or behavior
+   change whose request never stated a motivation, ask the maintainer for
+   it before drafting — a rationale reconstructed from the diff reads
+   plausible while missing the actual reason.
+2. **What changed** — a short paragraph or tight bullet list of the new
+   user-visible behavior.
+3. **Notable decisions** — only choices a reviewer would otherwise
+   question (a deliberate departure from precedent, a trade-off taken),
+   one or two sentences each; remaining detail lives in commit messages.
+4. The AI-assistance disclosure ("rook AI guidelines" below) and the
+   repo's PR checklist.
+
+A reviewer should get the point from the first paragraph alone, and read
+everything above the checklist in under a minute — about 150 words. When
+the body outgrows that, move detail into commit messages rather than
+growing the description.
+
 ## Posting GitHub comments requires an explicit instruction
 
 Never comment on, or reply to a review thread on, a rook PR or issue
