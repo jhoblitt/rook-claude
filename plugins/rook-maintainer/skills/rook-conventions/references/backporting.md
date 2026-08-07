@@ -36,8 +36,8 @@ highest `sort -V` of
 `git ls-remote --heads <rook remote> 'refs/heads/release-*'`. Confirm the
 label exists on the repo before applying it.
 
-A PR carrying a `backport-release-X.Y` label gets no `PendingReleaseNotes.md`
-entry — that checklist box stays unchecked.
+Whether the labelled PR also owes a `PendingReleaseNotes.md` entry is decided
+by rook-code-review `references/docs-sync.md`.
 
 ## Fixing mergify backport PRs
 

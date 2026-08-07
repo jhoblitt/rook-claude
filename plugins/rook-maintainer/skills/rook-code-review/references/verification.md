@@ -121,9 +121,8 @@ mechanical refactor is not.
   in its own subtest) are style nits, never blockers.
 - `_test.go` under `tests/framework/` compiles in lint but never runs in CI —
   do not credit it as test coverage.
-- Backported features (`backport-release-X.Y` label) do not get
-  `PendingReleaseNotes.md` entries; pure bugfixes/refactors/tests usually
-  don't either.
+- Whether a change owes a `PendingReleaseNotes.md` entry is `docs-sync.md`'s
+  Direction 1 row, not a per-review judgment — do not re-derive it.
 - Editing a godoc comment under `pkg/apis` requires regenerating CRDs — the
   comments are emitted verbatim into CRD `description` fields.
 - Generated files are never hand-edited: `zz_generated.deepcopy.go`, the
