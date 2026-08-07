@@ -1,4 +1,4 @@
-The rook-maintainer plugin is loaded. There is no rook checkout, no network,
+There is no rook checkout, no network,
 and no `gh`, and subagents cannot be spawned in this environment: treat the
 PR metadata below as complete — there is nothing further to fetch — and run
 the passes of the rook-code-review skill's review spine inline.
