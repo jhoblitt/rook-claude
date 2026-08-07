@@ -203,6 +203,12 @@ would reach a session that is deleting code.
   any `gh` call that matters. This is the normative statement of the
   rate-limit reason; the skills and agent definitions carry only the bare
   `dangerouslyDisableSandbox: true` instruction.
+- The LSP tool is usually DEFERRED rather than absent: it does not appear in
+  the tool list until loaded with `ToolSearch` (`select:LSP`). Reading its
+  absence from the list as "no language server covers this" is the common
+  error, and it silently downgrades semantic navigation to grep. This is the
+  normative statement of why; the skills and agent definitions carry only the
+  bare instruction to load it first.
 - Git ops that write `.git/config` — `git worktree add`, `git push -u`,
   `--set-upstream` — can fail inside a sandbox that denies
   `.git/config.lock`; plain `git commit` works sandboxed.
