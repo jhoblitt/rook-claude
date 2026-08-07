@@ -40,6 +40,14 @@ per-PR-verify / conventions machinery is identical.
    implementation across independent files.
 6. **Verify every PR independently.** Build + vet the affected package(s) before
    committing. A green campaign is many green PRs, not one hopeful push.
+7. **Tier each agent to its work.** Scan agents run a detector and report
+   `file:line` — small-model work, and the whole-module cross-check in Phase 1
+   is what backstops it. Implementation workers apply an already-approved
+   mechanical transform — small-model work too, backstopped by Phase 4's
+   build/vet/gofmt and re-grep gate. Pass `model:` explicitly at both call
+   sites instead of inheriting the session model. What stays on the session
+   model is the judgment no gate can check: deciding what is safe to remove
+   (Phase 3) and reconciling the fan-out against the authoritative pass.
 
 ## The loop
 
@@ -130,8 +138,10 @@ each PR:
 The authoring rules — commit sign-off and message format, PR mechanics
 (draft, from a fork, assigned to the maintainer), and the PR-template
 checklist — are canon in the rook-conventions skill (this plugin). Load
-it before committing or opening anything; the user's own global CLAUDE.md
-outranks it on conflict.
+it before committing or opening anything, and follow its routing table on
+into `references/pull-requests.md` for PR mechanics and
+`references/building-and-testing.md` for the build tag and the local
+verification gate. The user's own global CLAUDE.md outranks it on conflict.
 
 Campaign-specific delta: ANALYSIS tools need the build tag exactly like
 builds do — `deadcode`, `staticcheck`, and `go vet` all take
@@ -150,13 +160,14 @@ transform, keeping everything else in the loop identical.
 
 ## Fan-out patterns
 
-- **Scan**: one `Explore` agent per directory, all spawned in a single message.
-  Each runs the detector for its dir and returns a structured candidate list.
-  Give every agent the same definition of "dead/violating" and the build-tag and
-  sandbox caveats, so results are comparable.
+- **Scan**: one `Explore` agent per directory, all spawned in a single message,
+  on a small model (principle 7). Each runs the detector for its dir and
+  returns a structured candidate list. Give every agent the same definition of
+  "dead/violating" and the build-tag and sandbox caveats, so results are
+  comparable.
 - **Implement**: one `rook-maintainer:code-worker` agent per independent
   file/area with `isolation: worktree` to avoid working-tree collisions,
-  spawned together. Keep
+  spawned together, on a small model (principle 7). Keep
   push + `gh pr create` under your own control (consistent conventions, DCO,
   force-push safety) rather than delegating them, unless the agents are reliably
   scripted for it.
