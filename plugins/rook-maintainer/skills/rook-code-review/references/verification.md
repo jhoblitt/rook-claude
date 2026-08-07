@@ -45,15 +45,12 @@ weak ones; do not dilute a serious report with filler.
 Candidates in the `design` domain (architecture.md's contract) have no
 failure path to trace: refute them with architecture.md's rubric —
 deliberate precedent, alternative-fails, cost-contradicted, generic taste —
-instead of questions 1–4 above. The numeric bands map onto that rubric:
-CONFIRMED (>= 80) requires precedent cited AND the cost traced; PLAUSIBLE
-(50–79) reports at changes-requested weight only; below 50, reshape into a
-QUESTION when author knowledge would resolve it, else drop — but never
-reshape an unverified load-bearing enforcement claim: architecture.md
-holds it as a blocking concern regardless of score. QUESTIONs are
-exempt from the numeric gates entirely — no confidence claim, severity
-`question` in transport — their gates are the needs-author-knowledge test
-and the caps. architecture.md's caps are enforced at report/ID assembly,
+instead of questions 1–4 above. How the bands below map onto that rubric,
+what QUESTIONs are exempt from, and the load-bearing enforcement claim that
+never reshapes and never drops are all architecture.md's "Verification
+rubric (design findings)" — none of it is restated here.
+
+architecture.md's caps are enforced at report/ID assembly,
 the only stage that sees the whole target (sweep shards verification
 across agents).
 

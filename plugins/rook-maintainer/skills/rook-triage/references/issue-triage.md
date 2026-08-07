@@ -37,9 +37,9 @@ required, not same symptom).
 ## Comment templates
 
 With `<login>` the operating maintainer's GitHub login (`gh api user --jq
-.login`), every comment opens with `> This is @<login>'s AI agent.` — the
-opening notice is the whole attribution; no sign-off (rook-conventions
-"Signing GitHub comments").
+.login`), every comment opens with `> This is @<login>'s AI agent.`
+(rook-conventions "Signing GitHub comments" governs the marker and what
+else may accompany it).
 
 **needs-info:**
 > Thanks for the report. To make this actionable we still need:

@@ -74,7 +74,7 @@ subject_prompt() {
 		You are the SUBJECT of a regression test for the rook-maintainer plugin.
 		Someone else grades your output.
 
-		CANON SOURCE, overriding anything below about a "loaded plugin": do NOT
+		CANON SOURCE: do NOT
 		use any installed or loaded rook-maintainer plugin and do NOT invoke its
 		skills by name. The installed copy is a different release than the canon
 		under test. Read the plugin under test from:

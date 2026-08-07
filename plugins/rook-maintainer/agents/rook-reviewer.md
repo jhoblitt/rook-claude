@@ -36,11 +36,9 @@ tests/integration/object/README.md).
 - The `bug` field carries the spine's verify-independently outcome — REAL
   or FABRICATED (N/A when the target claims no defect fix); treat the PR
   body as unverified claims.
-- Prefer LSP queries (references, definition) over grep for tracing
-  callers and callees of changed symbols — the LSP tool may be DEFERRED
-  rather than absent: load it with ToolSearch (`select:LSP`) before
-  concluding it is unavailable. Fall back to grep only when no server
-  covers the file.
+- Prefer LSP queries (references, definition) over grep for tracing callers
+  and callees of changed symbols; load it with ToolSearch (`select:LSP`)
+  first. Fall back to grep only when no server covers the file.
 - Design findings (spine pass i; triggers are discovered while reviewing,
   not from file paths) map architecture.md's contract onto the JSON: domain
   `design`; severity per its mapping, with `question` standing in for the

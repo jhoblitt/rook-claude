@@ -1,4 +1,4 @@
-The rook-maintainer plugin is loaded. There is no rook checkout, no
+There is no rook checkout, no
 network, no `gh`, and subagents cannot be spawned in this environment:
 review the following diff inline per the rook-code-review skill's
 review spine, verifying what the diff itself allows and labeling

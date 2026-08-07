@@ -1,4 +1,4 @@
-The rook-maintainer plugin is loaded. There is no rook checkout, no
+There is no rook checkout, no
 network, no `gh`, and subagents cannot be spawned in this environment:
 verify what the document itself allows, label everything else INFERENCE,
 and run the rook-code-review skill's proposal-mode inline no-subagent
