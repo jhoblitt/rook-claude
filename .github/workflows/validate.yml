@@ -30,7 +30,7 @@ jobs:
           claude plugin validate plugins/rook-maintainer
 
       - name: Compile Python scripts
-        run: python3 -m py_compile plugins/rook-maintainer/skills/rook-triage/scripts/*.py
+        run: python3 -m py_compile plugins/rook-maintainer/skills/*/scripts/*.py
 
       - name: shellcheck hooks
         run: shellcheck plugins/rook-maintainer/hooks/*.sh
