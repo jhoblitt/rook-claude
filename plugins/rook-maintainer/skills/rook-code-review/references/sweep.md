@@ -66,8 +66,9 @@ independently usable without a prior triage pass.
   output to the state dir AS IT ARRIVES — a crashed session must not lose
   finished reviews.
 - Reviewer and verifier agents inherit the session model; the pre-gate,
-  phase-5 staleness and anchor validation, and dashboard regeneration
-  are haiku-class work (SKILL.md "Tier models by role").
+  phase-5 staleness validation, and dashboard regeneration are haiku-class
+  work (SKILL.md "Tier models by role"). Phase-5 anchor validation is no
+  agent at all — `scripts/validate_anchors.py` (SKILL.md "Scripts").
 - If the Workflow tool is available, an equivalent
   `pipeline(prs, review, verify)` orchestration is preferred (no barrier
   between stages); the Agent-tool flow above is the portable default.

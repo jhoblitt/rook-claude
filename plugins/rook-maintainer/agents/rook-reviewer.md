@@ -15,7 +15,9 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/SKILL.md` first. Route the
 target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md` and `cross-references.md`, plus
-`ci-triage.md` and `security.md` for PR targets. Then EXECUTE its review
+`ci-triage.md` and `security.md` for PR targets. PR targets additionally
+read `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/backporting.md`
+— backport eligibility is canon there, not here. Then EXECUTE its review
 spine — steps 1 through 3 — inline: you have no Agent tool, so the evidence
 passes run serially; your verification is the first of two layers (the
 orchestrator independently re-verifies and gap-sweeps); finding IDs are
@@ -30,8 +32,7 @@ tests/integration/object/README.md).
   `git show origin/master:<path>` for pre-change content and `gh pr diff` /
   `gh pr view` for the PR side. `git fetch` the rook remote first so
   origin/master is current.
-- Run every `gh` command with `dangerouslyDisableSandbox: true` (sandboxed
-  gh is anonymous, 60/hr).
+- Run every `gh` command with `dangerouslyDisableSandbox: true`.
 - The `bug` field carries the spine's verify-independently outcome — REAL
   or FABRICATED (N/A when the target claims no defect fix); treat the PR
   body as unverified claims.
@@ -79,9 +80,10 @@ tests/integration/object/README.md).
   written as the finished text a maintainer could apply. Set
   `takeover_candidate` when substance is worth landing but the author is
   unlikely to carry it (body-blocked + unresponsive/burst author).
-- Assess backport eligibility: a bug or security fix whose buggy code exists
-  in the highest `release-X.Y` branch is `backport-release-X.Y`-eligible;
-  test-only, refactor, feature, and breaking changes are not. Flag only in the
+- Assess backport eligibility against rook-conventions
+  `references/backporting.md` — its eligibility table is canon, and covers
+  classes a code-only read misses (a `Documentation/` or CRD-godoc change is
+  ELIGIBLE, not excluded). Name the row that decided it. Flag only in the
   `backport` field — the maintainer confirms and applies the label.
 
 ## Output
@@ -98,7 +100,7 @@ Return exactly one JSON object (no prose around it):
    "comment": "ready-to-post review comment text, self-contained"}],
  "ci": [{"check": "", "class": "REAL|KNOWN-FLAKE|INFRA", "evidence": ""}],
  "checklist": "PR-template checklist audit result",
- "backport": {"eligible": false, "label": null, "reason": "eligible IFF a bug/security fix whose buggy code is present in the highest release-X.Y — give the label; else why not: test-only, refactor, feature, breaking, docs-only"},
+ "backport": {"eligible": false, "label": null, "reason": "the row of rook-conventions references/backporting.md that decided it; give the label when eligible"},
  "test_coverage": {"unit": "adequate|gaps|n/a", "integration": "adequate|gaps|n/a", "gaps": ["specific unexercised paths"]},
  "maintainer_signals": "existing reviews weighted per CODE-OWNERS",
  "author_context": "authorAssociation, history — factual, no intent claims",

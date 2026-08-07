@@ -37,6 +37,6 @@ PRs, PR it into the registry with date and evidence.
 
 ## Rate-limit discipline
 
-All `gh` calls with the sandbox disabled (anonymous quota is 60/hr). Batch
+All `gh` calls with `dangerouslyDisableSandbox: true`. Batch
 queries (`--json` with multiple fields, one call per PR not per field). On
 403: `gh api rate_limit` (free) and wait out the reset; never hammer.
