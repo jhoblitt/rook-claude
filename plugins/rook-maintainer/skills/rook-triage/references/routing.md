@@ -77,7 +77,9 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
    domain experts are @-mention or report-only (they may not be
    requestable on GitHub). Issues → @-mention 1–2 (≤3). Per-person
    per-sweep cap: 3 items (overflow goes in the report as "also
-   relevant", never posted).
+   relevant", never posted). `scripts/validate_actions.py` re-checks the
+   reviewer and mention bounds immediately before any write, so a change
+   to either number has to land there too.
 5. `references/routing-overrides.md` wins over all mined data, always.
 
 ## Etiquette (encoded, not vibes)

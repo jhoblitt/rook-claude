@@ -39,9 +39,8 @@ numbers, count cap.
   (≤5 per item), and never category-label an incomplete issue — request
   the missing info instead. A "+1"/"me too" comment is not information.
 - **Comments are rare, short, and attributed.** At most one comment per
-  item per state change. Every posted comment opens with the AI-agent
-  marker; the opening notice is the whole attribution (rook-conventions
-  "Signing GitHub comments").
+  item per state change; every posted comment carries the AI-agent
+  attribution (rook-conventions "Signing GitHub comments").
   Never answer technical/support questions substantively — redirect.
 - **Close is the highest-risk action.** Dup / support / fixed-by-merged
   close proposals must survive the phase-2 refutation pass AND approval.
@@ -102,11 +101,15 @@ numbers, count cap.
 4. **Approve.** Walk proposed actions per item — each draft is an editable
    file under `actions/`; approve / edit / skip. Honor explicit batch
    authorization; never assume it.
-5. **Execute.** Deterministic validation immediately before every write:
-   re-intersect labels with live `gh label list`; enforce caps (≤5 labels,
-   ≤3 mentions, 1–5 reviewers); re-check the item (still open, not
-   relabeled/answered by a human since assessment — if changed, back to the
-   report). Post, record in `sweep.json`, report URLs.
+5. **Execute.** Run `scripts/validate_actions.py` immediately before every
+   write — it decides label-set membership against a live `gh label list`,
+   the label/mention/reviewer caps, the issues-only label rule, and the
+   still-open recheck, and a non-zero exit sends those items back to the
+   report instead of to GitHub. Two things it does NOT decide, which stay
+   here: whether a human answered or relabelled the item since assessment,
+   and the per-person per-sweep cap, which is enforced at selection
+   (`references/routing.md`) because it is a property of the sweep rather
+   than of any one action. Then post, record in `sweep.json`, report URLs.
 
 Resume: every phase restarts from `sweep.json`. Re-runs adjust lifecycle
 state only; a category settled by an EXECUTED action is never
@@ -179,9 +182,13 @@ re-implement them:
   the `classify-refs` subcommand for the cross-ref columns.
 - `gen_pr_dashboard.py` / `gen_issues_dashboard.py` — dashboards from
   canonical sweep-dir inputs only. Spec: `references/reporting.md`.
+- `validate_actions.py` — phase-5 pre-write validation of proposed actions
+  (label-set membership, the caps, the issues-only label rule, still-open
+  recheck). Spec: phase 5 above.
 
-All need authenticated `gh` (sandbox disabled) except `rt_analyze.py`
-and the two generators, which are offline.
+All need authenticated `gh` (sandbox disabled) except `rt_analyze.py`, the
+two generators, and `validate_actions.py`, which are offline — the last one
+judges the label snapshot it is handed rather than fetching its own.
 
 ## Relationship to rook-code-review
 

@@ -60,8 +60,8 @@ set of only reviewer-tier picks is invalid. Selection per
 
 ## Comment templates
 
-Same AI-agent marker rule as issues (the opening notice is the whole
-attribution).
+Same AI-agent marker rule as issues (rook-conventions "Signing GitHub
+comments").
 
 **needs-rebase:** "This has merge conflicts with master — a rebase will
 let CI judge the real change. Happy to re-triage after the push."
