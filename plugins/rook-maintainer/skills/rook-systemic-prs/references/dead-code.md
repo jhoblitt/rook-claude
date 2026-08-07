@@ -32,4 +32,5 @@ scratchpad directory.
 
 The build tag is load-bearing for every invocation above: omitting
 `-tags=ceph_preview` can abort analysis with `undefined:` errors or silently
-judge a different build — see rook-conventions "Building and testing rook".
+judge a different build — see rook-conventions
+`references/building-and-testing.md`.

@@ -19,6 +19,12 @@ are mechanical — check them, don't guess.
 | breaking change or notable feature | `PendingReleaseNotes.md` bullet under the in-dev version — EXCEPT backported PRs (`backport-release-X.Y` labeled) and pure fixes/refactors/tests |
 | new/moved object integration test package | the package table in `tests/integration/object/README.md` |
 
+The `PendingReleaseNotes.md` row is this plugin's normative statement of when
+a change owes a release-note entry; every other mention of that question
+points here. The domain references add TRIGGERS that make a change notable —
+a Ceph-default override (`ceph-ecosystem.md`), a changed CRD default
+(`kubernetes-crd.md`) — and never restate when an entry is required.
+
 The oracle when reviewing locally-checkoutable work: run the generator and
 diff (`make crds && git diff --stat` on a scratch worktree — never on a
 read-only review target); when reviewing a PR without running anything,

@@ -71,9 +71,10 @@ a local branch.
    `no_change_needed` as withdrawn, and `skipped` stays open with its
    reason — a deliberate skip is not a refutation.
 3. Gate before pushing: rebase onto the current master tip (fetch first —
-   rook-conventions "## Updating open rook/* PRs"; before opening AND before every
-   later repush); the pre-pr adversarial pass (fresh agent); and the local
-   verification gate in rook-conventions "## Building and testing rook".
+   rook-conventions `references/pull-requests.md` "Updating an open PR";
+   before opening AND before every later repush); the pre-pr adversarial
+   pass (fresh agent); and the local verification gate in rook-conventions
+   `references/building-and-testing.md`.
 4. Push the branch to the fork and open the draft PR — a real
    `git push <fork>` + `gh pr create` (draft, from fork, assigned to me,
    truthful checklist, AI disclosure). The body credits the source:
@@ -85,7 +86,7 @@ a local branch.
    commit."). Opening the supersede PR and closing the original are one
    coupled step — never leave both open.
 6. Watch CI on the superseding PR and fix what breaks — per rook-conventions
-   "Watching CI" — until green (retry known flakes, fix real failures, repush
+   `references/watching-ci.md` — until green (retry known flakes, fix real failures, repush
    after rebasing onto current master). The supersede is complete only when
    CI is green, not at "PR opened."
 

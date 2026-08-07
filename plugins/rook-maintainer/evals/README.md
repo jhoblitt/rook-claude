@@ -40,9 +40,9 @@ answers never drift with rook master. Those fixtures pull no third-party
 modules, so they resolve without network access. The design-review and
 crossref cases are fully hermetic — no toolchain, checkout, or network;
 they exercise their canon inline against fixture proposals, PR metadata,
-and issue threads embedded in the prompt. The PR-description cases are
-hermetic in the same way, drafting against a change summary embedded in
-the prompt.
+and issue threads embedded in the prompt. The PR-description and backport
+cases are hermetic in the same way, drafting against a change summary or a
+PR fixture embedded in the prompt.
 
 | Case | Guards |
 |---|---|
@@ -59,3 +59,5 @@ the prompt.
 | `pr-description-motivation-gate` | Given a feature request with no stated motivation, the agent asks the maintainer for it instead of presenting an invented rationale as fact. |
 | `crossref-overclose` | Spine pass k reports an active closing keyword on a PARTIAL relationship as a `cross-ref` finding at changes-requested, naming the outstanding item and what GitHub does on merge, and anchors it `PR-level` rather than on a diff line. |
 | `crossref-dependabot-noise` | A dependabot PR quoting an upstream changelog full of `#N` — two with closing keywords — yields NO `cross-ref` finding; the anti-pontification guard for pass k. |
+| `backport-docs-eligible` | A `Documentation/`-only PR is reported backport-ELIGIBLE against the shared eligibility table — never dismissed as "docs-only", and never treated as reachable only by a bug or security fix. |
+| `backport-feature-beats-docs` | A new CRD field that also touches `Documentation/` is NOT backport-eligible: feature beats the documentation row. The precision guard paired with `backport-docs-eligible`. |
