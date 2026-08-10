@@ -35,7 +35,10 @@ bin="$data/$tool"
 
 stale() {
   [ ! -x "$bin" ] && return 0
-  [ -n "$(find "$src" -name '*.go' -o -name go.mod -newer "$bin" -print -quit 2>/dev/null)" ]
+  # The parens matter: without them -o binds looser than the implicit -a and
+  # every .go file matches regardless of mtime, so the tool rebuilds on every
+  # single invocation.
+  [ -n "$(find "$src" \( -name '*.go' -o -name go.mod \) -newer "$bin" -print -quit 2>/dev/null)" ]
 }
 
 build() {
