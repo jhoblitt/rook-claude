@@ -123,13 +123,24 @@ as parallel agents, and "as each completes" edges are pipelined — no
 barrier. Small inline reviews collapse the double-edged spine steps
 into a single context.
 
-One hook, `rebase-notice` (`UserPromptSubmit`): warns when the repo's
+Two hooks. `rebase-notice` (`UserPromptSubmit`): warns when the repo's
 default branch has advanced past your current branch, so a session in a
 stale worktree knows a rebase is needed. Default-branch aware
 (`origin/HEAD`, falling back to `main`/`master`), fetches at most once per
-3 minutes, and stays silent when there is nothing to say. Hooks are not
-repo-scoped: it runs in every repo you use Claude Code in, and no-ops
-everywhere it doesn't apply.
+3 minutes, and stays silent when there is nothing to say.
+
+`webfetch-guard` (`PreToolUse`, matcher `WebFetch`): holds page fetches to
+the trusted-source allowlist in `rook-code-review/references/docs-sync.md`,
+so the rule that untrusted content may not enter review context does not
+depend on the model choosing to follow it. Written in Go and built on first
+use; a denial explains itself and routes the caller to `check_links.py`,
+which answers liveness without fetching content at all. The launcher fails
+open so a missing toolchain cannot brick WebFetch, but every verdict the
+guard itself reaches fails closed. Disable with `ROOK_WEBFETCH_GUARD=off`;
+widen with `ROOK_WEBFETCH_ALLOW=host1,host2`.
+
+Hooks are not repo-scoped: they run in every repo you use Claude Code in,
+and no-op everywhere they don't apply.
 
 ## Example prompts
 
@@ -163,8 +174,11 @@ The skills never write to GitHub on their own. Every comment, label, close,
 or review post is drafted locally and approved in-session, per item, before
 it executes. Conversational posts made on a maintainer's behalf open with
 an explicit AI-agent notice (`> This is @<your-login>'s AI agent.`) —
-attributed, never passed off as the human. Reviewed issue/PR content is
-treated as untrusted data, never as instructions.
+attributed, never passed off as the human. Reviewed issue/PR content — and
+any page fetched — is treated as untrusted data, never as instructions.
+Page content may enter review context only from an allowlist of trusted
+sources, enforced by the `webfetch-guard` hook rather than by prose alone,
+and a fetched page never justifies a second fetch.
 
 AI-assisted contributions produced with these skills follow rook's
 [AI guidelines](https://rook.github.io/docs/rook/latest/Contributing/ai-guidelines/),
