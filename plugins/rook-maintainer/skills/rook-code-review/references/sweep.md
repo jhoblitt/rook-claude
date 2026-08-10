@@ -9,14 +9,21 @@ All `gh` calls: `dangerouslyDisableSandbox: true`.
 
 ## Phase 0 — enumerate and confirm scope (no agents before confirmation)
 
-1. Candidate pool:
+1. Candidate pool — one batched GraphQL pass, the same snapshot
+   `rook-triage` phase 0 takes (SKILL.md "Scripts"):
    ```sh
-   gh pr list --repo rook/rook --state open --draft=false --limit 200 \
-     --json number,title,author,createdAt,updatedAt,labels,additions,deletions,reviews,authorAssociation,isDraft,baseRefName
+   ${CLAUDE_PLUGIN_ROOT}/scripts/sweep_prefetch.py snapshot <sweep-dir> --kind prs
    ```
-   Pass k adds no per-PR call: the `gh pr view --json` each reviewer already
-   makes for its checklist and maintainer signals carries `body` and
-   `baseRefName` too (`references/cross-references.md`).
+   The script's docstring fixes `snapshot.json`'s shape. What this sweep
+   consumes from it: `isDraft` — it enumerates every OPEN PR, so filter
+   drafts here rather than at fetch time — `files`, the changed paths
+   phase 1 routes each reviewer's references from and which no other call
+   returns for the whole pool, `baseRefName` for the reviewer brief, and
+   `authorAssociation` for security.md's author-context screen.
+   `--numbers` takes an explicit list.
+   Pass k adds no per-PR call either: the `gh pr view --json` each reviewer
+   already makes for its checklist and maintainer signals carries `body`
+   (`references/cross-references.md`).
 2. Present the pool: total count; how many already have a review from the
    user; breakdown by author / label / age; total diff size.
 3. Prompt (AskUserQuestion) before ANY fan-out:
@@ -43,8 +50,9 @@ independently usable without a prior triage pass.
   supply-chain surfaces (security.md), and generated-file-only churn is
   a provenance question (legit regen vs hand-edit) that only the full
   reviewer can answer — bot-authored PRs get the same reviewer as
-  everyone else. Skips are listed with reasons in the report — never
-  silently dropped — and an explicit user-supplied PR list is never
+  everyone else. Skips are recorded in `sweep.json` as
+  `skipped: [{number, reason}]` and listed with reasons in the report —
+  never silently dropped — and an explicit user-supplied PR list is never
   pre-gated.
 - One **rook-reviewer** agent per PR (`subagent_type:
   "rook-maintainer:rook-reviewer"`;
@@ -65,10 +73,11 @@ independently usable without a prior triage pass.
   otherwise waits on completion notifications. Persist each agent's raw
   output to the state dir AS IT ARRIVES — a crashed session must not lose
   finished reviews.
-- Reviewer and verifier agents inherit the session model; the pre-gate,
-  phase-5 staleness validation, and dashboard regeneration are haiku-class
-  work (SKILL.md "Tier models by role"). Phase-5 anchor validation is no
-  agent at all — `scripts/validate_anchors.py` (SKILL.md "Scripts").
+- Reviewer and verifier agents inherit the session model; the pre-gate and
+  phase-5 staleness validation are haiku-class work (SKILL.md "Tier models
+  by role"). Phase-0 enumeration, phase-3 dashboard regeneration, and
+  phase-5 anchor validation are no agent at all — they are the three
+  scripts in SKILL.md "Scripts".
 - If the Workflow tool is available, an equivalent
   `pipeline(prs, review, verify)` orchestration is preferred (no barrier
   between stages); the Agent-tool flow above is the portable default.
@@ -132,7 +141,10 @@ sweep.json                  # scope, filters, per-PR status (reviewed/verified/t
                             #   PRs merged at the current head; declined holds until the head moves
 report.md                   # the aggregate report
 pr-<N>/report.md            # per-PR report
-pr-<N>/findings.json        # verified findings
+pr-<N>/findings.json        # verified findings + recomputed verdict, bug,
+                            # backport, escalation flags, clean[] — the
+                            # dashboard's only verdict source (shape in
+                            # gen_review_dashboard.py's docstring)
 pr-<N>/drafts/c3.md         # one draft comment per finding, named by its ID (frontmatter below)
 dashboard.html              # regenerated each phase
 ```
@@ -163,12 +175,14 @@ label, one-line reason — for the maintainer to confirm and label);
 cross-cutting observations (recurring defect patterns, contributor-level
 notes, security-scrutiny flags); the audited-and-clean statement.
 
-Dashboard: regenerate `dashboard.html` (self-contained, sortable verdict
-table with a backport-eligibility badge/column, expandable findings) and
-publish via the Artifact tool — same file
-path each time within a session; across sessions pass the existing
-artifact's `url` (find it with the Artifact tool's list action) so the URL
-stays stable. Keep the favicon stable.
+Dashboard: regenerate with
+`${CLAUDE_PLUGIN_ROOT}/scripts/gen_review_dashboard.py <sweep-dir>`; it
+reads `findings.json`, `snapshot.json` and `sweep.json` only, so verdicts
+and counts cannot drift from the verified record. Then publish
+`dashboard.html` via the Artifact tool —
+same file path each time within a session; across sessions pass the
+existing artifact's `url` (find it with the Artifact tool's list action)
+so the URL stays stable. Keep the favicon stable.
 
 ## Phase 4 — approve drafts (interactive, per PR)
 

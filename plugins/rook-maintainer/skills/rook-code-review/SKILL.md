@@ -84,11 +84,11 @@ feedback already sitting on a PR under review.
   (`references/architecture.md`) forces the design pass at any diff size.
 - **Tier models by role.** Judgment — finding, attacking, refuting,
   adjudicating — stays on the session model. Mechanical stages run
-  haiku-class: sweep's pre-gate, staleness validation, dashboard
-  regeneration, claim-table extraction, JSON assembly, pass j's
-  candidate generation when it fans out as its own agent. Never tier
-  judgment down to save cost. Cheaper still is no model at all — anchor
-  validation is `scripts/validate_anchors.py`, not an agent (Scripts
+  haiku-class: sweep's pre-gate, staleness validation, claim-table
+  extraction, JSON assembly, pass j's candidate generation when it fans
+  out as its own agent. Never tier judgment down to save cost. Cheaper
+  still is no model at all — anchor validation, the phase-0 metadata
+  snapshot, and dashboard regeneration are scripts, not agents (Scripts
   below).
 - **Suggest, don't rewrite.** Findings carry a fix shape (one line), not
   patches, unless the user asks for fixes.
@@ -200,12 +200,26 @@ triggers → multiple references.
 
 ## Scripts
 
-Deterministic tooling under `scripts/` — run these, don't re-derive them by
-hand or hand them to an agent:
+Deterministic tooling — run these, don't re-derive them by hand or hand
+them to an agent. Paths are this skill's `scripts/` unless marked
+**shared**; shared tooling lives at `${CLAUDE_PLUGIN_ROOT}/scripts/`, and
+each shared script's docstring names its callers and what changing it
+obliges:
 
 - `validate_anchors.py` — pre-post validation of a review payload's inline
   anchors against the PR diff (path/line/side membership, multi-line key
   set). Spec: `references/posting.md`.
+- `sweep_prefetch.py` (**shared**) — sweep phase-0 metadata snapshot: one
+  batched GraphQL pass for the whole candidate pool, including the changed
+  paths phase 1 routes references from. Spec: `references/sweep.md`.
+- `gen_review_dashboard.py` (**shared** location, code-review only) — sweep
+  phase-3 `dashboard.html` from `findings.json` + `snapshot.json`. Spec:
+  its docstring, which also fixes the `findings.json` shape.
+- `check_links.py` (**shared**) — liveness of every URL the diff adds, plus
+  the control/format-character scan on those URLs. Replaces WebFetch for
+  this pass entirely: it returns a status code and no page content, which is
+  what makes diff-chosen hosts safe to probe. Spec:
+  `references/docs-sync.md`.
 
 ## Severity and verdicts
 
