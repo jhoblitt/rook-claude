@@ -97,6 +97,19 @@ and those are the findings to fold into the body. Run it BEFORE step 3 —
 it is the whole reason a bad anchor never reaches the API. It needs no
 network and no checkout (`--self-test` verifies it in isolation).
 
+## Suggestion blocks
+
+A comment whose complete fix is a few lines carries the fix as
+a ```suggestion block, not prose — the author applies it in one click,
+and the block states the exact replacement instead of describing it.
+Mechanics couple to the anchor: applying replaces exactly the anchored
+line(s), so the anchor must span precisely the lines the block rewrites
+(multi-line keys for a multi-line replacement), and the block's content
+is the complete replacement, final indentation included. RIGHT-side
+anchors only — a deleted line has no replacement target, and GitHub
+renders such a block as an error rather than an Apply button. Fixes
+beyond a few lines stay prose.
+
 ## 3. The call
 
 One call carries the body and every inline comment:
