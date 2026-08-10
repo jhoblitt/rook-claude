@@ -1,0 +1,10 @@
+# `go build ./cmd/<tool>/...` without -o drops the binary in the working
+# directory, which for the usual invocation is this module root. Sources live
+# under cmd/ and internal/, so nothing else belongs here — allowlist rather
+# than chase ten binary names as tools are added.
+/*
+!/.gitignore
+!/cmd/
+!/go.mod
+!/internal/
+!/run.sh
