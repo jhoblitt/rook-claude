@@ -59,6 +59,31 @@ func TestEvaluateHonorsExtraAllow(t *testing.T) {
 	}
 }
 
+func TestShouldGuard(t *testing.T) {
+	tests := []struct {
+		agentType string
+		want      bool
+	}{
+		{"rook-reviewer", true},
+		{"rook-triager", true},
+		{"design-attacker", true},
+		{"rook-maintainer:rook-reviewer", true},
+		{"rook-maintainer:design-attacker", true},
+
+		{"", false},
+		{"Explore", false},
+		{"general-purpose", false},
+		{"rook-maintainer:code-worker", false},
+		{"some-plugin:rook-reviewer-lookalike", false},
+		{"rook-maintainer:", false},
+	}
+	for _, tc := range tests {
+		if got := shouldGuard(tc.agentType, guardedAgents); got != tc.want {
+			t.Errorf("shouldGuard(%q) = %v, want %v", tc.agentType, got, tc.want)
+		}
+	}
+}
+
 func TestParseAllowExtra(t *testing.T) {
 	tests := []struct {
 		in   string

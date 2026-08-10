@@ -7,6 +7,14 @@
 // which is the point — a rule that survives injection cannot be enforced by
 // the thing being injected.
 //
+// Scope is load-bearing. A registered hook fires in every session and every
+// repo the plugin is enabled in, so an allowlist sized for rook doc review
+// would break ordinary web research everywhere if it applied unconditionally.
+// It therefore applies only inside the plugin's injection-exposed subagents,
+// identified by `agent_type` — the contexts where an adversary picks the URLs.
+// ROOK_WEBFETCH_GUARD=on extends it to the main session for an inline review;
+// =off disables it entirely.
+//
 // Split doctrine on failure, unlike the pr-gate this is modeled on:
 //
 //   - Conditions the reviewed PR cannot influence — unparsable hook payload,
@@ -28,6 +36,7 @@ import (
 
 type hookInput struct {
 	ToolName  string `json:"tool_name"`
+	AgentType string `json:"agent_type"`
 	ToolInput struct {
 		URL string `json:"url"`
 	} `json:"tool_input"`
@@ -52,7 +61,8 @@ ROOK_WEBFETCH_GUARD=off to disable the guard for the session.
 `
 
 func run() int {
-	if os.Getenv("ROOK_WEBFETCH_GUARD") == "off" {
+	mode := os.Getenv("ROOK_WEBFETCH_GUARD")
+	if mode == "off" {
 		return 0
 	}
 
@@ -64,6 +74,13 @@ func run() int {
 		return 0
 	}
 	if in.ToolInput.URL == "" {
+		return 0
+	}
+	// Registered hooks fire in every session and every repo, so scope is the
+	// whole design here, not a refinement of it. Default to the agents that
+	// actually read attacker-authored content; `on` extends the same rule to
+	// the main session for a maintainer reviewing inline.
+	if mode != "on" && !shouldGuard(in.AgentType, guardedAgents) {
 		return 0
 	}
 

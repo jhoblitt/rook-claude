@@ -19,9 +19,39 @@ var allowedHosts = []string{
 	"rfc-editor.org",
 }
 
+// guardedAgents are the plugin's injection-exposed subagents: the three that
+// carry WebFetch AND ingest attacker-authored PR bodies, issue text and diffs.
+// Nothing else is guarded, because nothing else has an adversary choosing its
+// URLs — a maintainer researching a Kubernetes blog post in the main session
+// is not under attack, and breaking that fetch would be pure cost.
+var guardedAgents = []string{
+	"rook-reviewer",
+	"rook-triager",
+	"design-attacker",
+}
+
 type decision struct {
 	deny   bool
 	reason string
+}
+
+// shouldGuard reports whether a call from agentType is in scope. The plugin
+// namespace is stripped first: agents arrive as "rook-maintainer:rook-reviewer"
+// when namespaced and bare when not, and both name the same agent.
+func shouldGuard(agentType string, agents []string) bool {
+	name := agentType
+	if _, after, found := strings.Cut(agentType, ":"); found {
+		name = after
+	}
+	if name == "" {
+		return false
+	}
+	for _, agent := range agents {
+		if name == agent {
+			return true
+		}
+	}
+	return false
 }
 
 // hasHiddenRunes reports control, format, private-use and surrogate

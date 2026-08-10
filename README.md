@@ -136,11 +136,19 @@ depend on the model choosing to follow it. Written in Go and built on first
 use; a denial explains itself and routes the caller to `check_links.py`,
 which answers liveness without fetching content at all. The launcher fails
 open so a missing toolchain cannot brick WebFetch, but every verdict the
-guard itself reaches fails closed. Disable with `ROOK_WEBFETCH_GUARD=off`;
-widen with `ROOK_WEBFETCH_ALLOW=host1,host2`.
+guard itself reaches fails closed.
 
-Hooks are not repo-scoped: they run in every repo you use Claude Code in,
-and no-op everywhere they don't apply.
+It applies **only inside `rook-reviewer`, `rook-triager` and
+`design-attacker`** — the three agents that both carry WebFetch and read
+attacker-authored PR content. Your own fetches, every other agent's, and
+every other repo's are untouched, because a seven-host allowlist sized for
+rook doc review has no business filtering ordinary web research. Set
+`ROOK_WEBFETCH_GUARD=on` to extend it to the main session while reviewing
+inline, `=off` to disable it, and `ROOK_WEBFETCH_ALLOW=host1,host2` to widen
+the list.
+
+Hooks are not repo-scoped: they run in every repo you use Claude Code in, so
+both are written to no-op everywhere they don't apply.
 
 ## Example prompts
 
@@ -177,8 +185,9 @@ an explicit AI-agent notice (`> This is @<your-login>'s AI agent.`) —
 attributed, never passed off as the human. Reviewed issue/PR content — and
 any page fetched — is treated as untrusted data, never as instructions.
 Page content may enter review context only from an allowlist of trusted
-sources, enforced by the `webfetch-guard` hook rather than by prose alone,
-and a fetched page never justifies a second fetch.
+sources — enforced by the `webfetch-guard` hook inside the review and triage
+agents, rather than by prose alone — and a fetched page never justifies a
+second fetch.
 
 AI-assisted contributions produced with these skills follow rook's
 [AI guidelines](https://rook.github.io/docs/rook/latest/Contributing/ai-guidelines/),
