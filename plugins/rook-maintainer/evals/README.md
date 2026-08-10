@@ -5,7 +5,9 @@ component-loading cases were captured from the v0.2.0/v0.2.1 dogfooding
 round (2026-07-27); the design-review cases guard the proposal-mode
 canon shipped with the design-review feature. The PR-description cases
 guard the description-shape canon, captured from the kubectl-rook-ceph
-PR 461 postmortem (2026-08-03).
+PR 461 postmortem (2026-08-03). The unset-field cases guard the
+unset-semantics canon in kubernetes-crd.md, captured from a maintainer
+field report (2026-08-10).
 
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
@@ -61,3 +63,5 @@ PR fixture embedded in the prompt.
 | `crossref-dependabot-noise` | A dependabot PR quoting an upstream changelog full of `#N` — two with closing keywords — yields NO `cross-ref` finding; the anti-pontification guard for pass k. |
 | `backport-docs-eligible` | A `Documentation/`-only PR is reported backport-ELIGIBLE against the shared eligibility table — never dismissed as "docs-only", and never treated as reachable only by a bug or security fix. |
 | `backport-feature-beats-docs` | A new CRD field that also touches `Documentation/` is NOT backport-eligible: feature beats the documentation row. The precision guard paired with `backport-docs-eligible`. |
+| `unset-field-unmanaged` | A new spec field written to Ceph only while set, with no stated rationale, yields a changes-requested finding whose fix shape is unset-or-justify — and the report states what removing the field leaves behind in Ceph. |
+| `unset-field-justified` | A creation-time-only pool hint whose commit message and godoc state the Ceph-cannot-express-it rationale has its unset behavior reported but NOT flagged — the anti-pontification guard paired with `unset-field-unmanaged`. |
