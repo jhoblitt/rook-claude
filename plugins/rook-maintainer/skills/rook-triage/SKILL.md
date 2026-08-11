@@ -52,6 +52,11 @@ numbers, count cap.
   `dangerouslyDisableSandbox: true`.
 - **Escalations never auto-post.** security / data-loss / regression flags
   go to the user first; pinging the lead maintainer is a user decision.
+- **Cap fan-out width** — rook-conventions "Harness notes" is canon.
+  Phase-2 refuters draw from the same budget as the assess batches they
+  overlap, and a `both` run's two corpora share one budget rather than
+  taking one each, so an unbounded backlog lengthens the queue rather than
+  widening the fan-out.
 
 ## Pipeline
 
@@ -71,7 +76,7 @@ numbers, count cap.
    `kb.json` is missing or >30 days old (`references/routing.md`
    fallback applies).
 1. **Assess** — fan out `rook-maintainer:rook-triager` agents (batches of
-   ~10; fall back to
+   ~10, launched at the ground-rules width; fall back to
    `general-purpose` carrying the agent contract inline if the type is
    unavailable). Each agent brief names the sweep's `snapshot.json`;
    agents consume it for metadata (title/labels/assignees/reviews/CI

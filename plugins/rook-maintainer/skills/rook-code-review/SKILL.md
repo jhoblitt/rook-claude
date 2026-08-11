@@ -84,6 +84,12 @@ feedback already sitting on a PR under review.
   fallback (`references/proposal.md`). Decision
   weight overrides line count: any decision-magnitude trigger
   (`references/architecture.md`) forces the design pass at any diff size.
+- **Cap fan-out width** — rook-conventions "Harness notes" is canon.
+  Reviewers, verifiers, adjudicators, gap sweeps and attacker panels all
+  draw from that one budget. A proposal run is a panel plus its claim
+  audit, so it fills the budget by itself: run one at a time, never one per
+  flagged PR (a quick-pass run — a single attacker — may pair with a
+  second).
 - **Tier models by role.** Judgment — finding, attacking, refuting,
   adjudicating — stays on the session model. Mechanical stages run
   haiku-class: sweep's pre-gate, staleness validation, claim-table

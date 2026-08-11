@@ -9,7 +9,7 @@ A repeatable loop for applying a *systemic* change (one rule applied in many
 places) to a `github.com/rook/*` repo, delivered as many **small, isolated,
 independently mergeable PRs** instead of one mega-PR. Optimized for **aggressive
 subagent fan-out**: scanning and preparation are parallelized across as many
-subagents as the work decomposes into.
+subagents as the work decomposes into, run at the harness width cap.
 
 This skill encodes the *process*. The driving example throughout is **dead-code
 elimination** (the workflow it was hardened on), but the same loop applies to any
@@ -33,8 +33,10 @@ per-PR-verify / conventions machinery is identical.
 4. **One concern per PR.** Each PR should be a single file deletion, a single
    dead symbol/cluster, or one mechanical transform in one area — reviewable in
    under a minute. Prefer whole-file deletes when an entire file is dead.
-5. **Fan out aggressively.** Decompose by directory / package / candidate file
-   and run one subagent per unit, in parallel, in a single message. Use read-only
+5. **Fan out aggressively, up to the width cap.** Decompose by directory /
+   package / candidate file and run one subagent per unit, in parallel, in a
+   single message — batched at rook-conventions "Harness notes" width, with the
+   rest queued as slots free. Use read-only
    `Explore` agents for scanning/auditing; use `rook-maintainer:code-worker`
    agents (shipped with this plugin) with `isolation: worktree` for parallel
    implementation across independent files.
