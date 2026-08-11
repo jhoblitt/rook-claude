@@ -31,8 +31,31 @@ query($owner:String!,$repo:String!,$number:Int!){
               comments(first:50){nodes{author{login} body}}}}}}}'
 ```
 
-When resolution state does not matter, REST is enough:
-`gh api --paginate repos/<o>/<r>/pulls/<n>/comments`.
+When resolution state does not matter, REST is enough — projected to the
+fields pass h reads, the way the query above is field-selected:
+
+```sh
+gh api --paginate 'repos/<o>/<r>/pulls/<n>/comments?per_page=100' \
+  --jq '.[] | {id, in_reply_to_id, path, side, user: .user.login,
+               line: (.line // .original_line),
+               start_line: (.start_line // .original_start_line),
+               outdated: (.line == null),
+               commit_id: (.original_commit_id // .commit_id),
+               created_at, body}'
+```
+
+The raw payload is ~8× that, carrying `diff_hunk` (well over half of it),
+the full `user` object, `_links`, `reactions`, and the `url`/`html_url`/
+`pull_request_url` trio per comment.
+
+Two parts of the projection are load-bearing, for the same reason step 5's
+is. `id` rides along because `in_reply_to_id` names it — without it the
+replies cannot be threaded back onto what they answer. And the
+`original_*` fallbacks carry the OUTDATED comments, which is most of what
+pass h is for: GitHub nulls `line` once a push moves the code out from
+under a comment and keeps the position only in `original_line`, so
+projecting `line` alone drops the anchor on a large fraction of exactly
+the threads the audit has to classify.
 
 Both truncate silently, which is the trap to guard: `gh api` without
 `--paginate` stops at GitHub's 30-per-page default, and
