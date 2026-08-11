@@ -1,8 +1,31 @@
 # Opening and updating rook/* pull requests
 
-Mechanics for a PR's whole life after the commits exist. Commit shape and
-description prose stay in SKILL.md; eligibility for a backport label lives in
-`references/backporting.md`.
+Mechanics for a PR's whole life after the commits exist. Commit messages —
+shape, content, and the commitlint traps — are `references/commits.md`;
+eligibility for a backport label lives in `references/backporting.md`.
+
+## The PR description
+
+What a description says is the same rule a commit message follows (what
+changed and why, never how it was produced — `references/commits.md`). What
+differs is the shape. A PR description is, in order:
+
+1. **Motivation** — one short paragraph: the problem or need that drove this
+   PR, as the maintainer experienced it. For a feature or behavior change
+   whose request never stated a motivation, ask the maintainer for it before
+   drafting — a rationale reconstructed from the diff reads plausible while
+   missing the actual reason.
+2. **What changed** — a short paragraph or tight bullet list of the new
+   user-visible behavior.
+3. **Notable decisions** — only choices a reviewer would otherwise question
+   (a deliberate departure from precedent, a trade-off taken), one or two
+   sentences each; remaining detail lives in commit messages.
+4. The AI-assistance disclosure (below) and the repo's PR checklist.
+
+A reviewer should get the point from the first paragraph alone, and read
+everything above the checklist in under a minute — about 150 words. When the
+body outgrows that, move detail into commit messages rather than growing the
+description.
 
 ## Opening a PR
 

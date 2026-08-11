@@ -141,7 +141,8 @@ The authoring rules — commit sign-off and message format, PR mechanics
 (draft, from a fork, assigned to the maintainer), and the PR-template
 checklist — are canon in the rook-conventions skill (this plugin). Load
 it before committing or opening anything, and follow its routing table on
-into `references/pull-requests.md` for PR mechanics and
+into `references/commits.md` for message format, amending, and history
+rework, `references/pull-requests.md` for PR mechanics, and
 `references/building-and-testing.md` for the build tag and the local
 verification gate. The user's own global CLAUDE.md outranks it on conflict.
 
