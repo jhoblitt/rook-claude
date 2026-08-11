@@ -57,7 +57,8 @@ numbers, count cap.
 
 0. **Scope-confirm + snapshot.** Enumerate per scope+filters and fetch
    the shared metadata snapshot in one pass:
-   `scripts/sweep_prefetch.py snapshot <sweep-dir> --kind prs|issues`
+   `${CLAUDE_PLUGIN_ROOT}/scripts/sweep_prefetch.py snapshot <sweep-dir>
+   --kind prs|issues`
    (all open items by default, `--numbers` for explicit scope). A
    report-only sweep settles NOTHING — prior assessment never shrinks
    scope, and every run reports full scope. Reuse instead of skip: an
@@ -165,8 +166,10 @@ should be PR'd back to the plugin repo so every maintainer inherits it.
 
 ## Scripts
 
-Deterministic tier-0 tooling under `scripts/` — run these, don't
-re-implement them:
+Deterministic tier-0 tooling — run these, don't re-implement them. Paths
+are this skill's `scripts/` unless marked **shared**; shared tooling lives
+at `${CLAUDE_PLUGIN_ROOT}/scripts/`, and each shared script's docstring
+names its callers and what changing it obliges:
 
 - `rt_fetch.py` — kb-refresh fetch of merged PRs (files+reviews JSONL +
   provenance/truncation state). Spec: `references/routing.md`.
@@ -177,9 +180,10 @@ re-implement them:
 - `mine_mentions.py` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
-- `sweep_prefetch.py` — phase-0 metadata snapshot (one batched GraphQL
-  pass per corpus: titles, labels, assignees, reviews, CI rollup) plus
-  the `classify-refs` subcommand for the cross-ref columns.
+- `sweep_prefetch.py` (**shared**) — phase-0 metadata snapshot (one
+  batched GraphQL pass per corpus: titles, labels, assignees,
+  authorAssociation, changed paths, reviews, CI rollup) plus the
+  `classify-refs` subcommand for the cross-ref columns.
 - `gen_pr_dashboard.py` / `gen_issues_dashboard.py` — dashboards from
   canonical sweep-dir inputs only. Spec: `references/reporting.md`.
 - `validate_actions.py` — phase-5 pre-write validation of proposed actions

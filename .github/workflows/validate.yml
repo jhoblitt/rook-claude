@@ -30,7 +30,33 @@ jobs:
           claude plugin validate plugins/rook-maintainer
 
       - name: Compile Python scripts
-        run: python3 -m py_compile plugins/rook-maintainer/skills/*/scripts/*.py
+        run: |
+          find plugins -name '*.py' -print0 | xargs -0 -r python3 -m py_compile
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: plugins/rook-maintainer/hooks/webfetch-guard/go.mod
+          cache: false
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l plugins/rook-maintainer/hooks/webfetch-guard)
+          [ -z "$unformatted" ] || { printf 'gofmt needed:\n%s\n' "$unformatted"; exit 1; }
+
+      - name: go vet
+        run: |
+          cd plugins/rook-maintainer/hooks/webfetch-guard && go vet ./...
+
+      - name: golangci-lint (webfetch-guard)
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.12.2
+          working-directory: plugins/rook-maintainer/hooks/webfetch-guard
+
+      - name: go test
+        run: |
+          cd plugins/rook-maintainer/hooks/webfetch-guard && go test ./...
 
       - name: shellcheck hooks
         run: shellcheck plugins/rook-maintainer/hooks/*.sh

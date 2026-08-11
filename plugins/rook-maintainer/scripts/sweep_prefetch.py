@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""Phase-0 metadata snapshot for a rook-triage sweep.
+"""Phase-0 metadata snapshot for a rook-triage or rook-code-review sweep.
+
+Both call it — rook-triage's pipeline phase 0 and rook-code-review's
+sweep phase 0 — so a change here must keep both callers working.
 
 One batched GraphQL pass per corpus, written to <sweep-dir>/snapshot.json.
-Every triager agent and both dashboard generators consume this snapshot
-instead of fetching per-item metadata themselves — one fetch, one
-consistent point-in-time view, ~100 fewer per-agent gh calls per sweep.
+Every triager and reviewer agent and every dashboard generator consumes
+this snapshot instead of fetching per-item metadata themselves — one
+fetch, one consistent point-in-time view, ~100 fewer per-agent gh calls
+per sweep.
+
+PR items carry `files` (changed paths), which is what lets a sweep
+orchestrator route reference files per PR without a per-PR fetch;
+`gh pr list` cannot return them at any --json setting.
 
 PR items carry a summarized statusCheckRollup ({passing, failing,
 pending, total, failed[]}) — the ONLY source dashboards may use for CI
@@ -34,7 +42,7 @@ import subprocess
 
 PR_FIELDS = """
 number title state isDraft updatedAt createdAt
-author { login } baseRefName mergeable reviewDecision
+author { login } authorAssociation baseRefName mergeable reviewDecision
 additions deletions changedFiles
 labels(first: 20) { nodes { name } }
 assignees(first: 10) { nodes { login } }
@@ -150,6 +158,7 @@ def shape_pr(n):
         "number": n["number"], "title": n["title"], "state": n["state"],
         "isDraft": n["isDraft"], "updatedAt": n["updatedAt"], "createdAt": n["createdAt"],
         "author": (n.get("author") or {}).get("login", ""),
+        "authorAssociation": n.get("authorAssociation"),
         "baseRefName": n.get("baseRefName"), "mergeable": n.get("mergeable"),
         "reviewDecision": n.get("reviewDecision"),
         "additions": n.get("additions"), "deletions": n.get("deletions"),
