@@ -213,22 +213,32 @@ empty result:
   area taxonomy and emits the `{data, flags}` miner contract
   (offline; needs `--code-owners` or `--roster`; `--now` pins recency
   weighting for reproducible re-runs). Spec: `references/routing.md`.
+  Its `areas` subcommand classifies a changed-path set against that same
+  taxonomy — the deterministic layer phase 1 reads and the spec
+  `references/label-map.md`'s table states.
+- `rt-commits` — kb-refresh commit signal: recency-weighted author counts
+  per area from `git log`, supplying the `commits` and `last_active`
+  columns of the `maintainers` schema (offline; `--repo` mines a checkout,
+  `--log` a captured dump, `--now` pins the weighting). Spec:
+  `references/routing.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
 - `sweep-prefetch` — phase-0 metadata snapshot (one
   batched GraphQL pass per corpus: titles, labels, assignees,
-  authorAssociation, changed paths, reviews, CI rollup) plus the
-  `classify-refs` subcommand for the cross-ref columns.
+  authorAssociation, changed paths, reviews, CI rollup, and the `areas`
+  each PR's paths classify to) plus the `classify-refs` subcommand for the
+  cross-ref columns.
 - `gen-pr-dashboard` / `gen-issues-dashboard` — dashboards from
   canonical sweep-dir inputs only. Spec: `references/reporting.md`.
 - `validate-actions` — phase-5 pre-write validation of proposed actions
   (label-set membership, the caps, the issues-only label rule, still-open
   recheck). Spec: phase 5 above.
 
-All need authenticated `gh` (sandbox disabled) except `rt-analyze`, the
-two generators, and `validate-actions`, which are offline — the last one
-judges the label snapshot it is handed rather than fetching its own.
+All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
+`rt-commits`, the two generators, and `validate-actions`, which are offline
+— the last one judges the label snapshot it is handed rather than fetching
+its own, and `rt-commits` reads a local checkout with `git log`.
 
 ## Relationship to rook-code-review
 

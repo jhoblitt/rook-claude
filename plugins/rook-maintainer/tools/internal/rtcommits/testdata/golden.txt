@@ -1,0 +1,16 @@
+source: log testdata/git-log.txt
+window: 2024-08-10..2026-08-11 (24 months = 731 days, now=2026-08-11T00:00:00Z)
+commits: scanned=20 in_window=19 counted=16 bot=1 unmatched=2
+identities: 10 (9 without a GitHub login)
+  ceph-dashboard           2  Erin Rename(1/1), Frank Tie(1/1)
+  ceph-mgr                 2  Erin Rename(1/1), Frank Tie(1/1)
+  ceph-mon                 1  Talbot Human(1/1)
+  ceph-nfs                 1  Erin Rename(1/1)
+  ci                       1  anxkhn(1/1)
+  csi                      2  Grace Copy(1/1), Carol Coder(0.25/1)
+  design                   1  Heidi Type(0.5/1)
+  discover                 1  Heidi Type(0.5/1)
+  docs                     2  Alice Example(1/1), Erin Rename(1/1)
+  object                   8  Alice Example(3/3), Bob Builder(1.75/4), Erin Rename(1/1)
+  object-multisite         2  Alice Example(1/1), Erin Rename(1/1)
+  test                     1  anxkhn(1/1)

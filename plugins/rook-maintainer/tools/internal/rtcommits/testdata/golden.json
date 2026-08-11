@@ -1,0 +1,312 @@
+{
+  "provenance": {
+    "tool": "rt-commits",
+    "source": "log",
+    "path": "testdata/git-log.txt",
+    "git_log": "git -c core.quotePath=false log --no-merges -M --format=commit%x09%H%x09%aN%x09%aE%x09%aI --name-status",
+    "now": "2026-08-11T00:00:00Z",
+    "months": 24,
+    "window_days": 731,
+    "cutoff": "2024-08-10T00:00:00Z",
+    "recency_weights": "1.0 <=182d, 0.5 <=365d, 0.25 older (by author date, relative to now)",
+    "commits_scanned": 20,
+    "commits_in_window": 19,
+    "commits_counted": 16,
+    "commits_bot_excluded": 1,
+    "commits_unmatched": 2,
+    "oldest_commit": "2024-08-10T00:00:00Z",
+    "newest_commit": "2026-08-01T12:00:00Z",
+    "areas": 12,
+    "identities": 10,
+    "identities_without_login": 9
+  },
+  "areas": {
+    "ceph-dashboard": {
+      "commits": 2,
+      "authors": [
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-03"
+        },
+        {
+          "login": null,
+          "name": "Frank Tie",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-03"
+        }
+      ]
+    },
+    "ceph-mgr": {
+      "commits": 2,
+      "authors": [
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-03"
+        },
+        {
+          "login": null,
+          "name": "Frank Tie",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-03"
+        }
+      ]
+    },
+    "ceph-mon": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": null,
+          "name": "Talbot Human",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-07"
+        }
+      ]
+    },
+    "ceph-nfs": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-04"
+        }
+      ]
+    },
+    "ci": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": "anxkhn",
+          "name": "Anas Khan",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-06"
+        }
+      ]
+    },
+    "csi": {
+      "commits": 2,
+      "authors": [
+        {
+          "login": null,
+          "name": "Grace Copy",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-02"
+        },
+        {
+          "login": null,
+          "name": "Carol Coder",
+          "commits": 1,
+          "weighted_commits": 0.25,
+          "last_active": "2024-08"
+        }
+      ]
+    },
+    "design": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": null,
+          "name": "Heidi Type",
+          "commits": 1,
+          "weighted_commits": 0.5,
+          "last_active": "2026-01"
+        }
+      ]
+    },
+    "discover": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": null,
+          "name": "Heidi Type",
+          "commits": 1,
+          "weighted_commits": 0.5,
+          "last_active": "2026-01"
+        }
+      ]
+    },
+    "docs": {
+      "commits": 2,
+      "authors": [
+        {
+          "login": null,
+          "name": "Alice Example",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-08"
+        },
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-04"
+        }
+      ]
+    },
+    "object": {
+      "commits": 8,
+      "authors": [
+        {
+          "login": null,
+          "name": "Alice Example",
+          "commits": 3,
+          "weighted_commits": 3,
+          "last_active": "2026-08"
+        },
+        {
+          "login": null,
+          "name": "Bob Builder",
+          "commits": 4,
+          "weighted_commits": 1.75,
+          "last_active": "2026-02"
+        },
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-04"
+        }
+      ]
+    },
+    "object-multisite": {
+      "commits": 2,
+      "authors": [
+        {
+          "login": null,
+          "name": "Alice Example",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-08"
+        },
+        {
+          "login": null,
+          "name": "Erin Rename",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-04"
+        }
+      ]
+    },
+    "test": {
+      "commits": 1,
+      "authors": [
+        {
+          "login": "anxkhn",
+          "name": "Anas Khan",
+          "commits": 1,
+          "weighted_commits": 1,
+          "last_active": "2026-06"
+        }
+      ]
+    }
+  },
+  "identities": [
+    {
+      "login": null,
+      "name": "Bob Builder",
+      "emails": [
+        "bob@example.com"
+      ],
+      "commits": 4,
+      "last_active": "2026-02"
+    },
+    {
+      "login": null,
+      "name": "Alice Example",
+      "emails": [
+        "alice@corp.example",
+        "alice@example.com"
+      ],
+      "commits": 3,
+      "last_active": "2026-08"
+    },
+    {
+      "login": "anxkhn",
+      "name": "Anas Khan",
+      "emails": [
+        "83116240+anxkhn@users.noreply.github.com",
+        "anas@anaskhan.me"
+      ],
+      "commits": 2,
+      "last_active": "2026-06"
+    },
+    {
+      "login": null,
+      "name": "Dana Multi",
+      "emails": [
+        "dana@example.com"
+      ],
+      "commits": 2,
+      "last_active": "2026-05"
+    },
+    {
+      "login": null,
+      "name": "Erin Rename",
+      "emails": [
+        "erin@example.com"
+      ],
+      "commits": 2,
+      "last_active": "2026-04"
+    },
+    {
+      "login": null,
+      "name": "Carol Coder",
+      "emails": [
+        "carol@example.com"
+      ],
+      "commits": 1,
+      "last_active": "2024-08"
+    },
+    {
+      "login": null,
+      "name": "Frank Tie",
+      "emails": [
+        "frank@example.com"
+      ],
+      "commits": 1,
+      "last_active": "2026-03"
+    },
+    {
+      "login": null,
+      "name": "Grace Copy",
+      "emails": [
+        "grace@example.com"
+      ],
+      "commits": 1,
+      "last_active": "2026-02"
+    },
+    {
+      "login": null,
+      "name": "Heidi Type",
+      "emails": [
+        "heidi@example.com"
+      ],
+      "commits": 1,
+      "last_active": "2026-01"
+    },
+    {
+      "login": null,
+      "name": "Talbot Human",
+      "emails": [
+        "talbot@example.com"
+      ],
+      "commits": 1,
+      "last_active": "2026-07"
+    }
+  ]
+}
