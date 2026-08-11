@@ -111,7 +111,10 @@ the author is a separate step, each post explicitly approved
    estimate (expect sweep-reviewer scale, ≈50k tokens per attacker,
    plus the claim-audit agent(s) and a verifier wave per attacker —
    budget roughly twice the attacker line)
-   and confirm before launching — the sweep phase-0 pattern.
+   and confirm before launching — the sweep phase-0 pattern. Then
+   refresh the shared checkout once, here, in the orchestrator: the
+   panel shares one path and its attackers are forbidden to fetch
+   (`agents/design-attacker.md`).
 6. **Synthesis.** No barrier before verification: as each attacker
    completes, spawn fresh verifier agents for its candidates
    immediately (sweep phase-2 pattern) — refutation never waits for

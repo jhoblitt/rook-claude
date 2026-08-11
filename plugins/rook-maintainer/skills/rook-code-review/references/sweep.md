@@ -42,6 +42,12 @@ independently usable without a prior triage pass.
 
 ## Phase 1 — fan out reviewers
 
+- **Refresh the shared checkout, here, once.** `git fetch` the rook remote
+  in the checkout the reviewers will be handed, before any of them launch.
+  This is the orchestrator's write to make: the agents share one path and
+  are forbidden to fetch (SKILL.md ground rules, `agents/rook-reviewer.md`).
+  Do it at fan-out rather than at phase 0, so `origin/master` is current at
+  review time no matter how long scope confirmation took.
 - **Pre-gate** (haiku-class agent, one for the whole batch — SKILL.md
   "Tier models by role"): STATE checks only — the candidate is still
   open and non-draft, and not already carrying the user's review at the

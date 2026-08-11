@@ -67,8 +67,10 @@ feedback already sitting on a PR under review.
   assert-vs-require) depends on what follows a call site within its closure.
 - **The local checkout is read-only when reviewing others' work.** Use
   `git show origin/master:<path>`, `gh pr view/diff`; never check out
-  branches, modify files, or run `make` targets that write. Fetch first so
-  `origin/master` is current.
+  branches, modify files, or run `make` targets that write. Fetching is the
+  one write, and it belongs to the session that owns the checkout: refresh
+  `origin/master` once before any fan-out, never from inside an agent that
+  shares the path.
 - **gh needs the sandbox disabled** (`dangerouslyDisableSandbox: true`) —
   rook-conventions "Harness notes" has the reason.
 - **Scale the machinery to the target.** Small diff (< ~300 changed lines):

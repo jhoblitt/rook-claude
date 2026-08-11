@@ -28,10 +28,15 @@ tests/integration/object/README.md).
 ## Hard rules
 
 - The local checkout you are given is READ-ONLY: never modify files, check
-  out branches, or run make targets that write. Use
+  out branches, run make targets that write, or `git fetch` — a fetch writes
+  remote-tracking refs and `FETCH_HEAD` in a checkout every concurrent
+  reviewer shares, and your orchestrator has already refreshed
+  `origin/master` once before fan-out. Use
   `git show origin/master:<path>` for pre-change content and `gh pr diff` /
-  `gh pr view` for the PR side. `git fetch` the rook remote first so
-  origin/master is current.
+  `gh pr view` for the PR side. Fetch once yourself ONLY when your prompt
+  says the checkout has not been refreshed; silence means an orchestrator
+  already did it, never that you are the standalone exception — read it the
+  other way and every agent in a panel fetches.
 - Run every `gh` command with `dangerouslyDisableSandbox: true`.
 - The `bug` field carries the spine's verify-independently outcome — REAL
   or FABRICATED (N/A when the target claims no defect fix); treat the PR
