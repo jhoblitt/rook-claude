@@ -83,10 +83,13 @@ numbers, count cap.
    unavailable). Each agent brief names the sweep's `snapshot.json`;
    agents consume it for metadata (title/labels/assignees/reviews/CI
    rollup) and spend their own `gh` calls only on depth the snapshot
-   lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (path-glob →
-   area inference for PR routing; template-section checks for issues —
+   lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (area
+   inference for PR routing is READ, not derived — phase 0 stamped each PR's
+   `areas`; template-section checks for issues —
    `references/label-map.md`), mined KB, LLM judgment only for what those
-   cannot decide. Dup/cross-link per `references/cross-linking.md`; routing
+   cannot decide. Never re-match paths against the table by hand — it is the
+   classifier's spec, not a worksheet — and read `areas` for what it says:
+   three states, not interchangeable (`references/label-map.md`). Dup/cross-link per `references/cross-linking.md`; routing
    per `references/routing.md`. Persist each batch's output as it arrives.
 2. **Refute closes.** Spawn a batch's refutation agents AS THAT BATCH
    ARRIVES — never after the whole assess wave. Refutation reads nothing

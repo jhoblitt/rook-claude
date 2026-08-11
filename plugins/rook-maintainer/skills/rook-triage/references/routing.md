@@ -61,7 +61,9 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
 
 ## Selection (per item)
 
-1. Area(s) from `label-map.md` paths/keywords → KB candidate pool.
+1. Area(s) → KB candidate pool. For a PR, READ the stamped `areas` phase 0
+   wrote — never re-match its paths against `label-map.md`'s table by hand.
+   For an issue there is no diff, so derive from that file's keyword layer.
 2. Score = recency-decayed (commits + 2×reviews) within the area. Drop:
    the item's author · anyone inactive >6 months · anyone already at
    their per-sweep cap.

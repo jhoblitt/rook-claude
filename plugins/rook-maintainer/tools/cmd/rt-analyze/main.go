@@ -4,11 +4,20 @@
 //	run.sh rt-analyze --in-dir DIR
 //	    (--code-owners /path/to/CODE-OWNERS | --roster a,b,c)
 //	    [--out FILE] [--top 15] [--now ISO8601]
+//	run.sh rt-analyze areas PATH [PATH...]
+//	run.sh rt-analyze areas --stdin
 //
 // Consumes rt-fetch's rt_prs.jsonl + rt_fetch_state.json from --in-dir and
 // writes the {data, flags} miner contract to --out (default
 // <in-dir>/rt_final.json). Purely offline. Pin --now to keep the recency
 // weighting — and therefore the reviewer ranking — reproducible across re-runs.
+//
+// The areas subcommand runs the same path-glob classifier for a caller that
+// holds changed paths rather than a fetch directory — rook-triage's
+// deterministic area layer (references/label-map.md), which every other
+// consumer gets pre-stamped in snapshot.json's per-PR areas field. A literal
+// "areas" first argument is the only thing that diverts from the analysis run
+// above; that one takes flags only, so no existing invocation can reach it.
 //
 // Exit status is 1 for a bad roster or unreadable input, 2 for a usage error.
 package main
@@ -17,6 +26,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,7 +40,14 @@ func fail(format string, args ...any) int {
 	return 1
 }
 
-func run() int {
+func dispatch(args []string, stdin io.Reader, stdout io.Writer) int {
+	if len(args) > 0 && args[0] == "areas" {
+		return runAreas(args[1:], stdin, stdout)
+	}
+	return run(args)
+}
+
+func run(args []string) int {
 	fs := flag.NewFlagSet("rt-analyze", flag.ContinueOnError)
 	inDir := fs.String("in-dir", "", "directory holding rt_prs.jsonl and rt_fetch_state.json")
 	out := fs.String("out", "", "output file (default <in-dir>/rt_final.json)")
@@ -44,7 +61,7 @@ func run() int {
 		fs.PrintDefaults()
 	}
 
-	if err := fs.Parse(os.Args[1:]); err != nil {
+	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return 0
 		}
@@ -113,5 +130,5 @@ func run() int {
 }
 
 func main() {
-	os.Exit(run())
+	os.Exit(dispatch(os.Args[1:], os.Stdin, os.Stdout))
 }

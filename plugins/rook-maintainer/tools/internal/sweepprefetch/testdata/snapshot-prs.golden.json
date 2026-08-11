@@ -31,6 +31,10 @@
     "Documentation/c.md"
    ],
    "files_truncated": false,
+   "areas": [
+    "docs",
+    "core"
+   ],
    "reviews": {
     "latest": [
      {
@@ -77,6 +81,9 @@
     "Documentation/x.md"
    ],
    "files_truncated": false,
+   "areas": [
+    "docs"
+   ],
    "reviews": {
     "latest": [],
     "requested": []
