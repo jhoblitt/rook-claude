@@ -14,7 +14,9 @@ canonical for every dashboard rendering rule — CI-summary math,
 reviewer/mention icon rows and tooltips, legend and column chips with
 localStorage persistence, linkification, username display mangling — do
 not re-derive those rules or hand-patch script output. Republish to the
-SAME artifact file path per sweep so the URL stays stable; favicon stays
+SAME artifact file path per sweep DIR so the URL stays stable — one dir per
+corpus (SKILL.md "State"), so a `both` run publishes two artifacts rather
+than one overwriting the other; favicon stays
 🗂️.
 
 ## Contract the model honors when writing report.md

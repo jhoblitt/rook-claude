@@ -21,7 +21,7 @@ approval-gated layer on top. Stopping at the report is a complete run.
 |---|---|---|
 | **issues** | "triage the issues", "issue N" | Issue backlog (or one issue): kind, completeness, dup/cross-link, labels, routing. Read `references/issue-triage.md`. |
 | **prs** | "triage the PRs", "pr N" | PR backlog (or one PR): cheap sort — CI/mergeability/template/trust, dup/cross-link, current-label report (triage never labels PRs), reviewer routing, route-to-deep-review. Read `references/pr-triage.md`. |
-| **both** | "triage the backlog" | Both corpora in one run. Default when unscoped — confirm at phase 0. |
+| **both** | "triage the backlog" | Both corpora in one run, one sweep dir each (State below). Default when unscoped — confirm at phase 0. |
 | **kb refresh** | "refresh the triage kb" | Rebuild the routing knowledge base. Read `references/routing.md`. |
 
 Filters compose with any mode: labels, author, updated-since, explicit
@@ -60,8 +60,10 @@ numbers, count cap.
 
 ## Pipeline
 
-0. **Scope-confirm + snapshot.** Enumerate per scope+filters and fetch
-   the shared metadata snapshot in one pass:
+0. **Scope-confirm + snapshot.** Allocate the run's sweep dir (`both`
+   allocates one per corpus — State below), then enumerate per
+   scope+filters and fetch the shared metadata snapshot in one pass, once
+   per corpus:
    `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch snapshot <sweep-dir>
    --kind prs|issues`
    (all open items by default, `--numbers` for explicit scope). A
@@ -104,9 +106,12 @@ numbers, count cap.
    in `sweep.json`. Format contract — ordering, linkified references,
    CI color chips, structured reviewer sub-cells, legend filtering:
    `references/reporting.md`.
-4. **Approve.** Walk proposed actions per item — each draft is an editable
-   file under `actions/`; approve / edit / skip. Honor explicit batch
-   authorization; never assume it.
+4. **Approve.** On a `both` run, FIRST reconcile the two sweep dirs'
+   proposed actions against each other — per-person totals against the cap,
+   and any issue↔PR pair proposed on both sides (State above) — since
+   nothing downstream sees both dirs. Then walk proposed actions per item —
+   each draft is an editable file under `actions/`; approve / edit / skip.
+   Honor explicit batch authorization; never assume it.
 5. **Execute.** Run `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` immediately before every
    write — it decides label-set membership against a live `gh label list`,
    the label/mention/reviewer caps, the issues-only label rule, and the
@@ -149,7 +154,7 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
 ~/.cache/rook-triage/
   kb.json                      # mined routing KB (regenerable)
   mentions-user-check.json     # global @-token -> login resolution cache
-  sweeps/<YYYY-MM-DD>-<slug>/
+  sweeps/<YYYY-MM-DD>-<prs|issues>-<slug>/
     sweep.json                 # scope, per-item status, action log
     snapshot.json              # phase-0 live metadata (sweep-prefetch)
     report.md                  # the advise artifact
@@ -161,6 +166,22 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
     actions/<N>-<k>.md         # one editable draft per proposed action
     dashboard.html             # gen-*-dashboard output; publish via Artifact
 ```
+
+**One sweep dir per corpus.** The dir name carries the kind, and `both`
+allocates two — `<date>-prs-<slug>/` and `<date>-issues-<slug>/` — each a
+complete, independently resumable sweep with its own `sweep.json`,
+`report.md` and artifact URL. They cannot share one: `snapshot.json` holds
+a single top-level `kind` over incompatible item shapes, and
+`gen-pr-dashboard` and `gen-issues-dashboard` both write `dashboard.html`,
+so a shared dir would have each corpus overwrite the other's.
+
+Two rules stay RUN-scoped across both dirs, because they bound what one
+person receives rather than what one sweep does: the per-person cap
+(`references/routing.md` — 3 items, which `validate-actions` does not
+re-check) and cross-linking's comment-on-ONE-side rule. Phase 4
+reconciles the two action sets against each other before approval;
+without that, a `both` run pings one maintainer twice over and comments
+both halves of an issue↔PR pair.
 
 Cold start: when `~/.cache/rook-triage/kb.json` is missing, seed it from
 this skill's shipped snapshot (`cp <skill-dir>/data/kb-snapshot.json
