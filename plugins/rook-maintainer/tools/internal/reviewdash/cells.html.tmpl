@@ -1,9 +1,0 @@
-{{define "verdict"}}<b>{{.Verdict}}</b> {{with .Bug}}<span class="chip {{.Class}}" title="claimed defect judged {{.Raw}}">bug&#8202;{{.Lower}}</span>{{end}}{{range .Flags}}<span class="chip {{.Class}}" title="{{.Title}}">{{.Text}}</span>{{end}}{{end}}
-
-{{define "sev"}}{{if .NoFindings}}<span class="chip none" title="no findings survived verification">clean</span>{{else}}{{range .Sev}}<span class="chip {{.Class}}" title="{{.Count}} {{.Label}}">{{.Letter}}&#8202;{{.Count}}</span>{{end}}{{end}}{{end}}
-
-{{define "ci"}}{{if .Empty}}<span class="ci amber" title="no checks recorded">…</span>{{else}}<span class="ci {{.Kind}}" title="{{.Passing}}/{{.Total}} passing{{if .Failing}} · {{.Failing}} failing: {{.Failed}}{{if .More}} +{{.More}} more{{end}}{{end}}{{if .Pending}} · {{.Pending}} pending{{end}}">{{.Passing}}/{{.Total}}</span>{{end}}{{end}}
-
-{{define "backport"}}{{if .}}<span class="chip bp" title="{{.Title}}">{{.Text}}</span>{{else}}—{{end}}{{end}}
-
-{{define "detail"}}{{if .Rows}}<table class="inner"><thead><tr><th>id</th><th>domain</th><th>anchor</th><th>summary</th><th>confidence</th><th>status</th></tr></thead><tbody>{{range .Rows}}<tr><td><span class="chip {{.Class}}">{{.ID}}</span></td><td>{{.Domain}}</td><td class="anch">{{.Anchor}}</td><td>{{.Summary}}</td><td>{{.Confidence}}</td><td class="st-{{.Status}}">{{.Status}}</td></tr>{{end}}</tbody></table>{{else}}<p class='clean'>No findings survived verification.</p>{{end}}{{if .HasClean}}<p class='clean'><b>Audited and clean:</b> {{.CleanNote}}</p>{{end}}{{end}}
