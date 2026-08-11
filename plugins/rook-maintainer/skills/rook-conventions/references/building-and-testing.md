@@ -41,8 +41,9 @@ Any change under `pkg/apis` — struct/field/marker changes AND godoc wording
 
 Commit regenerated files in the SAME commit as the source change — never a
 follow-up. CI enforces via `codegen` and `crds-gen`, and a forgotten
-regeneration reddens `build.all` and every integration suite. Never mention
-the generators in commit messages, PR descriptions, or comments.
+regeneration reddens `build.all` and every integration suite. Never narrate
+the generators in the prose that ships with the change — `references/commits.md`
+is canon for that, and it covers comments here too.
 
 ## Writing rook tests
 

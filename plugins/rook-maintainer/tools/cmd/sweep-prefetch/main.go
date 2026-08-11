@@ -6,15 +6,28 @@
 //	run.sh sweep-prefetch snapshot SWEEP_DIR --kind prs|issues \
 //	    [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]
 //	run.sh sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]
+//	run.sh sweep-prefetch pool-summary SWEEP_DIR [--viewer LOGIN] \
+//	    [--now RFC3339] [--numbers 1,2,3 | --numbers-file F] [--json]
 //
 // snapshot enumerates every OPEN item of --kind, or exactly --numbers (numbers
 // mode also fetches closed and merged items, for regenerating dashboards of
 // past sweeps). classify-refs scans <sweep-dir>/batch-*.json for xlink/dup
 // numbers and writes refs-types.json.
 //
+// pool-summary reads that snapshot back and prints the pool-wide counts a sweep
+// opens phase 0 with — total, how many are drafts, how many already carry
+// --viewer's review, the age/author/label splits, the summed diff — as a
+// markdown block to present as-is, or as raw numbers with --json. It is the
+// aggregation phase 0 used to do by reading every item into a model's context,
+// and it is OFFLINE: the snapshot is its only input, so re-running it costs
+// nothing. --numbers narrows it to a filtered pool and fails on any number the
+// snapshot does not carry; --viewer is rejected on an issues snapshot, where no
+// review exists to count, rather than reported as zero. Pin --now to keep the
+// age buckets of two runs comparable.
+//
 // Exit status is 2 for a usage error and 1 for a bad argument value, a failed
-// fetch or a failed write. Needs authenticated gh (run with the sandbox
-// disabled).
+// fetch or a failed write. snapshot and classify-refs need authenticated gh
+// (run with the sandbox disabled); pool-summary needs no network at all.
 package main
 
 import (
@@ -26,6 +39,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/sweepprefetch"
 )
@@ -39,7 +53,9 @@ var errFlags = errors.New("invalid flags")
 func usage() {
 	fmt.Fprint(os.Stderr, "usage: sweep-prefetch snapshot SWEEP_DIR --kind prs|issues"+
 		" [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]\n"+
-		"       sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]\n")
+		"       sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]\n"+
+		"       sweep-prefetch pool-summary SWEEP_DIR [--viewer LOGIN] [--now RFC3339]"+
+		" [--numbers 1,2,3 | --numbers-file F] [--json]\n")
 }
 
 func run() int {
@@ -53,6 +69,8 @@ func run() int {
 		return runSnapshot(args[1:])
 	case "classify-refs":
 		return runClassifyRefs(args[1:])
+	case "pool-summary":
+		return runPoolSummary(args[1:])
 	default:
 		usage()
 		return 2
@@ -116,9 +134,61 @@ func runClassifyRefs(args []string) int {
 	return 0
 }
 
-// parse pulls SWEEP_DIR out of args wherever it sits. The skills pass it ahead
-// of the flags, which flag.Parse treats as the end of the flags, so the
-// leading form has to come off by hand first.
+func runPoolSummary(args []string) int {
+	fs := flag.NewFlagSet("sweep-prefetch pool-summary", flag.ContinueOnError)
+	viewer := fs.String("viewer", "", "login whose existing reviews are counted (prs only; omitted entirely when unset)")
+	now := fs.String("now", "", "RFC3339 timestamp the age buckets are measured from (default: current time); pin it for reproducible re-runs")
+	numbers := fs.String("numbers", "", "comma-separated item numbers to summarize instead of the whole snapshot")
+	numbersFile := fs.String("numbers-file", "", "file of item numbers, one per line")
+	asJSON := fs.Bool("json", false, "emit the same numbers as JSON instead of the markdown block")
+	fs.Usage = usage
+
+	sweepDir, err := parse(fs, args)
+	if err != nil {
+		return fail(err, 2)
+	}
+	opts := sweepprefetch.SummaryOptions{
+		SweepDir: sweepDir,
+		Viewer:   *viewer,
+		Now:      time.Now().UTC(),
+	}
+	if *now != "" {
+		if opts.Now, err = time.Parse(time.RFC3339, *now); err != nil {
+			return fail(fmt.Errorf("--now: %w", err), 1)
+		}
+	}
+	if *numbers != "" || *numbersFile != "" {
+		if opts.Numbers, err = itemNumbers(*numbers, *numbersFile); err != nil {
+			return fail(err, 1)
+		}
+		// Falling through with an empty list would summarize the whole pool
+		// under a heading the caller reads as their filtered one.
+		if len(opts.Numbers) == 0 {
+			return fail(errors.New("--numbers selected no items"), 1)
+		}
+	}
+
+	summary, err := sweepprefetch.Summarize(opts)
+	if err != nil {
+		return fail(err, 1)
+	}
+	out := summary.Markdown()
+	if *asJSON {
+		data, err := summary.JSON()
+		if err != nil {
+			return fail(err, 1)
+		}
+		out = string(data)
+	}
+	fmt.Println(out)
+	return 0
+}
+
+// parse takes SWEEP_DIR from either END of args: ahead of the flags, which is
+// how the skills spell it and which flag.Parse would otherwise treat as the end
+// of the flags, or after all of them. It may NOT sit between two flags — the
+// first non-flag argument stops flag parsing, so every flag behind it lands in
+// rest and comes back as "unrecognized arguments".
 func parse(fs *flag.FlagSet, args []string) (string, error) {
 	sweepDir := ""
 	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {

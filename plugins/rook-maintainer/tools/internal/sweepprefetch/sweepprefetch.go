@@ -15,6 +15,11 @@
 //
 // The written shape is a contract with consumers outside this module, so
 // field names, nesting and null-vs-absent are all load-bearing.
+//
+// Summarize reads that same snapshot back, offline, for the pool-summary
+// subcommand: the corpus-wide counts a sweep's phase 0 opens with come out of
+// the typed fields here instead of ~1.3 KB of JSON per item being routed
+// through a model's context to be counted by eye.
 package sweepprefetch
 
 import (
