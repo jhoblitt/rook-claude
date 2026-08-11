@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
 )
 
 // topN caps every "top" list. Eight names is what fits on one line of the
@@ -42,10 +44,6 @@ var assocOrder = []string{
 }
 
 var stateOrder = []string{"OPEN", "MERGED", "CLOSED"}
-
-// botPrefixes mirrors rtanalyze's bot rule; the two have to keep agreeing or
-// the same PR is a bot's here and a contributor's in the kb mining.
-var botPrefixes = []string{"mergify", "dependabot", "github-actions"}
 
 type SummaryOptions struct {
 	SweepDir string
@@ -528,24 +526,13 @@ func ageBucket(age time.Duration) int {
 }
 
 func assocLabel(author string, assoc *string) string {
-	if isBot(author) {
+	if rtanalyze.IsBot(author) {
 		return botLabel
 	}
 	if assoc == nil || *assoc == "" {
 		return unknownLabel
 	}
 	return *assoc
-}
-
-func isBot(author string) bool {
-	a := strings.ToLower(author)
-	for _, p := range botPrefixes {
-		if strings.HasPrefix(a, p) {
-			return true
-		}
-	}
-	return strings.Contains(a, "copilot") || strings.HasSuffix(a, "bot") ||
-		strings.HasSuffix(a, "[bot]")
 }
 
 func reviewedBy(reviews []Review, viewer string) bool {

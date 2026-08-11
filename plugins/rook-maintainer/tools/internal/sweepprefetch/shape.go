@@ -1,6 +1,10 @@
 package sweepprefetch
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
+)
 
 type login struct {
 	Login string `json:"login"`
@@ -119,8 +123,15 @@ type PRItem struct {
 	Assignees         []string `json:"assignees"`
 	Files             []string `json:"files"`
 	FilesTruncated    bool     `json:"files_truncated"`
-	Reviews           Reviews  `json:"reviews"`
-	CI                CI       `json:"ci"`
+	// Areas is the path-glob classification of Files — the deterministic
+	// layer of rook-triage's references/label-map.md, stamped once here so no
+	// triager re-derives it per item by eye. [] means classified and matched
+	// nothing; null means NOT classified, which is what a truncated Files
+	// gets: areas read off a partial file list are a subset, and a consumer
+	// treating this as the answer cannot tell that subset from a whole one.
+	Areas   []string `json:"areas"`
+	Reviews Reviews  `json:"reviews"`
+	CI      CI       `json:"ci"`
 }
 
 type IssueItem struct {
@@ -182,7 +193,20 @@ func shapePR(n prNode) *PRItem {
 		}
 		item.Reviews.Requested = append(item.Reviews.Requested, reviewerName(rr.RequestedReviewer))
 	}
+	item.classifyAreas()
 	return item
+}
+
+// classifyAreas stamps Areas from the file list currently on the item. It has
+// to run again whenever that list changes: snapshotPRs re-fetches a truncated
+// PR's remaining file pages, and areas inferred before that walk describe only
+// the first page.
+func (item *PRItem) classifyAreas() {
+	if item.FilesTruncated {
+		item.Areas = nil
+		return
+	}
+	item.Areas = rtanalyze.AreasForPaths(item.Files)
 }
 
 func shapeIssue(n issueNode) *IssueItem {

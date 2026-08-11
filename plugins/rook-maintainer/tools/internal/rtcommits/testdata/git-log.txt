@@ -1,0 +1,65 @@
+commit	a000001	Alice Example	alice@example.com	2026-08-01T12:00:00+00:00
+
+M	pkg/operator/ceph/object/zone.go
+M	Documentation/CRDs/object.md
+commit	a000002	Alice Example	alice@corp.example	2026-02-10T05:30:00+05:30
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000003	alice-example	alice@corp.example	2026-02-09T00:00:01+00:00
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000004	Bob Builder	bob@example.com	2026-02-09T00:00:00+00:00
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000005	Bob Builder	bob@example.com	2025-08-11T00:00:00+00:00
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000006	Bob Builder	bob@example.com	2025-08-10T23:59:59+00:00
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000007	Bob Builder	bob@example.com	2025-08-10T00:00:00+00:00
+
+M	pkg/operator/ceph/object/rgw.go
+commit	a000008	Carol Coder	carol@example.com	2024-08-10T00:00:00+00:00
+
+M	pkg/operator/ceph/csi/csi.go
+commit	a000009	Carol Coder	carol@example.com	2024-08-09T23:59:59+00:00
+
+M	pkg/operator/ceph/csi/csi.go
+commit	a000010	dependabot[bot]	49699333+dependabot[bot]@users.noreply.github.com	2026-07-01T00:00:00+00:00
+
+M	go.mod
+M	go.sum
+commit	a000011	Talbot Human	talbot@example.com	2026-07-02T00:00:00+00:00
+
+M	pkg/operator/ceph/cluster/mon/mon.go
+commit	a000012	Anas Khan	83116240+anxkhn@users.noreply.github.com	2026-06-01T00:00:00+00:00
+
+M	tests/scripts/helper.sh
+commit	a000013	Anas Khan	anas@anaskhan.me	2026-06-02T00:00:00+00:00
+
+M	tests/integration/base_test.go
+commit	a000014	Dana Multi	dana@example.com	2026-05-01T00:00:00+00:00
+
+M	deploy/examples/cluster.yaml
+M	README.md
+commit	a000015	Dana Multi	dana@example.com	2026-05-02T00:00:00+00:00
+
+commit	a000016	Erin Rename	erin@example.com	2026-04-01T00:00:00+00:00
+
+R100	pkg/operator/ceph/object/zone.go	pkg/operator/ceph/nfs/zone.go
+A	Documentation/Getting-Started/Rook High-Level Architecture.png
+M	"Documentation/caf\303\251 \"quoted\"\ttab.md"
+commit	a000017	Frank Tie	frank@example.com	2026-03-01T00:00:00+00:00
+
+M	pkg/operator/ceph/cluster/mgr/dashboard.go
+commit	a000018	Erin Rename	erin@example.com	2026-03-02T00:00:00+00:00
+
+M	pkg/operator/ceph/cluster/mgr/dashboard.go
+commit	a000019	Grace Copy	grace@example.com	2026-02-20T00:00:00+00:00
+
+C075	pkg/operator/ceph/csi/csi.go	pkg/operator/ceph/csi/csi_copy.go
+commit	a000020	Heidi Type	heidi@example.com	2026-01-15T00:00:00+00:00
+
+D	design/ceph/object/old.md
+T	pkg/operator/discover/discover.go

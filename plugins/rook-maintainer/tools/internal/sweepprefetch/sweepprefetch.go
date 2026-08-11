@@ -215,6 +215,7 @@ func (c *Client) snapshotPRs(ctx context.Context, opts SnapshotOptions) ([]*PRIt
 			}
 			item.Files = files
 			item.FilesTruncated = false
+			item.classifyAreas()
 		}
 	}
 	return items, nil

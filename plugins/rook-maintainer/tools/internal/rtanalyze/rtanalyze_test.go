@@ -232,8 +232,8 @@ func TestAreasFor(t *testing.T) {
 		{"somefile.txt", ""},
 	}
 	for _, tc := range tests {
-		if got := strings.Join(sortedKeys(areasFor(tc.path)), ","); got != tc.want {
-			t.Errorf("areasFor(%q) = %q, want %q", tc.path, got, tc.want)
+		if got := strings.Join(sortedKeys(AreasFor(tc.path)), ","); got != tc.want {
+			t.Errorf("AreasFor(%q) = %q, want %q", tc.path, got, tc.want)
 		}
 	}
 }
@@ -243,13 +243,13 @@ func TestIsBot(t *testing.T) {
 		"mergify", "mergify[bot]", "dependabot[bot]", "github-actions[bot]",
 		"copilot-swe-agent", "Copilot", "renovate-bot", "someone[bot]",
 	} {
-		if !isBot(login) {
-			t.Errorf("isBot(%q) = false", login)
+		if !IsBot(login) {
+			t.Errorf("IsBot(%q) = false", login)
 		}
 	}
 	for _, login := range []string{"alice", "bob", "travisn", "abbot-nope"} {
-		if isBot(login) {
-			t.Errorf("isBot(%q) = true", login)
+		if IsBot(login) {
+			t.Errorf("IsBot(%q) = true", login)
 		}
 	}
 }
@@ -322,8 +322,8 @@ func TestAgeDaysFloorsLikeTimedelta(t *testing.T) {
 		{base.AddDate(0, 0, -182).Add(-time.Second), 182},
 	}
 	for _, tc := range tests {
-		if got := ageDays(base, tc.merged); got != tc.want {
-			t.Errorf("ageDays(base, %v) = %d, want %d", tc.merged, got, tc.want)
+		if got := AgeDays(base, tc.merged); got != tc.want {
+			t.Errorf("AgeDays(base, %v) = %d, want %d", tc.merged, got, tc.want)
 		}
 	}
 }

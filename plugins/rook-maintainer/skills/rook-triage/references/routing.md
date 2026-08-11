@@ -6,7 +6,22 @@ Mine, with parallel agents, into `~/.cache/rook-triage/kb.json`:
 
 - `CODE-OWNERS` — the authority roster (approvers/reviewers tiers; the
   file is flat/repo-wide, so per-area truth must be mined, not read).
-- `git log` per area path-set (24 months, recency-weighted author counts).
+- `git log` per area path-set (24 months, recency-weighted author counts) —
+  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-commits --repo <rook-checkout> --months 24 --now <iso>`
+  (`--log FILE` reads a captured dump instead; `-h` prints the exact `git log`
+  that produces one). Run it rather than hand-rolling the walk, the same rule
+  the reviews signal below carries. It reuses that signal's 25-area path
+  classifier and its recency weights, and excludes merge
+  commits — git records no changed paths for a merge and its author is
+  whoever pressed the button, which is why the window is ~1,535 commits on
+  rook rather than the ~2,890 a merge-inclusive log reports.
+  It fills `commits` and `last_active` ONLY. `login` is null for roughly 90%
+  of identities: git carries no GitHub login, and only those committing from
+  a `users.noreply.github.com` address resolve to one. The rest arrive as
+  name + emails in the top-level `identities` array, with
+  `identities_without_login` counting them — resolving those to logins is the
+  miner's job, and an unresolved identity must never be written into
+  `maintainers` as if its name were a login.
 - Merged-PR review history per area — who actually reviews rgw vs csi vs
   osd (merged PRs + reviews, bucketed by changed paths).
   Sample: the last 24 months of merged PRs, capped at 4000, whichever bound
@@ -61,7 +76,9 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
 
 ## Selection (per item)
 
-1. Area(s) from `label-map.md` paths/keywords → KB candidate pool.
+1. Area(s) → KB candidate pool. For a PR, READ the stamped `areas` phase 0
+   wrote — never re-match its paths against `label-map.md`'s table by hand.
+   For an issue there is no diff, so derive from that file's keyword layer.
 2. Score = recency-decayed (commits + 2×reviews) within the area. Drop:
    the item's author · anyone inactive >6 months · anyone already at
    their per-sweep cap.

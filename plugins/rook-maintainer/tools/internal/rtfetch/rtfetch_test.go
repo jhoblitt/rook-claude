@@ -416,27 +416,29 @@ func TestWindowCutoff(t *testing.T) {
 	for _, tc := range []struct {
 		months float64
 		want   string
+		days   int
 	}{
-		{24, "2024-01-01T00:00:00+00:00"},
-		{0.5, "2025-12-17T00:00:00+00:00"},
-		{3600, "1725-12-21T00:00:00+00:00"},
-		{4000, "1692-08-19T00:00:00+00:00"},
-		{24276, "0002-10-18T00:00:00+00:00"},
-		{-24000, "4026-03-17T00:00:00+00:00"},
+		{24, "2024-01-01T00:00:00+00:00", 731},
+		{0.5, "2025-12-17T00:00:00+00:00", 15},
+		{3600, "1725-12-21T00:00:00+00:00", 109584},
+		{4000, "1692-08-19T00:00:00+00:00", 121760},
+		{24276, "0002-10-18T00:00:00+00:00", 738961},
+		{-24000, "4026-03-17T00:00:00+00:00", -730560},
 	} {
-		got, err := windowCutoff(fixedNow, tc.months)
+		got, days, err := WindowCutoff(fixedNow, tc.months)
 		if err != nil {
-			t.Errorf("windowCutoff(%v): %v", tc.months, err)
+			t.Errorf("WindowCutoff(%v): %v", tc.months, err)
 			continue
 		}
-		if isoformat(got) != tc.want {
-			t.Errorf("windowCutoff(%v) = %s, want %s", tc.months, isoformat(got), tc.want)
+		if isoformat(got) != tc.want || days != tc.days {
+			t.Errorf("WindowCutoff(%v) = %s/%d days, want %s/%d days",
+				tc.months, isoformat(got), days, tc.want, tc.days)
 		}
 	}
 	// Each of these overflowed Python's datetime; none may resolve to a date.
 	for _, months := range []float64{66000, -100000, 1e9, math.NaN(), math.Inf(1)} {
-		if got, err := windowCutoff(fixedNow, months); err == nil {
-			t.Errorf("windowCutoff(%v) = %s, want an error", months, isoformat(got))
+		if got, _, err := WindowCutoff(fixedNow, months); err == nil {
+			t.Errorf("WindowCutoff(%v) = %s, want an error", months, isoformat(got))
 		}
 	}
 }

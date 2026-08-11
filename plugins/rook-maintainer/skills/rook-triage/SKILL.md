@@ -83,10 +83,13 @@ numbers, count cap.
    unavailable). Each agent brief names the sweep's `snapshot.json`;
    agents consume it for metadata (title/labels/assignees/reviews/CI
    rollup) and spend their own `gh` calls only on depth the snapshot
-   lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (path-glob →
-   area inference for PR routing; template-section checks for issues —
+   lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (area
+   inference for PR routing is READ, not derived — phase 0 stamped each PR's
+   `areas`; template-section checks for issues —
    `references/label-map.md`), mined KB, LLM judgment only for what those
-   cannot decide. Dup/cross-link per `references/cross-linking.md`; routing
+   cannot decide. Never re-match paths against the table by hand — it is the
+   classifier's spec, not a worksheet — and read `areas` for what it says:
+   three states, not interchangeable (`references/label-map.md`). Dup/cross-link per `references/cross-linking.md`; routing
    per `references/routing.md`. Persist each batch's output as it arrives.
 2. **Refute closes.** Spawn a batch's refutation agents AS THAT BATCH
    ARRIVES — never after the whole assess wave. Refutation reads nothing
@@ -210,22 +213,32 @@ empty result:
   area taxonomy and emits the `{data, flags}` miner contract
   (offline; needs `--code-owners` or `--roster`; `--now` pins recency
   weighting for reproducible re-runs). Spec: `references/routing.md`.
+  Its `areas` subcommand classifies a changed-path set against that same
+  taxonomy — the deterministic layer phase 1 reads and the spec
+  `references/label-map.md`'s table states.
+- `rt-commits` — kb-refresh commit signal: recency-weighted author counts
+  per area from `git log`, supplying the `commits` and `last_active`
+  columns of the `maintainers` schema (offline; `--repo` mines a checkout,
+  `--log` a captured dump, `--now` pins the weighting). Spec:
+  `references/routing.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
 - `sweep-prefetch` — phase-0 metadata snapshot (one
   batched GraphQL pass per corpus: titles, labels, assignees,
-  authorAssociation, changed paths, reviews, CI rollup) plus the
-  `classify-refs` subcommand for the cross-ref columns.
+  authorAssociation, changed paths, reviews, CI rollup, and the `areas`
+  each PR's paths classify to) plus the `classify-refs` subcommand for the
+  cross-ref columns.
 - `gen-pr-dashboard` / `gen-issues-dashboard` — dashboards from
   canonical sweep-dir inputs only. Spec: `references/reporting.md`.
 - `validate-actions` — phase-5 pre-write validation of proposed actions
   (label-set membership, the caps, the issues-only label rule, still-open
   recheck). Spec: phase 5 above.
 
-All need authenticated `gh` (sandbox disabled) except `rt-analyze`, the
-two generators, and `validate-actions`, which are offline — the last one
-judges the label snapshot it is handed rather than fetching its own.
+All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
+`rt-commits`, the two generators, and `validate-actions`, which are offline
+— the last one judges the label snapshot it is handed rather than fetching
+its own, and `rt-commits` reads a local checkout with `git log`.
 
 ## Relationship to rook-code-review
 

@@ -308,7 +308,10 @@ func (w *walker) page(nodes []PR) (bool, int, error) {
 	return allStale, newCount, nil
 }
 
-// windowCutoff turns --months into the oldest mergedAt the walk counts.
+// WindowCutoff turns --months into the oldest timestamp a mine counts, and the
+// window's length in whole days. It is the one window arithmetic of the kb
+// refresh: the walk here and rtcommits' git-log mine both call it, so their
+// provenance blocks describe the same window.
 //
 // RoundToEven, not Round: the window has to land on the same day the Python
 // fetch layer picked, and round() in Python is half-to-even. AddDate, not a
@@ -316,17 +319,21 @@ func (w *walker) page(nodes []PR) (bool, int, error) {
 // years, which turned a large --months into a cutoff in the future that
 // silently dropped all history. Windows outside Python's datetime range are
 // rejected rather than resolved into a year the state file cannot express.
-func windowCutoff(now time.Time, months float64) (time.Time, error) {
+//
+// A non-positive months is NOT rejected here — it yields a cutoff in the future
+// and an empty window, matching the Python layer. A caller for which that is
+// nonsense rejects it before calling; rtcommits.Mine does.
+func WindowCutoff(now time.Time, months float64) (time.Time, int, error) {
 	days := math.RoundToEven(months * daysPerMonth)
 	if math.IsNaN(days) || math.Abs(days) > maxWindowDays {
-		return time.Time{}, fmt.Errorf("--months=%v is out of range (%v days)", months, days)
+		return time.Time{}, 0, fmt.Errorf("--months=%v is out of range (%v days)", months, days)
 	}
 	cutoff := now.UTC().AddDate(0, 0, -int(days))
 	if y := cutoff.Year(); y < 1 || y > 9999 {
-		return time.Time{}, fmt.Errorf("--months=%v puts the cutoff in year %d, outside 1..9999",
+		return time.Time{}, 0, fmt.Errorf("--months=%v puts the cutoff in year %d, outside 1..9999",
 			months, y)
 	}
-	return cutoff, nil
+	return cutoff, int(days), nil
 }
 
 func (f *Fetcher) walk(ctx context.Context) (_ *State, err error) {
@@ -334,7 +341,7 @@ func (f *Fetcher) walk(ctx context.Context) (_ *State, err error) {
 	if err != nil {
 		return nil, err
 	}
-	cutoff, err := windowCutoff(f.Now(), f.Opts.Months)
+	cutoff, _, err := WindowCutoff(f.Now(), f.Opts.Months)
 	if err != nil {
 		return nil, err
 	}

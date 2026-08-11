@@ -51,7 +51,7 @@ var repoMeta = map[string]bool{
 	"ADOPTERS.md": true, "CODE-OWNERS": true, "README.md": true,
 	"OWNERS.md": true, "SECURITY.md": true, "LICENSE": true,
 	".gitignore": true, ".github/PULL_REQUEST_TEMPLATE.md": true,
-	"mkdocs.yml": true,
+	"mkdocs.yml": true, "CONTRIBUTING.md": true, "AGENTS.md": true,
 }
 
 // summaryAreas are echoed to stderr as a smoke test of the run.
@@ -143,7 +143,12 @@ func baseName(p string) string {
 	return p[strings.LastIndex(p, "/")+1:]
 }
 
-func areasFor(p string) map[string]bool {
+// AreasFor maps one repo-relative path to the v3 area taxonomy. It is the
+// deterministic layer rook-triage's references/label-map.md table specifies,
+// and rook-triage's phase 0 stamps its answer into snapshot.json via
+// sweep-prefetch; changing a rule here changes both, and the table is that
+// change's spec.
+func AreasFor(p string) map[string]bool {
 	out := map[string]bool{}
 	if strings.Contains(strings.ToLower(p), "cosi") {
 		out["object-cosi"] = true
@@ -233,10 +238,32 @@ func areasFor(p string) map[string]bool {
 	return out
 }
 
-func isBot(login string) bool {
+// IsBot is the kb refresh's bot rule, and takes a GitHub LOGIN: the bare "bot"
+// suffix is unambiguous on a login but would swallow a human display name, so a
+// caller holding something else (rtcommits, mining git identities) must decide
+// for itself what it may hand over.
+func IsBot(login string) bool {
 	ll := strings.ToLower(login)
 	return hasAnyPrefix(ll, bots...) || strings.Contains(ll, "copilot") ||
 		strings.HasSuffix(ll, "bot") || strings.HasSuffix(ll, "[bot]")
+}
+
+// AreasForPaths classifies a changed-path set, returning the areas in
+// allAreas order so a stamped snapshot and a re-run agree byte for byte.
+func AreasForPaths(paths []string) []string {
+	hit := map[string]bool{}
+	for _, p := range paths {
+		for a := range AreasFor(p) {
+			hit[a] = true
+		}
+	}
+	out := make([]string, 0, len(hit))
+	for _, a := range allAreas {
+		if hit[a] {
+			out = append(out, a)
+		}
+	}
+	return out
 }
 
 var codeOwnersKey = regexp.MustCompile(`^(approvers|reviewers):`)
@@ -359,9 +386,10 @@ func ParseISO(s string) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("invalid isoformat timestamp: %q", s)
 }
 
-// ageDays is (now - merged).days: whole days, floored toward minus infinity the
-// way timedelta normalization does.
-func ageDays(now, merged time.Time) int {
+// AgeDays is (now - merged).days: whole days, floored toward minus infinity the
+// way timedelta normalization does. It is the input to the recency weighting
+// here and in rtcommits, which weights commits on the same boundaries.
+func AgeDays(now, merged time.Time) int {
 	const secPerDay = 86400
 	sec := now.Unix() - merged.Unix()
 	days, rem := sec/secPerDay, sec%secPerDay
@@ -468,7 +496,7 @@ func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 			return nil, fmt.Errorf("PR #%d mergedAt: %w", pr.Number, err)
 		}
 		w := 0.25
-		switch age := ageDays(now, merged); {
+		switch age := AgeDays(now, merged); {
 		case age <= 182:
 			w = 1.0
 		case age <= 365:
@@ -496,7 +524,7 @@ func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 				continue
 			}
 			paths = append(paths, n.Path)
-			for a := range areasFor(n.Path) {
+			for a := range AreasFor(n.Path) {
 				prAreas[a] = true
 			}
 		}
@@ -514,7 +542,7 @@ func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 				continue
 			}
 			login := r.Author.Login
-			if login == "" || login == author || isBot(login) {
+			if login == "" || login == author || IsBot(login) {
 				continue
 			}
 			events = append(events, login)
