@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -83,7 +84,7 @@ func newTestFetcher(opts Options, s *stub) *Fetcher {
 	return f
 }
 
-func runWalk(t *testing.T, opts Options, replies ...reply) (*stub, string) {
+func runWalkErr(t *testing.T, opts Options, replies ...reply) (*stub, string, error) {
 	t.Helper()
 	if opts.OutDir == "" {
 		opts.OutDir = t.TempDir()
@@ -104,10 +105,16 @@ func runWalk(t *testing.T, opts Options, replies ...reply) (*stub, string) {
 		opts.MaxPages = 10
 	}
 	s := &stub{t: t, replies: replies}
-	if err := newTestFetcher(opts, s).Run(context.Background()); err != nil {
+	return s, opts.OutDir, newTestFetcher(opts, s).Run(context.Background())
+}
+
+func runWalk(t *testing.T, opts Options, replies ...reply) (*stub, string) {
+	t.Helper()
+	s, dir, err := runWalkErr(t, opts, replies...)
+	if err != nil {
 		t.Fatalf("Run: %v", err)
 	}
-	return s, opts.OutDir
+	return s, dir
 }
 
 func readLines(t *testing.T, dir string) []string {
@@ -353,6 +360,121 @@ func TestWalkRejectsMalformedRepo(t *testing.T) {
 	}
 }
 
+// A GraphQL null repository — the answer to a misspelled or inaccessible name,
+// carrying no `errors` array — must not be certified as an empty history.
+func TestWalkRejectsNullRepository(t *testing.T) {
+	rate := `"rateLimit":{"cost":1,"remaining":4000,"resetAt":"2026-01-01T01:00:00Z"}`
+	for _, tc := range []struct{ name, page string }{
+		{"null repository", `{"repository":null,` + rate + `}`},
+		{"absent repository", `{` + rate + `}`},
+		{"null pullRequests", `{"repository":{"pullRequests":null},` + rate + `}`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			_, dir, err := runWalkErr(t, Options{}, reply{data: tc.page})
+			if err == nil {
+				t.Fatal("walk certified a null repository as an empty history")
+			}
+			if !strings.Contains(err.Error(), "rook/rook") {
+				t.Errorf("error = %v, want it to name the repo", err)
+			}
+			wantNoStateFile(t, dir)
+		})
+	}
+}
+
+// hasNextPage with no endCursor would re-issue the cursorless query, spin until
+// the max-pages net and still write a state file a consumer would read.
+func TestWalkRejectsMissingEndCursor(t *testing.T) {
+	for _, pageInfo := range []string{
+		`{"hasNextPage":true}`,
+		`{"hasNextPage":true,"endCursor":null}`,
+		`{"hasNextPage":true,"endCursor":""}`,
+	} {
+		t.Run(pageInfo, func(t *testing.T) {
+			page := `{"repository":{"pullRequests":{"pageInfo":` + pageInfo + `,
+			  "nodes":[{"number":11,"title":"p","mergedAt":"2025-01-01T00:00:00Z",
+			    "updatedAt":"2025-01-02T00:00:00Z","author":{"login":"a"},
+			    "files":{"pageInfo":{"hasNextPage":false},"nodes":[]},
+			    "reviews":{"pageInfo":{"hasNextPage":false},"nodes":[]}}]}},
+			  "rateLimit":{"cost":1,"remaining":4000,"resetAt":"2026-01-01T01:00:00Z"}}`
+			s, dir, err := runWalkErr(t, Options{}, reply{data: page})
+			if err == nil {
+				t.Fatal("walk accepted hasNextPage with no endCursor")
+			}
+			if !strings.Contains(err.Error(), "endCursor") {
+				t.Errorf("error = %v, want it to name the missing cursor", err)
+			}
+			if len(s.queries) != 1 {
+				t.Errorf("issued %d queries, want 1 (no cursorless re-walk)", len(s.queries))
+			}
+			wantNoStateFile(t, dir)
+		})
+	}
+}
+
+func TestWindowCutoff(t *testing.T) {
+	for _, tc := range []struct {
+		months float64
+		want   string
+	}{
+		{24, "2024-01-01T00:00:00+00:00"},
+		{0.5, "2025-12-17T00:00:00+00:00"},
+		{3600, "1725-12-21T00:00:00+00:00"},
+		{4000, "1692-08-19T00:00:00+00:00"},
+		{24276, "0002-10-18T00:00:00+00:00"},
+		{-24000, "4026-03-17T00:00:00+00:00"},
+	} {
+		got, err := windowCutoff(fixedNow, tc.months)
+		if err != nil {
+			t.Errorf("windowCutoff(%v): %v", tc.months, err)
+			continue
+		}
+		if isoformat(got) != tc.want {
+			t.Errorf("windowCutoff(%v) = %s, want %s", tc.months, isoformat(got), tc.want)
+		}
+	}
+	// Each of these overflowed Python's datetime; none may resolve to a date.
+	for _, months := range []float64{66000, -100000, 1e9, math.NaN(), math.Inf(1)} {
+		if got, err := windowCutoff(fixedNow, months); err == nil {
+			t.Errorf("windowCutoff(%v) = %s, want an error", months, isoformat(got))
+		}
+	}
+}
+
+// The overflow symptom end to end: scaled into a nanosecond Duration, a
+// 4000-month window wrapped to a cutoff in 2277 that dropped every PR read.
+func TestWalkLargeMonthsKeepsCutoffInThePast(t *testing.T) {
+	page := `{"repository":{"pullRequests":{"pageInfo":{"hasNextPage":false,"endCursor":"X"},
+	  "nodes":[{"number":1,"title":"ancient","mergedAt":"1900-01-01T00:00:00Z",
+	    "updatedAt":"1900-01-02T00:00:00Z","author":{"login":"a"},
+	    "files":{"pageInfo":{"hasNextPage":false},"nodes":[{"path":"go.mod"}]},
+	    "reviews":{"pageInfo":{"hasNextPage":false},"nodes":[]}}]}},
+	  "rateLimit":{"cost":1,"remaining":4000,"resetAt":"2026-01-01T01:00:00Z"}}`
+	_, dir := runWalk(t, Options{Months: 4000}, reply{data: page})
+
+	st := decodeState(t, dir)
+	if st.Cutoff != "1692-08-19T00:00:00+00:00" {
+		t.Errorf("cutoff = %q, want the Python window 1692-08-19", st.Cutoff)
+	}
+	if st.Counted != 1 {
+		t.Errorf("counted = %d, want 1 (a 1900 PR is inside a 4000-month window)", st.Counted)
+	}
+}
+
+func TestWalkRejectsUnrepresentableWindow(t *testing.T) {
+	s, dir, err := runWalkErr(t, Options{Months: 1e9})
+	if err == nil {
+		t.Fatal("walk accepted a window no calendar can express")
+	}
+	if len(s.queries) != 0 {
+		t.Errorf("issued %d queries before rejecting the window", len(s.queries))
+	}
+	if _, err := os.Stat(filepath.Join(dir, PRsFile)); !os.IsNotExist(err) {
+		t.Errorf("%s was created: %v", PRsFile, err)
+	}
+	wantNoStateFile(t, dir)
+}
+
 func TestDeepFetchPatchesRecordsAndMovesFlags(t *testing.T) {
 	dir := t.TempDir()
 	writeFile(t, filepath.Join(dir, PRsFile), line101+"\n"+line102+"\n")
@@ -472,6 +594,36 @@ func TestDeepFetchLeavesOutputAloneOnError(t *testing.T) {
 	}
 }
 
+func TestDeepFetchRejectsMissingEndCursor(t *testing.T) {
+	dir := t.TempDir()
+	jsonl := line101 + "\n" + line102 + "\n"
+	writeFile(t, filepath.Join(dir, PRsFile), jsonl)
+	state := `{"repo":"rook/rook","truncations":[{"number":102,"kind":"files","mergedAt":"x"}]}`
+	writeFile(t, filepath.Join(dir, StateFile), state)
+
+	page := `{"repository":{"pullRequest":{"files":{"pageInfo":{"hasNextPage":true},
+	  "nodes":[{"path":"pkg/operator/ceph/object/rgw.go"}]}}}}`
+	s := &stub{t: t, replies: []reply{{data: page}}}
+	f := newTestFetcher(Options{OutDir: dir, Repo: "rook/rook", DeepFetchOnly: true}, s)
+	err := f.Run(context.Background())
+	if err == nil {
+		t.Fatal("deep fetch accepted hasNextPage with no endCursor")
+	}
+	if !strings.Contains(err.Error(), "deep-fetch PR 102 files") ||
+		!strings.Contains(err.Error(), "endCursor") {
+		t.Errorf("error = %v, want it to name the PR, the field and the missing cursor", err)
+	}
+	if len(s.queries) != 1 {
+		t.Errorf("issued %d deep queries, want 1 (no cursorless re-fetch)", len(s.queries))
+	}
+	if got := readStateFile(t, dir); got != state {
+		t.Errorf("state was rewritten after a failure:\n%s", got)
+	}
+	if got := strings.Join(readLines(t, dir), "\n") + "\n"; got != jsonl {
+		t.Errorf("JSONL was rewritten after a failure:\n%s", got)
+	}
+}
+
 func TestWalkThenDeepFetch(t *testing.T) {
 	dir := t.TempDir()
 	s, _ := runWalk(t, Options{OutDir: dir, DeepFetch: true},
@@ -514,6 +666,13 @@ func TestSplitRepo(t *testing.T) {
 		if _, _, err := splitRepo(bad); err == nil {
 			t.Errorf("splitRepo(%q) accepted", bad)
 		}
+	}
+}
+
+func wantNoStateFile(t *testing.T, dir string) {
+	t.Helper()
+	if _, err := os.Stat(filepath.Join(dir, StateFile)); !os.IsNotExist(err) {
+		t.Errorf("%s exists after a refused walk (err=%v)", StateFile, err)
 	}
 }
 

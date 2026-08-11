@@ -1,0 +1,36 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": false, "endCursor": "PRCURSOR1" },
+      "nodes": [
+        {
+          "number": 91,
+          "title": "build: split the operator image",
+          "state": "OPEN",
+          "isDraft": false,
+          "updatedAt": "2026-08-04T09:00:00Z",
+          "createdAt": "2026-07-04T09:00:00Z",
+          "author": { "login": "erin" },
+          "authorAssociation": "MEMBER",
+          "baseRefName": "master",
+          "mergeable": "MERGEABLE",
+          "reviewDecision": null,
+          "additions": 300,
+          "deletions": 20,
+          "changedFiles": 140,
+          "labels": { "nodes": [] },
+          "assignees": { "nodes": [] },
+          "files": {
+            "pageInfo": { "hasNextPage": true, "endCursor": "FILECURSOR1" },
+            "nodes": [{ "path": "images/ceph/Makefile" }]
+          },
+          "latestReviews": { "nodes": [] },
+          "reviewRequests": { "nodes": [] },
+          "commits": {
+            "nodes": [{ "commit": { "statusCheckRollup": null } }]
+          }
+        }
+      ]
+    }
+  }
+}

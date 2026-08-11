@@ -192,10 +192,7 @@ func (c *Client) snapshotPRs(ctx context.Context, opts SnapshotOptions) ([]*PRIt
 	if err != nil {
 		return nil, err
 	}
-	items := make([]*PRItem, 0, len(nodes))
-	for _, n := range nodes {
-		items = append(items, shapePR(n))
-	}
+	items := dedupePRs(nodes)
 	// The batched query caps contexts and files at one page each; anything
 	// that hit the cap is re-fetched on its own so the counts stay exact.
 	for _, item := range items {
@@ -216,6 +213,29 @@ func (c *Client) snapshotPRs(ctx context.Context, opts SnapshotOptions) ([]*PRIt
 		}
 	}
 	return items, nil
+}
+
+// dedupePRs collapses repeated PR numbers exactly as the items map they end up
+// in would: the last node wins, at the position the number was first seen.
+//
+// A cursor walk can hand back the same PR on two pages when the corpus shifts
+// under it. Deduping has to precede the per-item re-fetch below: run that
+// re-fetch per node instead and the duplicate burns a second gh call, and the
+// copy that survives carries CI state and files from that later fetch rather
+// than from the single pass every other item gets.
+func dedupePRs(nodes []prNode) []*PRItem {
+	items := make([]*PRItem, 0, len(nodes))
+	at := make(map[int]int, len(nodes))
+	for _, n := range nodes {
+		item := shapePR(n)
+		if i, seen := at[item.Number]; seen {
+			items[i] = item
+			continue
+		}
+		at[item.Number] = len(items)
+		items = append(items, item)
+	}
+	return items
 }
 
 func (c *Client) fetchIssueNodes(ctx context.Context, opts SnapshotOptions) ([]issueNode, error) {
@@ -300,8 +320,8 @@ func (c *Client) paginateContexts(ctx context.Context, number int) (*string, []C
 			"pageInfo { hasNextPage endCursor } nodes { %s } } } } } } } } }",
 			quote(c.Owner), quote(c.Name), number, after(cursor), ctxNode)
 		var wrap struct {
-			Repository struct {
-				PullRequest struct {
+			Repository *struct {
+				PullRequest *struct {
 					Commits struct {
 						Nodes []struct {
 							Commit struct {
@@ -317,6 +337,9 @@ func (c *Client) paginateContexts(ctx context.Context, number int) (*string, []C
 		}
 		if err := c.query(ctx, q, &wrap); err != nil {
 			return nil, nil, err
+		}
+		if wrap.Repository == nil || wrap.Repository.PullRequest == nil {
+			return nil, nil, fmt.Errorf("graphql response for pull request %d contexts carried no repository.pullRequest", number)
 		}
 		commits := wrap.Repository.PullRequest.Commits.Nodes
 		if len(commits) == 0 || commits[0].Commit.StatusCheckRollup == nil {
@@ -340,8 +363,8 @@ func (c *Client) paginateFiles(ctx context.Context, number int) ([]string, error
 			"pageInfo { hasNextPage endCursor } nodes { path } } } } }",
 			quote(c.Owner), quote(c.Name), number, after(cursor))
 		var wrap struct {
-			Repository struct {
-				PullRequest struct {
+			Repository *struct {
+				PullRequest *struct {
 					Files nodeBlock[struct {
 						Path string `json:"path"`
 					}] `json:"files"`
@@ -350,6 +373,12 @@ func (c *Client) paginateFiles(ctx context.Context, number int) ([]string, error
 		}
 		if err := c.query(ctx, q, &wrap); err != nil {
 			return nil, err
+		}
+		// Without this the null unmarshals to an empty page that reads as
+		// "pagination finished", and the caller replaces a real file list with
+		// an empty one flagged complete.
+		if wrap.Repository == nil || wrap.Repository.PullRequest == nil {
+			return nil, fmt.Errorf("graphql response for pull request %d files carried no repository.pullRequest", number)
 		}
 		block := wrap.Repository.PullRequest.Files
 		for _, f := range block.Nodes {

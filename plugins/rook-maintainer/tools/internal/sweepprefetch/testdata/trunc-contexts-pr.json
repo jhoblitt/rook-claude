@@ -1,0 +1,60 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": false, "endCursor": "PRCURSOR1" },
+      "nodes": [
+        {
+          "number": 92,
+          "title": "ci: widen the canary matrix",
+          "state": "OPEN",
+          "isDraft": false,
+          "updatedAt": "2026-08-05T09:00:00Z",
+          "createdAt": "2026-07-05T09:00:00Z",
+          "author": { "login": "erin" },
+          "authorAssociation": "MEMBER",
+          "baseRefName": "master",
+          "mergeable": "MERGEABLE",
+          "reviewDecision": null,
+          "additions": 8,
+          "deletions": 2,
+          "changedFiles": 1,
+          "labels": { "nodes": [] },
+          "assignees": { "nodes": [] },
+          "files": {
+            "pageInfo": { "hasNextPage": false, "endCursor": null },
+            "nodes": [{ "path": ".github/workflows/canary-integration-test.yml" }]
+          },
+          "latestReviews": { "nodes": [] },
+          "reviewRequests": { "nodes": [] },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "PENDING",
+                    "contexts": {
+                      "pageInfo": { "hasNextPage": true, "endCursor": "CTXCURSOR1" },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "name": "build",
+                          "status": "IN_PROGRESS",
+                          "conclusion": null,
+                          "checkSuite": {
+                            "databaseId": 9,
+                            "createdAt": "2026-08-05T08:00:00Z",
+                            "workflowRun": { "workflow": { "name": "canary" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

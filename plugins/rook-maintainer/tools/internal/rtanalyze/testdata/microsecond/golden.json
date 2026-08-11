@@ -1,0 +1,139 @@
+{
+ "data": {
+  "generated_from": "4 merged PRs back to 2025-01-01",
+  "areas": {
+   "object": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "object-multisite": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "object-cosi": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "object-bucket-claims": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-mon": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-osd": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-mgr": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-dashboard": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "filesystem": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-nfs": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "csi": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "block": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "helm": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "docs": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "design": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ci": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "test": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "crd": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "networking": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "nvmeof": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-external": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "discover": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "monitoring": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "build": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "core": {
+    "reviewers": [
+     {
+      "login": "reviewer-b",
+      "weighted_reviews": 0.75,
+      "raw": 3
+     },
+     {
+      "login": "reviewer-a",
+      "weighted_reviews": 0.5,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 1,
+      "title": "core: recent change"
+     },
+     {
+      "number": 4,
+      "title": "core: old change three"
+     },
+     {
+      "number": 3,
+      "title": "core: old change two"
+     },
+     {
+      "number": 2,
+      "title": "core: old change one"
+     }
+    ]
+   }
+  },
+  "authors_last_merged": {
+   "author-x": "2026-01"
+  }
+ },
+ "flags": []
+}

@@ -339,6 +339,11 @@ func LoadPRs(path string) ([]*PR, error) {
 // ParseISO parses the ISO-8601 forms datetime.fromisoformat accepts here, after
 // the same "Z" -> "+00:00" rewrite rt_analyze.py applies. A naive timestamp is
 // rejected: Python cannot subtract it from the aware mergedAt either.
+//
+// The result is truncated to microseconds because datetime is microsecond-
+// precision and fromisoformat drops any further digits: keeping Go's nanoseconds
+// would let a 7th fractional digit in --now shift ageDays by one, which moves a
+// PR across a recency-weight boundary and reorders the reviewer ranking.
 func ParseISO(s string) (time.Time, error) {
 	norm := strings.ReplaceAll(s, "Z", "+00:00")
 	for _, layout := range []string{
@@ -348,7 +353,7 @@ func ParseISO(s string) (time.Time, error) {
 		"2006-01-02 15:04Z07:00",
 	} {
 		if t, err := time.Parse(layout, norm); err == nil {
-			return t, nil
+			return t.Truncate(time.Microsecond), nil
 		}
 	}
 	return time.Time{}, fmt.Errorf("invalid isoformat timestamp: %q", s)
@@ -757,6 +762,11 @@ func (t *tally) report(opts Options) areaReport {
 // rankReviewers orders an area's reviewers by weight, then raw count, then
 // lowercased login — and where even that ties, by the order the reviewer was
 // first seen, which is what Python's stable sort fell back on.
+//
+// Known, accepted divergence: ToLower is simple case mapping where str.lower()
+// is full, so U+0130 folds to "i" here but to "i" plus a combining dot in
+// Python, which can break a tie the other way. GitHub logins are ASCII
+// alphanumeric plus hyphen, so no real login reaches it.
 func rankReviewers(revs []*reviewerStat, top int) []*reviewerStat {
 	out := make([]*reviewerStat, len(revs))
 	copy(out, revs)

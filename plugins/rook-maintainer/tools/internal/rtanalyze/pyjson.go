@@ -251,6 +251,10 @@ func pyReprCounts(counts []countedType) string {
 
 // pyStrNumber renders a JSON number the way str() renders the int or float
 // json.load produced from it; a missing or null value prints as None.
+//
+// Known, accepted divergence: Python ints are unbounded, so a count past int64
+// falls through to float64 here and prints rounded. rt-fetch cannot count that
+// high on a 64-bit platform; only a hand-edited state file reaches it.
 func pyStrNumber(n *json.Number) string {
 	if n == nil {
 		return "None"

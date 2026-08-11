@@ -17,9 +17,12 @@ const goldenNow = "2026-08-01T00:00:00Z"
 // float weighting plus map iteration order are exactly where a rewrite drifts
 // silently. Regenerate only against the Python, never from this code.
 func TestGoldenMatchesPython(t *testing.T) {
-	res := analyzeFixture(t, 15)
+	assertMatchesGolden(t, analyzeFixture(t, 15), "testdata")
+}
 
-	want, err := os.ReadFile(filepath.Join("testdata", "golden.json"))
+func assertMatchesGolden(t *testing.T, res *Result, dir string) {
+	t.Helper()
+	want, err := os.ReadFile(filepath.Join(dir, "golden.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -27,7 +30,7 @@ func TestGoldenMatchesPython(t *testing.T) {
 		t.Errorf("document differs from Python golden:\n%s", firstDiff(got, string(want)))
 	}
 
-	wantErr, err := os.ReadFile(filepath.Join("testdata", "golden.stderr"))
+	wantErr, err := os.ReadFile(filepath.Join(dir, "golden.stderr"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,6 +72,57 @@ func analyzeFixture(t *testing.T, top int) *Result {
 		t.Fatal(err)
 	}
 	return res
+}
+
+// A --now carrying a 7th fractional digit below the mergedAt's used to floor
+// ageDays one day short of Python's, dropping the PR into the 1.0 recency
+// bucket and putting the wrong reviewer on top. testdata/microsecond/golden.*
+// come from rt_analyze.py run on the same fixture with the same --now.
+func TestSubMicrosecondNowRanksLikePython(t *testing.T) {
+	now, err := ParseISO("2026-08-01T00:00:00.0000004Z")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if now.Nanosecond() != 0 {
+		t.Errorf("ParseISO kept %d ns, want microsecond truncation", now.Nanosecond())
+	}
+
+	dir := filepath.Join("testdata", "microsecond")
+	prs, err := LoadPRs(filepath.Join(dir, "rt_prs.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := LoadState(filepath.Join(dir, "rt_fetch_state.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err := Analyze(prs, state, Options{
+		OutPath: "rt_final.json",
+		Top:     15,
+		Now:     now,
+		Roster:  Lowered(ParseRoster("reviewer-a,reviewer-b")),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := "  core: reviewer-b(0.75/3), reviewer-a(0.5/1)"
+	if got := summaryLine(t, res, "core"); got != want {
+		t.Errorf("core ranking = %q, want %q", got, want)
+	}
+	assertMatchesGolden(t, res, dir)
+}
+
+func summaryLine(t *testing.T, res *Result, area string) string {
+	t.Helper()
+	prefix := "  " + area + ":"
+	for _, line := range res.Summary {
+		if strings.HasPrefix(line, prefix) {
+			return line
+		}
+	}
+	t.Fatalf("no %q line in summary %q", area, res.Summary)
+	return ""
 }
 
 func firstDiff(got, want string) string {

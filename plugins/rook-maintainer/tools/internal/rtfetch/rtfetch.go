@@ -38,6 +38,7 @@ const (
 	StateFile = "rt_fetch_state.json"
 
 	daysPerMonth    = 30.44
+	maxWindowDays   = 1e9
 	fetchAttempts   = 6
 	rateLimitFloor  = 200
 	maxRateLimitNap = time.Hour
@@ -147,25 +148,40 @@ type rateLimit struct {
 	ResetAt   string `json:"resetAt"`
 }
 
+type pageCursor struct {
+	HasNextPage bool   `json:"hasNextPage"`
+	EndCursor   string `json:"endCursor"`
+}
+
+// after returns the cursor to resume from. GitHub always sends an endCursor
+// with a hasNextPage page; an empty one would re-issue the cursorless query and
+// spin over page 1 until the max-pages net, emitting a state file that looks
+// consumable, so a missing cursor is treated as a malformed response.
+func (p pageCursor) after() (string, error) {
+	if p.EndCursor == "" {
+		return "", errors.New("hasNextPage with no endCursor")
+	}
+	return p.EndCursor, nil
+}
+
+type walkPage struct {
+	PageInfo pageCursor `json:"pageInfo"`
+	Nodes    []PR       `json:"nodes"`
+}
+
+// The pointers are load-bearing: GraphQL answers a misspelled or inaccessible
+// repo with a null repository and no `errors` array, and a value struct would
+// decode that into an empty page indistinguishable from an empty history.
 type walkResponse struct {
-	Repository struct {
-		PullRequests struct {
-			PageInfo struct {
-				HasNextPage bool   `json:"hasNextPage"`
-				EndCursor   string `json:"endCursor"`
-			} `json:"pageInfo"`
-			Nodes []PR `json:"nodes"`
-		} `json:"pullRequests"`
+	Repository *struct {
+		PullRequests *walkPage `json:"pullRequests"`
 	} `json:"repository"`
 	RateLimit rateLimit `json:"rateLimit"`
 }
 
 type connection[T any] struct {
-	PageInfo struct {
-		HasNextPage bool   `json:"hasNextPage"`
-		EndCursor   string `json:"endCursor"`
-	} `json:"pageInfo"`
-	Nodes []T `json:"nodes"`
+	PageInfo pageCursor `json:"pageInfo"`
+	Nodes    []T        `json:"nodes"`
 }
 
 type deepResponse[T any] struct {
@@ -292,15 +308,36 @@ func (w *walker) page(nodes []PR) (bool, int, error) {
 	return allStale, newCount, nil
 }
 
+// windowCutoff turns --months into the oldest mergedAt the walk counts.
+//
+// RoundToEven, not Round: the window has to land on the same day the Python
+// fetch layer picked, and round() in Python is half-to-even. AddDate, not a
+// scaled time.Duration: a Duration is int64 nanoseconds and wraps past ~292
+// years, which turned a large --months into a cutoff in the future that
+// silently dropped all history. Windows outside Python's datetime range are
+// rejected rather than resolved into a year the state file cannot express.
+func windowCutoff(now time.Time, months float64) (time.Time, error) {
+	days := math.RoundToEven(months * daysPerMonth)
+	if math.IsNaN(days) || math.Abs(days) > maxWindowDays {
+		return time.Time{}, fmt.Errorf("--months=%v is out of range (%v days)", months, days)
+	}
+	cutoff := now.UTC().AddDate(0, 0, -int(days))
+	if y := cutoff.Year(); y < 1 || y > 9999 {
+		return time.Time{}, fmt.Errorf("--months=%v puts the cutoff in year %d, outside 1..9999",
+			months, y)
+	}
+	return cutoff, nil
+}
+
 func (f *Fetcher) walk(ctx context.Context) (_ *State, err error) {
 	owner, name, err := splitRepo(f.Opts.Repo)
 	if err != nil {
 		return nil, err
 	}
-	// RoundToEven, not Round: the window has to land on the same day the
-	// Python fetch layer picked, and round() in Python is half-to-even.
-	cutoff := f.Now().UTC().Add(-time.Duration(math.RoundToEven(f.Opts.Months*daysPerMonth)) *
-		24 * time.Hour)
+	cutoff, err := windowCutoff(f.Now(), f.Opts.Months)
+	if err != nil {
+		return nil, err
+	}
 	if err := os.MkdirAll(f.Opts.OutDir, 0o755); err != nil {
 		return nil, err
 	}
@@ -344,6 +381,10 @@ func (f *Fetcher) walk(ctx context.Context) (_ *State, err error) {
 			stopReason = "repeated fetch errors"
 			break
 		}
+		if data.Repository == nil || data.Repository.PullRequests == nil {
+			return nil, fmt.Errorf("page %d: GraphQL returned a null repository for %q "+
+				"(misspelled name, or no access to it?)", pageNum, f.Opts.Repo)
+		}
 		block := data.Repository.PullRequests
 
 		allStale, newCount, err := w.page(block.Nodes)
@@ -373,7 +414,11 @@ func (f *Fetcher) walk(ctx context.Context) (_ *State, err error) {
 			stopReason = "no more pages (end of merged PR history)"
 			break
 		}
-		cursor = block.PageInfo.EndCursor
+		next, err := block.PageInfo.after()
+		if err != nil {
+			return nil, fmt.Errorf("page %d: %w", pageNum, err)
+		}
+		cursor = next
 	}
 
 	state := &State{
@@ -522,7 +567,11 @@ func deepFetchField[T any](ctx context.Context, f *Fetcher, owner, name string,
 		if !block.PageInfo.HasNextPage {
 			return nodes, nil
 		}
-		cursor = block.PageInfo.EndCursor
+		next, err := block.PageInfo.after()
+		if err != nil {
+			return nil, fmt.Errorf("deep-fetch PR %d %s: %w", number, field, err)
+		}
+		cursor = next
 	}
 }
 

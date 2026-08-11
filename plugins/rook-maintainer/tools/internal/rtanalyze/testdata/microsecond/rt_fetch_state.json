@@ -1,0 +1,12 @@
+{
+  "repo": "rook/rook",
+  "pages_fetched": 1,
+  "counted": 4,
+  "seen_total": 4,
+  "oldest_mergedat": "2025-01-01T00:00:00+00:00",
+  "cutoff": "2024-08-01T00:00:00+00:00",
+  "cap": 4000,
+  "stop_reason": "reached cutoff",
+  "errors": [],
+  "truncations": []
+}

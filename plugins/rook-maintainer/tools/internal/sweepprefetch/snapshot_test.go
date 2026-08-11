@@ -116,6 +116,74 @@ func TestSnapshotPRs(t *testing.T) {
 	}
 }
 
+// A cursor walk can serve the same PR on two pages. The duplicates have to
+// collapse before the per-item re-fetch, or the PR is re-fetched twice and the
+// copy that lands in snapshot.json is the second one — here a green rollup
+// that hides the red one Python recorded.
+func TestSnapshotPRsDedupesBeforeRefetch(t *testing.T) {
+	stub := newStub(t, "dup-prs-page1.json", "dup-prs-page2.json",
+		"dup-contexts-failing.json", "dup-contexts-passing.json")
+	res, got := snapshotInto(t, testClient(t, stub), SnapshotOptions{Kind: "prs"})
+
+	if len(stub.queries) != 3 {
+		t.Errorf("sent %d queries, want 3: two PR pages and one contexts re-fetch", len(stub.queries))
+	}
+	if res.Count != 1 || len(res.Truncated) != 0 {
+		t.Errorf("result = %+v, want 1 item and nothing truncated", res)
+	}
+
+	var file struct {
+		Items map[string]PRItem `json:"items"`
+	}
+	if err := json.Unmarshal([]byte(got), &file); err != nil {
+		t.Fatal(err)
+	}
+	if len(file.Items) != 1 {
+		t.Fatalf("snapshot.json carried %d items, want 1:\n%s", len(file.Items), got)
+	}
+	item, ok := file.Items["88"]
+	if !ok {
+		t.Fatalf("snapshot.json has no item 88:\n%s", got)
+	}
+	if item.CI.State == nil || *item.CI.State != "FAILURE" || item.CI.Failing != 1 || item.CI.Passing != 0 {
+		t.Errorf("ci = %+v, want the FAILURE rollup of the single re-fetch", item.CI)
+	}
+	// The last node of a duplicate pair wins, matching the dict the reference
+	// implementation built the items map with.
+	if item.UpdatedAt != "2026-08-03T11:30:00Z" {
+		t.Errorf("updatedAt = %q, want the second page's node", item.UpdatedAt)
+	}
+}
+
+// A pullRequest that resolves to null must abort the snapshot. Left to
+// unmarshal into a zero value it reads as an empty page with no next page,
+// which would overwrite real data with "no files, pagination complete".
+func TestSnapshotPRsRejectsNullPullRequest(t *testing.T) {
+	for _, tc := range []struct{ name, list, null string }{
+		{"files", "trunc-files-pr.json", "null-pull-request.json"},
+		{"files, null repository", "trunc-files-pr.json", "null-repository.json"},
+		{"contexts", "trunc-contexts-pr.json", "null-pull-request.json"},
+		{"contexts, null repository", "trunc-contexts-pr.json", "null-repository.json"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			stub := newStub(t, tc.list, tc.null)
+			dir := t.TempDir()
+			_, err := testClient(t, stub).Snapshot(context.Background(),
+				SnapshotOptions{SweepDir: dir, Kind: "prs"})
+			if err == nil {
+				t.Fatal("Snapshot() succeeded on a null pullRequest")
+			}
+			if !strings.Contains(err.Error(), "repository.pullRequest") {
+				t.Errorf("error = %v, want it to name the missing repository.pullRequest", err)
+			}
+			if _, err := os.Stat(filepath.Join(dir, "snapshot.json")); err == nil {
+				t.Error("a null pullRequest still wrote snapshot.json")
+			}
+			stub.done()
+		})
+	}
+}
+
 func TestSnapshotIssues(t *testing.T) {
 	stub := newStub(t, "open-issues.json")
 	res, got := snapshotInto(t, testClient(t, stub), SnapshotOptions{Kind: "issues"})
