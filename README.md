@@ -133,7 +133,7 @@ stale worktree knows a rebase is needed. Default-branch aware
 the trusted-source allowlist in `rook-code-review/references/docs-sync.md`,
 so the rule that untrusted content may not enter review context does not
 depend on the model choosing to follow it. Written in Go and built on first
-use; a denial explains itself and routes the caller to `check_links.py`,
+use; a denial explains itself and routes the caller to `check-links`,
 which answers liveness without fetching content at all. The launcher fails
 open so a missing toolchain cannot brick WebFetch, but every verdict the
 guard itself reaches fails closed.

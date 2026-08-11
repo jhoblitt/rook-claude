@@ -29,24 +29,29 @@ jobs:
           claude plugin validate .
           claude plugin validate plugins/rook-maintainer
 
-      - name: Compile Python scripts
-        run: |
-          find plugins -name '*.py' -print0 | xargs -0 -r python3 -m py_compile
-
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: plugins/rook-maintainer/hooks/webfetch-guard/go.mod
+          go-version-file: plugins/rook-maintainer/tools/go.mod
           cache: false
+
+      - name: No Python left behind
+        run: |
+          stray=$(find plugins -name '*.py' -not -path '*/testdata/*')
+          [ -z "$stray" ] || { printf 'the tools are Go now; port or delete:\n%s\n' "$stray"; exit 1; }
 
       - name: gofmt
         run: |
-          unformatted=$(gofmt -l plugins/rook-maintainer/hooks/webfetch-guard)
+          unformatted=$(gofmt -l \
+            plugins/rook-maintainer/hooks/webfetch-guard \
+            plugins/rook-maintainer/tools)
           [ -z "$unformatted" ] || { printf 'gofmt needed:\n%s\n' "$unformatted"; exit 1; }
 
       - name: go vet
         run: |
-          cd plugins/rook-maintainer/hooks/webfetch-guard && go vet ./...
+          for mod in plugins/rook-maintainer/hooks/webfetch-guard plugins/rook-maintainer/tools; do
+            (cd "$mod" && go vet ./...)
+          done
 
       - name: golangci-lint (webfetch-guard)
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
@@ -54,12 +59,20 @@ jobs:
           version: v2.12.2
           working-directory: plugins/rook-maintainer/hooks/webfetch-guard
 
+      - name: golangci-lint (tools)
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.12.2
+          working-directory: plugins/rook-maintainer/tools
+
       - name: go test
         run: |
-          cd plugins/rook-maintainer/hooks/webfetch-guard && go test ./...
+          for mod in plugins/rook-maintainer/hooks/webfetch-guard plugins/rook-maintainer/tools; do
+            (cd "$mod" && go test ./...)
+          done
 
-      - name: shellcheck hooks
-        run: shellcheck plugins/rook-maintainer/hooks/*.sh
+      - name: shellcheck
+        run: shellcheck plugins/rook-maintainer/hooks/*.sh plugins/rook-maintainer/tools/run.sh
 
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.18.1

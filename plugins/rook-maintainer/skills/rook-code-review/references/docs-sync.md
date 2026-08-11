@@ -72,9 +72,10 @@ tree — a doc that names real identifiers is checkable:
 For every URL the diff adds or edits — in docs, code, comments, godoc, error
 messages, examples, workflows:
 
-- **Liveness**: `${CLAUDE_PLUGIN_ROOT}/scripts/check_links.py` — NEVER
-  WebFetch. Pipe the diff (`git diff origin/master... | python3
-  check_links.py audit`, sandbox disabled); it probes status only and
+- **Liveness**: the `check-links` tool — NEVER WebFetch. Pipe the diff
+  (`git diff origin/master... | bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh"
+  check-links audit`, sandbox disabled — it resolves DNS itself, which the
+  sandbox blocks); it probes status only and
   returns no page content, so arbitrary diff-chosen hosts are safe to hit
   and no per-link approval is spent. `dead`, `soft-404-suspect` and `error`
   are findings; `suspicious` (control or format characters inside a URL) is

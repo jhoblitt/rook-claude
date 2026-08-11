@@ -7,7 +7,7 @@ belong to `rook-code-review`'s flag-and-confirm flow).
 
 Rules: intersect every proposal with live `gh label list` · ADD only —
 never remove a human-applied label · ≤5 per item · under-label.
-`scripts/validate_actions.py` re-checks the intersection and the cap
+`bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` re-checks the intersection and the cap
 immediately before any write, so a change to either has to land there too.
 
 ## Category (kind)
