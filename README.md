@@ -53,7 +53,7 @@ Skills (invoked automatically by task context, or explicitly as
 
 | Skill | What it does |
 |---|---|
-| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; adversarial design review of proposals and design docs with per-decision verdicts; bulk sweeps of open PRs with human-approved comment posting; PR takeover/supersede flows. |
+| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; adversarial design review of proposals and design docs with per-decision verdicts; PR takeover/supersede flows. |
 | `rook-triage` | Metadata-depth triage of issues and PRs: classify, label, dedupe, cross-link, route to reviewers. Advise-first; every GitHub write is human-approved per item. |
 | `rook-systemic-prs` | Drive a sweeping change (dead code, lint cleanups, migrations) as many small, independently reviewable PRs with aggressive subagent fan-out. |
 | `rook-conventions` | The house rules the other skills assume: DCO/commitlint mechanics, fork-only pushes, draft PRs, backport labeling, CRD regeneration, CI watching and burn-in policy. |
@@ -71,11 +71,10 @@ Agents (spawned by the skills; addressable as `rook-maintainer:<name>`):
 
 ```mermaid
 flowchart TD
-    T["target: working tree · branch · PR · open-PR sweep · design proposal"] --> M{mode}
+    T["target: working tree · branch · PR · design proposal"] --> M{mode}
 
     M -->|"diff (default)"| S1
     M -->|pre-pr| G1
-    M -->|sweep| W0
     M -->|proposal| P1
     M -->|takeover| K1["adopt in place, or supersede +<br/>per-ID outcome ledger"]
 
@@ -91,14 +90,6 @@ flowchart TD
         G1 -->|else| G3["READY / NOT READY"]
     end
 
-    subgraph SWEEP["sweep — many PRs"]
-        W0["scope + cost confirm"] --> W1["pre-gate, one haiku-class agent:<br/>skip automated / trivial / already-reviewed"]
-        W1 --> W2[["reviewer agent per PR — parallel;<br/>+ PR extras: CI, checklist, threads, backport"]]
-        W2 -->|as each completes| W3[["outer verify layer + gap sweep —<br/>pipelined per reviewer"]]
-        W3 --> W4["aggregate report + dashboard"]
-        W4 --> W5["per-PR human triage —<br/>only approved comments post"]
-    end
-
     subgraph PROP["proposal mode — a document, PR or not"]
         P1["intake: FULL doc at head OID<br/>(or local path / issue section)"] --> P2["enumerate decisions D1…"]
         P2 --> P3[["claim audit — concurrent<br/>with the attacker wave"]]
@@ -110,10 +101,7 @@ flowchart TD
     end
 
     G1 -.->|"runs the spine inline"| S1
-    W2 -.->|"each runs the spine inline —<br/>passes serial, verify two-layered"| S1
     G4 -.->|"escalates; verdict maps back"| P1
-    W4 -.->|"design-doc PR only (needs_proposal_review);<br/>findings merge back, IDs continue"| P1
-    W5 -.->|"mark for takeover"| K1
     K1 -.->|"supersede: pre-pr gate<br/>before any push"| G1
 ```
 
@@ -156,7 +144,7 @@ both are written to no-op everywhere they don't apply.
 
 - "review PR 12345"
 - "check this branch before I open a PR"
-- "sweep the open PRs and draft review comments"
+- "evaluate anxkhn's open PRs — triage them, then review each routed one"
 - "audit the assert vs require usage in this diff"
 - "take over PR 12345 — fix its description in place or supersede it"
 - "adversarially review this design proposal: ~/drafts/rgw-pools.md"

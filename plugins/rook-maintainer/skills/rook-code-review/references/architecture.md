@@ -7,7 +7,7 @@ failure scenarios. The bar is different, not lower: a design finding
 must name a rook-specific cost and survive its own refutation rubric —
 generic software taste ("consider a factory") is banned outright.
 
-Used by: evidence pass i (diff/pre-pr/sweep), the pre-pr decision
+Used by: evidence pass i (diff and pre-pr), the pre-pr decision
 attack (adversarial.md), and proposal mode (proposal.md), which fires
 all of it by definition.
 
@@ -144,7 +144,7 @@ the `design` domain; this contract is its equivalent bar:
   criterion keys on, never replaced by an invented alternative.
 - **Caps, force-ranked**: at most 3 design findings and 3 questions per
   target, enforced at report/ID assembly — the only stage that sees the
-  whole set (sweep shards verification across agents). Rank by cost;
+  whole set (verification may shard across agents). Rank by cost;
   the rest die unreported. Proposal mode swaps in its own cap: one
   concern per decision, 3 questions per target (proposal.md). A mixed
   doc+code target combines regimes, not budgets: the per-decision cap

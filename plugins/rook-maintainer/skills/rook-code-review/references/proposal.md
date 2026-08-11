@@ -108,16 +108,15 @@ the author is a separate step, each post explicitly approved
    a map, not a judgment: attackers may dispute its framing and attack
    decisions it missed — the repo path, their single mandate, and the
    reference files to read. Present the perspective list and cost
-   estimate (expect sweep-reviewer scale, ≈50k tokens per attacker,
+   estimate (≈50k tokens per attacker,
    plus the claim-audit agent(s) and a verifier wave per attacker —
    budget roughly twice the attacker line)
-   and confirm before launching — the sweep phase-0 pattern. Then
-   refresh the shared checkout once, here, in the orchestrator: the
-   panel shares one path and its attackers are forbidden to fetch
-   (`agents/design-attacker.md`).
+   and confirm before launching. Then refresh the shared checkout
+   once, here, in the orchestrator: the panel shares one path and its
+   attackers are forbidden to fetch (`agents/design-attacker.md`).
 6. **Synthesis.** No barrier before verification: as each attacker
    completes, spawn fresh verifier agents for its candidates
-   immediately (sweep phase-2 pattern) — refutation never waits for
+   immediately — refutation never waits for
    the slowest attacker and never runs in the orchestrator, which only
    dedupes, ranks, and maps. (In step 5's no-subagent fallback this
    becomes verification.md's inline rule: the orchestrator runs
@@ -132,8 +131,8 @@ the author is a separate step, each post explicitly approved
    directly under the verdict line.
 7. **Report** (contract below). A re-review of a revised proposal opens
    with the prior ledger (SKILL.md "Finding IDs"): D-numbers and
-   finding IDs are permanent for the life of the proposal. Inside a PR,
-   branch, or sweep target the doc is not a separate namespace — IDs
+   finding IDs are permanent for the life of the proposal. Inside a PR
+   or branch target the doc is not a separate namespace — IDs
    continue that target's sequences (SKILL.md "Finding IDs").
 
 ## State
@@ -146,7 +145,7 @@ SNAPSHOT, never the live doc: re-hash the live doc against the recorded
 sha256 first — on mismatch, finish the round against the snapshot and
 note the drift, or restart enumeration; never mix versions across one
 panel. A drift-noted round is HISTORICAL: its verdict never maps to
-READY, never finalizes a sweep PR, and never feeds a posting — only a
+READY, never finalizes a PR verdict, and never feeds a posting — only a
 fresh round against the current text (prior ledger carried, IDs
 continuing) certifies. Every gate result binds to the snapshot hash it
 reviewed.

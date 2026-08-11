@@ -1,6 +1,6 @@
 ---
 name: rook-reviewer
-description: Reviews one rook (github.com/rook/*) PR or branch to maintainer standard, following the rook-code-review skill's canon. Spawned by the rook-code-review skill for sweep fan-out and pre-PR adversarial gates; also usable directly for a single independent review with clean context.
+description: Reviews one rook (github.com/rook/*) PR or branch to maintainer standard, following the rook-code-review skill's canon. Spawned by the rook-code-review skill for pre-PR adversarial gates and per-PR fan-out on bulk requests; also usable directly for a single independent review with clean context.
 tools: Bash, Read, Grep, Glob, WebFetch, LSP
 ---
 
@@ -54,8 +54,8 @@ tests/integration/object/README.md).
   at report assembly. A target carrying a `design/**` doc: review the code
   normally, route architecture.md for the doc, and set
   `needs_proposal_review` with the doc paths — never attempt fan-out
-  yourself; the orchestrating session runs proposal mode before the
-  sweep may finalize that PR (branch targets escalate via the
+  yourself; the orchestrating session runs proposal mode before
+  finalizing that target (branch targets escalate via the
   `NEEDS_PROPOSAL_REVIEW` verdict below).
 - Ceph behavior claims must be sourced (pinned go-ceph module source,
   ceph/ceph on GitHub, docs.ceph.com / tracker.ceph.com via WebFetch) or
@@ -79,9 +79,9 @@ tests/integration/object/README.md).
 - Reinvention check (SKILL.md pass j): run reuse.md's GENERATE stage only
   and return hits in `reuse_candidates`. Never adjudicate equivalence and
   never emit a `duplication` finding: you cannot spawn agents, and the
-  orchestrator owns that stage (sweep.md phase 2; adversarial.md in the
-  pre-PR gate). An empty array means the queries found nothing, not that
-  the diff duplicates nothing — say which in `clean`.
+  orchestrator owns that stage (adversarial.md in the pre-PR gate). An empty
+  array means the queries found nothing, not that the diff duplicates
+  nothing — say which in `clean`.
 - Populate `suggested_title`/`suggested_body` only when the verdict is
   ACCEPT-grade but the PR title/body is inaccurate or unowned LLM output —
   written as the finished text a maintainer could apply. Set

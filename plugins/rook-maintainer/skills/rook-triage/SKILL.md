@@ -200,10 +200,9 @@ through the launcher, which builds it on first use:
 bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" <tool> [args...]
 ```
 
-Tools marked **shared** are also run by `rook-code-review`; a change there
-must keep both callers working, and each tool's package doc names its callers
-and what changing it obliges. The launcher fails loud — a non-zero exit is a
-real failure, never an empty result:
+Each tool's package doc names its callers and what changing it obliges.
+The launcher fails loud — a non-zero exit is a real failure, never an
+empty result:
 
 - `rt-fetch` — kb-refresh fetch of merged PRs (files+reviews JSONL +
   provenance/truncation state). Spec: `references/routing.md`.
@@ -214,7 +213,7 @@ real failure, never an empty result:
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
-- `sweep-prefetch` (**shared**) — phase-0 metadata snapshot (one
+- `sweep-prefetch` — phase-0 metadata snapshot (one
   batched GraphQL pass per corpus: titles, labels, assignees,
   authorAssociation, changed paths, reviews, CI rollup) plus the
   `classify-refs` subcommand for the cross-ref columns.
@@ -230,7 +229,7 @@ judges the label snapshot it is handed rather than fetching its own.
 
 ## Relationship to rook-code-review
 
-This skill sorts; `rook-code-review` judges. Hand the route-to-deep-review
-subset to its sweep as an explicit PR list. Takeover candidates are flagged
-here, executed there. The moment a request becomes "is this fix correct?",
-switch skills.
+This skill sorts; `rook-code-review` judges. Each PR in the
+route-to-deep-review subset gets its own `rook-code-review` review.
+Takeover candidates are flagged here, executed there. The moment a request
+becomes "is this fix correct?", switch skills.
