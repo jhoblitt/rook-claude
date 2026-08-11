@@ -110,8 +110,10 @@ commit in the series (`git log --format='%H %s' <base>..<head>`, then
   `.commitlintrc.json`'s enum AND fit that commit's dominant change — audit
   each subject, not just the first.
 - **Proofread the prose**: grammar, typos, spelling, imperative-mood
-  subject, and the wrapped-line trailer trap (a body line beginning
-  `word:` fails footer-leading-blank).
+  subject, and the wrapped-line trailer trap — the trigger set is
+  rook-conventions `references/commits.md`. The review-side delta: an
+  arbitrary `word:` at a line start does NOT trigger it, so flagging `Note:`
+  is a false positive.
 - **Series coherence**: the commits form a logical, reviewable sequence —
   regenerated artifacts land in the SAME commit as the source change that
   required them; fixup noise ("address review comments", "fix lint") that
