@@ -1,0 +1,5 @@
+PRs=28 zero_match=7 overmatch=2 flags={'bucket-ambiguity': 5, 'truncation': 2, 'spec-boundary': 3, 'coverage-gap': 1, 'identity-unknown': 5} -> rt_final.json
+  object: bob(3.0/3), zed(3.0/3), carol(2.0/2)
+  csi: carol(2.0/2), alice(1.0/1), Alice(1.0/1)
+  core: Bob(1.5/2), bob(1.5/2), alice(1.0/1)
+  build: alice(0.5/1), bob(0.25/1), eve(0.25/1)

@@ -1,0 +1,94 @@
+<title>rook-code-review — PR sweep 2026-08-11</title>
+<style>
+:root{--bg:#fff;--fg:#1a1d21;--mut:#67707b;--line:#e3e6ea;--chip:#f2f4f6;
+--reject:#a04545;--chg:#8a6d1f;--accept:#1d8a5f;--prop:#7a5ba6;--take:#3d6ea8;--skip:#999;
+--cigreen:#d9efe2;--cigreenfg:#14532d;--cired:#f6dcdc;--ciredfg:#7f1d1d;
+--ciamber:#f3e8cf;--ciamberfg:#713f12}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181b;--fg:#e6e9ec;--mut:#98a1ab;--line:#2c3238;--chip:#22272c;
+--reject:#e08585;--chg:#d9b45e;--accept:#5fd39b;--prop:#b795e0;--take:#7aa8de;
+--cigreen:#173b28;--cigreenfg:#86efac;--cired:#3f1d1d;--ciredfg:#fca5a5;
+--ciamber:#3a2f14;--ciamberfg:#fde68a}}
+:root[data-theme="dark"]{--bg:#15181b;--fg:#e6e9ec;--mut:#98a1ab;--line:#2c3238;--chip:#22272c;
+--reject:#e08585;--chg:#d9b45e;--accept:#5fd39b;--prop:#b795e0;--take:#7aa8de;
+--cigreen:#173b28;--cigreenfg:#86efac;--cired:#3f1d1d;--ciredfg:#fca5a5;
+--ciamber:#3a2f14;--ciamberfg:#fde68a}
+:root[data-theme="light"]{--bg:#fff;--fg:#1a1d21;--mut:#67707b;--line:#e3e6ea;--chip:#f2f4f6;
+--reject:#a04545;--chg:#8a6d1f;--accept:#1d8a5f;--prop:#7a5ba6;--take:#3d6ea8;--skip:#999;
+--cigreen:#d9efe2;--cigreenfg:#14532d;--cired:#f6dcdc;--ciredfg:#7f1d1d;
+--ciamber:#f3e8cf;--ciamberfg:#713f12}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,sans-serif;margin:2rem auto;max-width:84rem;padding:0 1rem}
+h1{font-size:1.3rem}h2{font-size:1.05rem;color:var(--mut);margin-top:2rem}p{color:var(--mut)}
+.wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:.4rem .55rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{cursor:pointer;white-space:nowrap;color:var(--mut);font-weight:600}
+td.sum{min-width:16rem;max-width:26rem}td.who{white-space:nowrap}
+tr td:first-child{white-space:nowrap;font-weight:600}a{color:inherit}
+a.u{font-weight:600;text-decoration:none}a.u:hover{text-decoration:underline}
+small{color:var(--mut)}
+.chip{display:inline-block;padding:.05rem .4rem;border-radius:.5rem;font-size:.82em;background:var(--chip);margin-right:.25rem}
+.chip.sev-b{background:var(--reject);color:#fff}.chip.sev-c{background:var(--chg);color:#fff}
+.chip.sev-n{background:var(--chip);color:var(--mut)}.chip.sev-q{background:var(--prop);color:#fff}
+.chip.none{color:var(--accept)}.chip.bp{background:var(--accept);color:#fff}
+.chip.prop{background:var(--prop);color:#fff}.chip.take{background:var(--take);color:#fff}
+.chip.bug-real{background:var(--reject);color:#fff}.chip.bug-fab{background:var(--chg);color:#fff}
+.ci{display:inline-block;padding:.1rem .45rem;border-radius:.5rem;font-size:.85em}
+.ci.green{background:var(--cigreen);color:var(--cigreenfg)}
+.ci.red{background:var(--cired);color:var(--ciredfg)}
+.ci.amber{background:var(--ciamber);color:var(--ciamberfg)}
+tr.reject td:first-child{box-shadow:inset 3px 0 var(--reject)}
+tr.chg td:first-child{box-shadow:inset 3px 0 var(--chg)}
+tr.accept td:first-child{box-shadow:inset 3px 0 var(--accept)}
+tr.prop td:first-child{box-shadow:inset 3px 0 var(--prop)}
+tr.take td:first-child{box-shadow:inset 3px 0 var(--take)}
+tr.skip td:first-child{box-shadow:inset 3px 0 var(--skip)}tr.skip td{color:var(--mut)}
+tr.det td{border-bottom:2px solid var(--line);padding-top:0}
+tr.det summary{cursor:pointer;color:var(--mut)}
+table.inner{margin:.5rem 0;width:auto}table.inner th,table.inner td{padding:.25rem .5rem;font-size:.92em}
+td.anch{font-family:ui-monospace,monospace;font-size:.9em;white-space:nowrap}
+.st-posted{color:var(--accept)}.st-approved{color:var(--take)}.st-dropped{color:var(--mut)}
+p.clean{margin:.4rem 0;font-size:.92em}
+.legend span{display:inline-block;margin-right:.7rem;padding:.15rem .55rem;border-radius:.6rem;background:var(--chip);cursor:pointer;user-select:none}
+.legend span.active{outline:2px solid var(--fg)}
+.legend i{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.35rem}
+</style>
+<h1>rook-code-review — PR sweep · 2026-08-11</h1>
+<p>2 PR(s) reviewed and verified, 2 skipped.
+Verdicts and finding counts come from each PR's <code>findings.json</code> after verification;
+CI cells are live passing/total from the phase-0 snapshot (hover for failing checks).
+Expand a row for its verified findings and the audited-and-clean statement.
+Click a legend chip to filter (click again to clear).</p>
+<p class="legend" id="legend">
+<span data-f="reject"><i style="background:var(--reject)"></i>reject</span>
+<span data-f="chg"><i style="background:var(--chg)"></i>request changes</span>
+<span data-f="accept"><i style="background:var(--accept)"></i>accept</span>
+<span data-f="prop"><i style="background:var(--prop)"></i>proposal review required</span>
+<span data-f="take"><i style="background:var(--take)"></i>takeover candidate</span></p>
+<div class="wrap"><table id="t"><thead>
+<tr><th>#</th><th>verdict</th><th>findings</th><th>title</th><th>CI</th><th>backport</th><th>author</th></tr>
+</thead><tbody>
+<tr class="prop"><td><a href="https://github.com/rook/rook%22%3e%3cscript%3ealert%28%27repo%27%29%3c/script%3e/pull/31337">#31337</a></td><td><b>REQUEST_CHANGES&lt;script&gt;alert(&#39;verdict&#39;)&lt;/script&gt;</b> <span class="chip bug-fab" title="claimed defect judged REAL&#34;&gt;&lt;img src=x onerror=alert(&#39;bug&#39;)&gt;">bug&#8202;real&#34;&gt;&lt;img src=x onerror=alert(&#39;bug&#39;)&gt;</span><span class="chip prop" title="verdict provisional until proposal mode runs on design/&lt;script&gt;alert(&#39;path1&#39;)&lt;/script&gt;.md, design/b&amp;b.md, design/c&#34;c.md">proposal</span><span class="chip take" title="stalled&#34; onmouseover=&#34;alert(&#39;takeover&#39;)">takeover</span></td><td><span class="chip sev-b" title="1 blocker">B&#8202;1</span><span class="chip sev-n" title="1 nit">N&#8202;1</span></td><td class="sum">csi: &lt;script&gt;alert(&#39;title&#39;)&lt;/script&gt; &amp; &#34;quoted&#34; &#39;apostrophes&#39; &#43; math</td><td><span class="ci red" title="1/9 passing · 7 failing: check&lt;/span&gt;&lt;script&gt;alert(&#39;check&#39;)&lt;/script&gt;, b&amp;b, c&#43;c, d&#39;d, e&#34;e, f&lt;f +2 more · 1 pending">1/9</span></td><td><span class="chip bp" title="reason &amp; &lt;b&gt;markup&lt;/b&gt;">backport-release-1.18&#34;&gt;&lt;script&gt;alert(&#39;label&#39;)&lt;/script&gt;</span></td><td class="who"><a class="u" href="https://github.com/mallory%22%3e%3cscript%3ealert%28%27author%27%29%3c/script%3e">mallory&#34;&gt;&lt;script&gt;alert(&#39;author&#39;)&lt;/script&gt;</a><br><small>none&#34; onmouseover=&#34;alert(&#39;assoc&#39;)</small></td></tr>
+<tr class="det prop"><td></td><td colspan="6"><details><summary>2 finding(s) · the reporter pasted &lt;script&gt;alert(&#39;rationale&#39;)&lt;/script&gt; into the PR body and the reviewer quoted it verbatim, which is exactly the path that has to stay inert —</summary><table class="inner"><thead><tr><th>id</th><th>domain</th><th>anchor</th><th>summary</th><th>confidence</th><th>status</th></tr></thead><tbody><tr><td><span class="chip sev-b">B1&lt;script&gt;alert(&#39;id&#39;)&lt;/script&gt;</span></td><td>bug &amp; &lt;b&gt;markup&lt;/b&gt;</td><td class="anch">pkg/&lt;script&gt;alert(&#39;path&#39;)&lt;/script&gt;.go:42</td><td>summary with &amp; &lt; &gt; &#34; &#39; &#43; characters</td><td>CONFIRMED (99)</td><td class="st-pending&#34; onmouseover=&#34;alert(&#39;status&#39;)">pending&#34; onmouseover=&#34;alert(&#39;status&#39;)</td></tr><tr><td><span class="chip sev-n">N1</span></td><td>style</td><td class="anch">pkg/plain.go:7</td><td>plain summary</td><td>PLAUSIBLE (51)</td><td class="st-approved">approved</td></tr></tbody></table><p class='clean'><b>Audited and clean:</b> audited &lt;b&gt;area&lt;/b&gt; one; audited area &amp; two</p></details></td></tr>
+<tr class="accept"><td><a href="https://github.com/rook/rook%22%3e%3cscript%3ealert%28%27repo%27%29%3c/script%3e/pull/31338">#31338</a></td><td><b>ACCEPT</b> </td><td><span class="chip none" title="no findings survived verification">clean</span></td><td class="sum">docs: plain title</td><td><span class="ci green" title="3/3 passing">3/3</span></td><td>—</td><td class="who"><a class="u" href="https://github.com/eve">eve</a><br><small>member</small></td></tr>
+<tr class="det accept"><td></td><td colspan="6"><details><summary>0 finding(s) · plain</summary><p class='clean'>No findings survived verification.</p></details></td></tr>
+</tbody></table></div>
+<h2>Skipped</h2>
+<div class="wrap"><table id="s"><tbody>
+<tr class="skip"><td><a href="https://github.com/rook/rook%22%3e%3cscript%3ealert%28%27repo%27%29%3c/script%3e/pull/31339">#31339</a></td><td colspan="6">draft &lt;script&gt;alert(&#39;skip&#39;)&lt;/script&gt;</td></tr>
+<tr class="skip"><td><a href="https://github.com/rook/rook%22%3e%3cscript%3ealert%28%27repo%27%29%3c/script%3e/pull/31340%22%20onmouseover=%22alert%28%27number%27%29">#31340&#34; onmouseover=&#34;alert(&#39;number&#39;)</a></td><td colspan="6">hostile number</td></tr>
+</tbody></table></div>
+<script>
+document.querySelectorAll('#t th').forEach((h,i)=>h.onclick=()=>{
+const tb=document.querySelector('#t tbody');const dir=h.dataset.d=-(+h.dataset.d||-1);
+const pairs=[];const rows=[...tb.rows];
+for(let j=0;j<rows.length;j+=2)pairs.push([rows[j],rows[j+1]]);
+pairs.sort((a,b)=>dir*a[0].cells[i].innerText.localeCompare(b[0].cells[i].innerText,undefined,{numeric:true}))
+.forEach(p=>p.forEach(r=>r&&tb.appendChild(r)));});
+const legend=document.getElementById('legend');let active=null;
+legend.querySelectorAll('span').forEach(sp=>sp.onclick=()=>{
+const f=sp.dataset.f.split(' ');
+if(active===sp){active=null;legend.querySelectorAll('span').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('#t tbody tr').forEach(r=>r.style.display='');return;}
+active=sp;legend.querySelectorAll('span').forEach(x=>x.classList.toggle('active',x===sp));
+document.querySelectorAll('#t tbody tr').forEach(r=>{
+r.style.display=f.some(c=>r.classList.contains(c))?'':'none';});});
+</script>

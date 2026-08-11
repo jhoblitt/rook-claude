@@ -285,7 +285,7 @@ func (p *Prober) do(ctx context.Context, method, target string) (int, string, er
 	if err != nil {
 		return 0, "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return resp.StatusCode, resp.Header.Get("Location"), nil
 }
 

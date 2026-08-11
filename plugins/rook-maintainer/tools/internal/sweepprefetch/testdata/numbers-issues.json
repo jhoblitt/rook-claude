@@ -1,0 +1,16 @@
+{
+  "repository": {
+    "n4": {
+      "number": 4,
+      "title": "docs: broken link",
+      "state": "CLOSED",
+      "updatedAt": "2026-08-04T10:00:00Z",
+      "createdAt": "2026-07-04T10:00:00Z",
+      "author": { "login": "gina" },
+      "labels": { "nodes": [{ "name": "docs" }] },
+      "assignees": { "nodes": [] },
+      "comments": { "totalCount": 2 }
+    },
+    "n30": null
+  }
+}

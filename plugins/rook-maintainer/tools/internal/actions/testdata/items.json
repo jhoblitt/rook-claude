@@ -1,0 +1,7 @@
+[
+  {"number": 101, "type": "issue", "state": "OPEN", "labels": [{"name": "bug"}]},
+  {"number": 102, "type": "pr", "state": "OPEN", "labels": [{"name": "ceph-osd"}]},
+  {"number": 103, "type": "issue", "state": "CLOSED", "labels": []},
+  {"number": 104, "type": "issue", "state": "open",
+   "labels": [{"name": "bug"}, {"name": "core"}, {"name": "docs"}, {"name": "object"}]}
+]

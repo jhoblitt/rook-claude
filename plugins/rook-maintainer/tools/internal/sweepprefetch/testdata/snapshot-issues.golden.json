@@ -1,0 +1,34 @@
+{
+ "fetched_at": "2026-08-10T12:00:00.123456+00:00",
+ "repo": "rook/rook",
+ "kind": "issues",
+ "items": {
+  "30": {
+   "number": 30,
+   "title": "osd: crash on start",
+   "state": "OPEN",
+   "updatedAt": "2026-08-03T10:00:00Z",
+   "createdAt": "2026-07-03T10:00:00Z",
+   "author": "dave",
+   "labels": [
+    "osd"
+   ],
+   "assignees": [
+    "erin",
+    "frank"
+   ],
+   "comments_total": 4
+  },
+  "4": {
+   "number": 4,
+   "title": "docs: broken link",
+   "state": "OPEN",
+   "updatedAt": "2026-08-04T10:00:00Z",
+   "createdAt": "2026-07-04T10:00:00Z",
+   "author": "",
+   "labels": [],
+   "assignees": [],
+   "comments_total": 0
+  }
+ }
+}

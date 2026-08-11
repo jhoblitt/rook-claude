@@ -1,0 +1,26 @@
+[
+ {
+  "number": 15003,
+  "kind": "bug",
+  "disposition": "keep-open — reproducible on v1.18; tracked by 14002 and #4123, superseded 19000",
+  "actions": ["ask for a must-gather", "re-test on 12001"],
+  "labels_proposed": ["ceph-mgr"],
+  "xlinks": [{"number": 15004}, {"number": 15004}, {"number": 15005}, "not-a-dict", {"title": "no number here"}],
+  "dups": [{"number": 15006}],
+  "routing": ["travisn"]
+ },
+ {
+  "number": 9001,
+  "kind": "support",
+  "disposition": "support — answered in the thread; nothing left to fix",
+  "actions": [],
+  "labels_proposed": []
+ },
+ {
+  "number": 4002,
+  "kind": "feature",
+  "disposition": "fix-open — PR 15004 carries the fix",
+  "actions": ["nudge the author"],
+  "xlinks": [{"number": 15004}]
+ }
+]

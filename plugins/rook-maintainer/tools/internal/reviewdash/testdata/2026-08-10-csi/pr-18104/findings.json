@@ -1,0 +1,21 @@
+{
+  "pr": 18104,
+  "verdict": "ACCEPT",
+  "rationale": "Correct, but the author has not responded in three weeks and the release branch needs this.",
+  "takeover_candidate": {
+    "flag": true,
+    "reason": "stalled 21 days with two review rounds unanswered"
+  },
+  "findings": [
+    {
+      "id": "N1",
+      "severity": "nit",
+      "domain": "docs",
+      "path": "Documentation/Upgrade/rook-upgrade.md",
+      "line": 30,
+      "summary": "mention the removed store type in the upgrade notes",
+      "confidence": 50,
+      "status": "pending"
+    }
+  ]
+}

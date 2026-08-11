@@ -1,0 +1,60 @@
+{
+  "repository": {
+    "pullRequest": {
+      "commits": {
+        "nodes": [
+          {
+            "commit": {
+              "statusCheckRollup": {
+                "state": "FAILURE",
+                "contexts": {
+                  "pageInfo": { "hasNextPage": true, "endCursor": "CTXCURSOR1" },
+                  "nodes": [
+                    {
+                      "__typename": "CheckRun",
+                      "name": "build",
+                      "status": "COMPLETED",
+                      "conclusion": "SUCCESS",
+                      "checkSuite": {
+                        "databaseId": 1,
+                        "createdAt": "2026-07-01T11:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    },
+                    {
+                      "__typename": "CheckRun",
+                      "name": "retired-matrix-job",
+                      "status": "COMPLETED",
+                      "conclusion": "FAILURE",
+                      "checkSuite": {
+                        "databaseId": 1,
+                        "createdAt": "2026-07-01T11:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    },
+                    {
+                      "__typename": "CheckRun",
+                      "name": "build",
+                      "status": "COMPLETED",
+                      "conclusion": "FAILURE",
+                      "checkSuite": {
+                        "databaseId": 2,
+                        "createdAt": "2026-08-01T09:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    },
+                    {
+                      "__typename": "StatusContext",
+                      "context": "codecov/patch",
+                      "state": "SUCCESS"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

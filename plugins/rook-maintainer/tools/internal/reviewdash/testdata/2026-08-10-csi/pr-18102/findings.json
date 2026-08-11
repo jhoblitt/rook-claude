@@ -1,0 +1,71 @@
+{
+  "pr": 18102,
+  "verdict": "REQUEST_CHANGES",
+  "bug": "REAL",
+  "rationale": "The placement-target lookup is right, but the nil zonegroup path panics and the new error is swallowed by the caller.",
+  "backport": {
+    "eligible": true,
+    "label": "backport-release-1.18",
+    "reason": "fixes a panic that reached the 1.18 release branch"
+  },
+  "needs_proposal_review": {"flag": false, "paths": []},
+  "takeover_candidate": {"flag": false, "reason": ""},
+  "findings": [
+    {
+      "id": "B1",
+      "severity": "blocker",
+      "domain": "bug",
+      "path": "pkg/operator/ceph/object/bucket/provisioner.go",
+      "line": 412,
+      "summary": "nil zonegroup dereference when the placement target is unset",
+      "confidence": 92,
+      "status": "approved"
+    },
+    {
+      "id": "C1",
+      "severity": "changes-requested",
+      "domain": "error-handling",
+      "path": "pkg/operator/ceph/object/bucket/provisioner.go",
+      "line": 455,
+      "summary": "the wrapped error is discarded, so the reconcile logs lose the cause",
+      "confidence": 71,
+      "status": "pending"
+    },
+    {
+      "id": "N1",
+      "severity": "nit",
+      "domain": "style",
+      "path": "pkg/operator/ceph/object/bucket/provisioner.go",
+      "summary": "prefer a table test over the three near-identical cases",
+      "confidence": 40,
+      "status": "pending"
+    },
+    {
+      "id": "Q1",
+      "severity": "question",
+      "domain": "design",
+      "summary": "should the placement target fall back to the zonegroup default or fail closed?",
+      "confidence": 0,
+      "status": "posted"
+    },
+    {
+      "id": "N2",
+      "severity": "nit",
+      "domain": "style",
+      "path": "pkg/operator/ceph/object/bucket/provisioner.go",
+      "line": 12,
+      "summary": "import grouping",
+      "confidence": 30,
+      "status": "dropped"
+    },
+    {
+      "id": "C2",
+      "domain": "tests",
+      "path": "pkg/operator/ceph/object/bucket/provisioner_test.go",
+      "line": 88,
+      "summary": "the new branch is untested",
+      "confidence": 64
+    }
+  ],
+  "clean": ["zonegroup cache invalidation", "bucket policy round trip"]
+}

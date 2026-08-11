@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "pullRequest": {
+      "files": {
+        "pageInfo": { "hasNextPage": false, "endCursor": "DF2" },
+        "nodes": [{ "path": "pkg/operator/ceph/object/realm.go" }]
+      }
+    }
+  }
+}

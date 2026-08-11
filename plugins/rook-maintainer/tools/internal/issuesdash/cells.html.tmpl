@@ -1,0 +1,18 @@
+{{/* Every row is emitted on one line: the page template separates rows with a
+single newline, so any newline inside "row" would land in the output. */}}
+
+{{define "row"}}<tr class="{{.Class}}"><td><a href="https://github.com/rook/rook/issues/{{.Number}}">#{{.Number}}</a></td><td>{{.Kind}}</td><td class="sum">{{.Title}}</td><td>{{template "ul" .Actions}}</td><td class="d">{{template "disposition" .Disposition}}</td><td>{{template "refs" .Refs}}</td><td>{{template "logins" .Assignees}}</td><td>{{template "mentions" .Mentions}}</td><td>{{template "labels" .Labels}}</td></tr>{{end}}
+
+{{define "ul"}}<ul class="list">{{if .Items}}{{range .Items}}<li>{{if $.Bold}}<b>{{.}}</b>{{else}}{{.}}{{end}}</li>{{end}}{{else}}<li>—</li>{{end}}</ul>{{end}}
+
+{{define "logins"}}<ul class="list">{{if .}}{{range .}}<li>{{template "login" .}}</li>{{end}}{{else}}<li>—</li>{{end}}</ul>{{end}}
+
+{{define "login"}}{{if eq . "copilot-pull-request-reviewer"}}<a class="u" href="https://github.com/apps/copilot-pull-request-reviewer">Copilot</a>{{else}}<a class="u" href="https://github.com/{{.}}">{{.}}</a>{{end}}{{end}}
+
+{{define "refs"}}{{if .}}<ul class="list">{{range .}}<li><a href="https://github.com/rook/rook/pull/{{.}}">#{{.}}</a></li>{{end}}</ul>{{else}}—{{end}}{{end}}
+
+{{define "disposition"}}{{range .}}{{if .Ref}}<a href="https://github.com/rook/rook/issues/{{.Ref}}">#{{.Ref}}</a>{{else}}{{.Text}}{{end}}{{end}}{{end}}
+
+{{define "mentions"}}{{if .}}<div class="rv">{{range .}}<div class="r"><span class="nm">{{if .More}}…{{else}}{{template "login" .Login}}{{end}}</span>{{if .More}}<span class="st ment">+{{.More}} more</span>{{else if .Proposed}}<span class="st prop" title="proposed @-mention (triage routing)"><i>◇</i></span>{{else}}<span class="st ment" title="mentioned in thread"><i>@</i></span>{{end}}</div>{{end}}</div>{{else}}—{{end}}{{end}}
+
+{{define "labels"}}<div class="rev"><div class="sub"><span class="k">current</span>{{template "ul" .Current}}</div>{{if .Proposed.Items}}<div class="sub"><span class="k">propose +</span>{{template "ul" .Proposed}}</div>{{end}}</div>{{end}}

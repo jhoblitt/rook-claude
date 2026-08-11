@@ -1,0 +1,25 @@
+[
+ {
+  "number": 12010,
+  "kind": "bug",
+  "disposition": "close-candidate — duplicate of #15003; refutation in report.md",
+  "actions": ["propose close as duplicate"],
+  "labels_proposed": ["duplicate", "wontfix"],
+  "dups": [{"number": 15003}, {"number": 15004}],
+  "routing": ["BlaineEXE", "sp98"]
+ },
+ {
+  "number": 18999,
+  "kind": "docs",
+  "disposition": "needs-info — no logs, no version",
+  "actions": ["ask for the operator log"],
+  "routing": ["evil\" onmouseover=alert(1) <b>"]
+ },
+ {
+  "number": 7777,
+  "kind": "bug",
+  "disposition": "upstream — ceph tracker 65001 — not a rook bug",
+  "actions": ["watch the tracker"],
+  "xlinks": [{"number": 4002}]
+ }
+]

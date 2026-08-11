@@ -1,0 +1,95 @@
+{
+ "fetched_at": "2026-08-10T12:00:00.123456+00:00",
+ "repo": "rook/rook",
+ "kind": "prs",
+ "items": {
+  "10": {
+   "number": 10,
+   "title": "core: drop the <old> guard & retry",
+   "state": "OPEN",
+   "isDraft": false,
+   "updatedAt": "2026-08-01T10:00:00Z",
+   "createdAt": "2026-07-01T10:00:00Z",
+   "author": "alice",
+   "authorAssociation": "MEMBER",
+   "baseRefName": "master",
+   "mergeable": "MERGEABLE",
+   "reviewDecision": null,
+   "additions": 42,
+   "deletions": 7,
+   "changedFiles": 3,
+   "labels": [
+    "ceph",
+    "bug"
+   ],
+   "assignees": [
+    "bob"
+   ],
+   "files": [
+    "pkg/operator/a.go",
+    "pkg/operator/b.go",
+    "Documentation/c.md"
+   ],
+   "files_truncated": false,
+   "reviews": {
+    "latest": [
+     {
+      "login": "bob",
+      "state": "APPROVED"
+     }
+    ],
+    "requested": [
+     "carol",
+     "storage-team"
+    ]
+   },
+   "ci": {
+    "state": "FAILURE",
+    "passing": 3,
+    "failing": 2,
+    "pending": 0,
+    "total": 5,
+    "failed": [
+     "build",
+     "ci/jenkins"
+    ],
+    "truncated": false
+   }
+  },
+  "2": {
+   "number": 2,
+   "title": "docs: fix a typo",
+   "state": "OPEN",
+   "isDraft": true,
+   "updatedAt": "2026-08-02T10:00:00Z",
+   "createdAt": "2026-07-02T10:00:00Z",
+   "author": "",
+   "authorAssociation": "CONTRIBUTOR",
+   "baseRefName": "master",
+   "mergeable": "CONFLICTING",
+   "reviewDecision": "APPROVED",
+   "additions": 1,
+   "deletions": 1,
+   "changedFiles": 1,
+   "labels": [],
+   "assignees": [],
+   "files": [
+    "Documentation/x.md"
+   ],
+   "files_truncated": false,
+   "reviews": {
+    "latest": [],
+    "requested": []
+   },
+   "ci": {
+    "state": null,
+    "passing": 0,
+    "failing": 0,
+    "pending": 0,
+    "total": 0,
+    "failed": [],
+    "truncated": false
+   }
+  }
+ }
+}
