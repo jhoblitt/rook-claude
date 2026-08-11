@@ -67,8 +67,10 @@ feedback already sitting on a PR under review.
   assert-vs-require) depends on what follows a call site within its closure.
 - **The local checkout is read-only when reviewing others' work.** Use
   `git show origin/master:<path>`, `gh pr view/diff`; never check out
-  branches, modify files, or run `make` targets that write. Fetch first so
-  `origin/master` is current.
+  branches, modify files, or run `make` targets that write. Fetching is the
+  one write, and it belongs to the session that owns the checkout: refresh
+  `origin/master` once before any fan-out, never from inside an agent that
+  shares the path.
 - **gh needs the sandbox disabled** (`dangerouslyDisableSandbox: true`) —
   rook-conventions "Harness notes" has the reason.
 - **Scale the machinery to the target.** Small diff (< ~300 changed lines):
@@ -82,6 +84,12 @@ feedback already sitting on a PR under review.
   fallback (`references/proposal.md`). Decision
   weight overrides line count: any decision-magnitude trigger
   (`references/architecture.md`) forces the design pass at any diff size.
+- **Cap fan-out width** — rook-conventions "Harness notes" is canon.
+  Reviewers, verifiers, adjudicators, gap sweeps and attacker panels all
+  draw from that one budget. A proposal run is a panel plus its claim
+  audit, so it fills the budget by itself: run one at a time, never one per
+  flagged PR (a quick-pass run — a single attacker — may pair with a
+  second).
 - **Tier models by role.** Judgment — finding, attacking, refuting,
   adjudicating — stays on the session model. Mechanical stages run
   haiku-class: sweep's pre-gate, staleness validation, claim-table

@@ -42,6 +42,12 @@ independently usable without a prior triage pass.
 
 ## Phase 1 — fan out reviewers
 
+- **Refresh the shared checkout, here, once.** `git fetch` the rook remote
+  in the checkout the reviewers will be handed, before any of them launch.
+  This is the orchestrator's write to make: the agents share one path and
+  are forbidden to fetch (SKILL.md ground rules, `agents/rook-reviewer.md`).
+  Do it at fan-out rather than at phase 0, so `origin/master` is current at
+  review time no matter how long scope confirmation took.
 - **Pre-gate** (haiku-class agent, one for the whole batch — SKILL.md
   "Tier models by role"): STATE checks only — the candidate is still
   open and non-draft, and not already carrying the user's review at the
@@ -57,8 +63,8 @@ independently usable without a prior triage pass.
 - One **rook-reviewer** agent per PR (`subagent_type:
   "rook-maintainer:rook-reviewer"`;
   fall back to `general-purpose` carrying the same contract inline if the
-  type is unavailable). Launch in the background, ~6–8 concurrent; queue the
-  rest as slots free.
+  type is unavailable). Launch in the background at the SKILL.md
+  "Cap fan-out width" budget; queue the rest as slots free.
 - Each agent receives ONLY: the PR number/repo, its pooled `baseRefName` from
   phase 0, the local checkout path (READ-ONLY — `git show
   origin/master:<path>` for pre-change content, never checkout/build), which
@@ -167,10 +173,13 @@ a **Proposal review required** list (every PR whose reviewer set
 `needs_proposal_review` — its verdict is provisional until proposal mode
 has run on the doc and the merged findings recompute it; when the list
 is non-empty, offer ONCE via AskUserQuestion, with the combined cost
-estimate, to run proposal mode on every flagged PR in parallel now —
-the runs overlap with the user reading the report and the merged
-findings recompute verdicts before triage; declined PRs keep the
-phase-4 gate);
+estimate, to run proposal mode on the flagged PRs now — ONE run at a
+time, because a run's attacker panel plus its claim audit fills the
+SKILL.md "Cap fan-out width" budget by itself (a quick-pass run, one
+attacker, may pair with a second), the rest queuing rather than every
+flagged PR launching at once; the runs overlap with the user reading
+the report and the merged findings recompute verdicts before triage;
+declined PRs keep the phase-4 gate);
 a **Backport candidates** list (every PR with `backport.eligible` — PR,
 label, one-line reason — for the maintainer to confirm and label);
 cross-cutting observations (recurring defect patterns, contributor-level

@@ -19,6 +19,13 @@ contains ONLY:
 - the instruction to run this skill's review spine, steps 1–3 (routing
   table, evidence passes, verification), PLUS the attack passes below.
 
+`git fetch` before dispatching, in the authoring session, so the spine's
+`git show origin/master:<path>` reads run against a current base. That
+write is the session's, never an agent's — gate agents share the branch
+checkout, and their briefs say nothing about refreshing precisely because
+it is already done (SKILL.md "The local checkout is read-only"). It
+applies to the single-agent gate as much as to the split one below.
+
 The spine's gap sweep needs a fresh agent the gate agent cannot spawn:
 the authoring session launches it on the gate's report — mechanical
 orchestration, never judging — and its candidates verify like any

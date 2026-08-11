@@ -217,6 +217,17 @@ would reach a session that is deleting code.
   error, and it silently downgrades semantic navigation to grep. This is the
   normative statement of why; the skills and agent definitions carry only the
   bare instruction to load it first.
+- Fan-out width is ~6–8 agents in flight per SESSION — not per sweep,
+  corpus, or phase — with the rest queued and launched as slots free. Count
+  AGENTS, not tasks: a nested fan-out spends a whole panel from that one
+  budget, so a stage spawning panels runs one panel at a time rather than
+  one per item. When a slot frees, give it to a downstream stage of
+  something already in flight before the next queued item; otherwise a
+  "spawn verifiers as each reviewer completes" pipeline silently degrades
+  into a barrier once the queue is longer than the budget. A confirmation
+  gate bounds cost, not width — state both. This is the normative statement
+  of the width; the skills and agent definitions carry only their own
+  nested-fan-out delta.
 - Git ops that write `.git/config` — `git worktree add`, `git push -u`,
   `--set-upstream` — can fail inside a sandbox that denies
   `.git/config.lock`; plain `git commit` works sandboxed.
