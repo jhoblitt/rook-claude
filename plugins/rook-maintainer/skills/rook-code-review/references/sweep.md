@@ -24,17 +24,34 @@ All `gh` calls: `dangerouslyDisableSandbox: true`.
    Pass k adds no per-PR call either: the `gh pr view --json` each reviewer
    already makes for its checklist and maintainer signals carries `body`
    (`references/cross-references.md`).
-2. Present the pool: total count; how many already have a review from the
-   user; breakdown by author / label / age; total diff size.
+2. Present the pool — a script reduces the snapshot; never read it into
+   context to count:
+   ```sh
+   bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch pool-summary <sweep-dir> --viewer <login>
+   ```
+   It emits a ready-to-present markdown block — total, how many are drafts,
+   how many already carry the user's review, breakdowns by author /
+   association / label / age, total diff size — from typed fields, so the
+   counts are exact. Paste it; do not re-render or re-derive it, the same
+   rule the dashboards carry.
+   Measured on a 52-PR sweep: 67,637 B of `snapshot.json` becomes 537 B.
+   `--json` gives the same numbers machine-readably and `--now` pins the age
+   buckets. It is offline, so it runs sandboxed and is cheap to re-run —
+   `--numbers` restricts it to a set, which is how step 3 shows the pool that
+   survived the filters.
 3. Prompt (AskUserQuestion) before ANY fan-out:
    - skip PRs the user already reviewed? (offer both ways every sweep —
      re-review picks up new pushes, skip focuses on the unreviewed);
    - additional filters: author, label, paths, updated-since, explicit PR
      numbers, count cap;
-   - show the resulting PR list and the cost estimate
+   - show the resulting PR list — `pool-summary --numbers` over the survivors,
+     for the same reason step 2 uses it — and the cost estimate
      (~1 reviewer agent per PR + ~1 verifier per 2–3 findings + ~1
      gap-sweep agent per PR, whose candidates add verifiers; observed
-     ≈50k tokens per reviewer agent) and get explicit confirmation.
+     ≈50k tokens per reviewer agent) and get explicit confirmation. Estimate
+     against the PRs that will actually be reviewed: the phase-1 pre-gate
+     drops drafts, so a pool whose summary reports drafts is smaller than its
+     total.
 
 A `rook-triage` run may supply the explicit PR list (its
 route-to-deep-review subset) via the filters above; sweep remains
@@ -65,6 +82,12 @@ independently usable without a prior triage pass.
   fall back to `general-purpose` carrying the same contract inline if the
   type is unavailable). Launch in the background at the SKILL.md
   "Cap fan-out width" budget; queue the rest as slots free.
+- Build the briefs by projecting the SELECTED PRs out of `snapshot.json`, one
+  at a time — never by reading the file whole, which would hand back the
+  context phase 0 just saved (`{baseRefName, files}` alone is 28% of it):
+  ```sh
+  jq -r --arg n "<number>" '.items[$n] | {baseRefName, files}' <sweep-dir>/snapshot.json
+  ```
 - Each agent receives ONLY: the PR number/repo, its pooled `baseRefName` from
   phase 0, the local checkout path (READ-ONLY — `git show
   origin/master:<path>` for pre-change content, never checkout/build), which

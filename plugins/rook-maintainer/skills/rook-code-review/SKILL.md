@@ -227,7 +227,10 @@ failure, never an empty result:
   set). Spec: `references/posting.md`.
 - `sweep-prefetch` (**shared**) — sweep phase-0 metadata snapshot: one
   batched GraphQL pass for the whole candidate pool, including the changed
-  paths phase 1 routes references from. Spec: `references/sweep.md`.
+  paths phase 1 routes references from. Its `pool-summary` subcommand
+  reduces that snapshot to the phase-0 aggregates offline, so the pool is
+  presented without the snapshot entering context. Spec:
+  `references/sweep.md`.
 - `gen-review-dashboard` (**shared** location, code-review only) — sweep
   phase-3 `dashboard.html` from `findings.json` + `snapshot.json`. Spec:
   its docstring, which also fixes the `findings.json` shape.
