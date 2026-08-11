@@ -68,11 +68,12 @@ the body already carries it, and is empty only when none is warranted.
    the number is a PR.
 4. `discovery` — tracking-issue search: is there an issue this change
    resolves that it references nowhere? Run the search shape defined in
-   rook-triage's `references/cross-linking.md`, capped at **2 queries in
-   sweep mode** — GitHub's search API allows 30 requests per minute, and
-   eight concurrent reviewers each spending that file's full per-item budget
-   burst past it. SKIP when the PR already carries an active closing keyword
-   to an open issue: the issue it should reference is already referenced.
+   rook-triage's `references/cross-linking.md`, capped at **2 queries per
+   reviewer when reviewers run concurrently** — GitHub's search API allows
+   30 requests per minute, and several concurrent reviewers each spending
+   that file's full per-item budget burst past it. SKIP when the PR already
+   carries an active closing keyword to an open issue: the issue it should
+   reference is already referenced.
 5. `competing-PR` — for each OPEN issue this change references or `discovery`
    found, is another open PR already claiming it? One REST call per
    such issue, `gh api repos/<o>/<r>/issues/<n>/timeline`, reading its

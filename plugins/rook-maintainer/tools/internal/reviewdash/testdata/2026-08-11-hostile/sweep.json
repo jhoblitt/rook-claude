@@ -1,6 +1,0 @@
-{
-  "skipped": [
-    {"number": 31339, "reason": "draft <script>alert('skip')</script>"},
-    {"number": "31340\" onmouseover=\"alert('number')", "reason": "hostile number"}
-  ]
-}

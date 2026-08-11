@@ -8,7 +8,7 @@ maintainer trust. Nothing reaches the report without passing this file.
 
 For each candidate finding, attempt to REFUTE it — do not attempt to confirm
 it. Re-read the code assuming the author was right and you misread. In
-fan-out modes (sweep, large diffs) this is an independent agent per finding
+fan-out reviews (large diffs, pre-pr panels) this is an independent agent per finding
 (or per small group of related findings) that receives the finding and the
 code, not the reviewer's reasoning. Inline (small diffs), it is a distinct
 second pass over each candidate; state in the report that verification was
@@ -51,7 +51,7 @@ never reshapes and never drops are all architecture.md's "Verification
 rubric (design findings)" — none of it is restated here.
 
 architecture.md's caps are enforced at report/ID assembly,
-the only stage that sees the whole target (sweep shards verification
+the only stage that sees the whole target (verification may shard
 across agents).
 
 ## False-positive exclusions

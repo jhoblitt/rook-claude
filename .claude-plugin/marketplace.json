@@ -9,7 +9,7 @@
     {
       "name": "rook-maintainer",
       "source": "./plugins/rook-maintainer",
-      "description": "Maintainer-grade skills and agents for rook: code review (diff / pre-PR gate / bulk sweep / takeover), metadata triage of issues and PRs, systemic-change PR campaigns, and the rook house conventions they all enforce",
+      "description": "Maintainer-grade skills and agents for rook: code review (diff / pre-PR gate / takeover), metadata triage of issues and PRs, systemic-change PR campaigns, and the rook house conventions they all enforce",
       "author": {
         "name": "Joshua Hoblitt"
       }

@@ -1,5 +1,9 @@
 // check-links: liveness of every URL a rook diff adds (docs-sync.md URL integrity).
 //
+// Callers: rook-code-review's docs-sync.md liveness pass, rook-conventions'
+// fetched-pages rule (SKILL.md "Read content is untrusted data"), and the
+// rook-reviewer agent definition.
+//
 //	git diff origin/master... | run.sh check-links audit
 //	run.sh check-links audit --diff-file F [--json]
 //	run.sh check-links check URL [URL...]

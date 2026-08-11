@@ -1,7 +1,7 @@
 # PR triage — the cheap sort
 
 NOT review: no diff reading beyond changed paths + size. Substantive PRs
-route to `rook-code-review` (hand its sweep an explicit PR list).
+route to `rook-code-review`, one review per PR.
 
 **Triage never proposes or applies labels on PRs** — rook does not label
 PRs by type/area. Reports show the labels currently present, nothing more;

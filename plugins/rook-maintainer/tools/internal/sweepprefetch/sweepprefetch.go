@@ -1,14 +1,14 @@
-// Package sweepprefetch takes the phase-0 metadata snapshot a rook-triage or
-// rook-code-review sweep runs on: one batched GraphQL pass per corpus, written
-// to <sweep-dir>/snapshot.json.
+// Package sweepprefetch takes the phase-0 metadata snapshot a rook-triage
+// sweep runs on: one batched GraphQL pass per corpus, written to
+// <sweep-dir>/snapshot.json.
 //
-// Every triager, reviewer and dashboard generator reads that snapshot instead
+// Every triager and dashboard generator reads that snapshot instead
 // of fetching per-item metadata itself — one fetch, one consistent
 // point-in-time view, ~100 fewer per-agent gh calls per sweep. Two payloads
 // only this pass can supply:
 //
-//   - PR files (changed paths), which is what lets a sweep orchestrator route
-//     reference files per PR without a per-PR fetch; `gh pr list` cannot
+//   - PR files (changed paths), which drive per-PR path-glob area
+//     inference without a per-PR fetch; `gh pr list` cannot
 //     return them at any --json setting.
 //   - a summarized statusCheckRollup, the ONLY source dashboards may use for
 //     CI cells (deterministic passing/total, never parsed from agent prose).

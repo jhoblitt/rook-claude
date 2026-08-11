@@ -76,7 +76,7 @@ maintainer's own PRs. Addressing review feedback in code (edits, commits,
 pushes) is fine on its own; a "done" reply or reviewer ping is not.
 An ambiguous "respond to X" is NOT authorization — draft the reply in chat
 for the maintainer to post. The per-item approval flows in this plugin
-(triage actions, sweep review posting, takeover writes) satisfy this rule
+(triage actions, review posting, takeover writes) satisfy this rule
 by design: each post is shown and approved in-session before it executes.
 
 ## Signing GitHub comments
@@ -106,9 +106,9 @@ Four sanctioned exceptions, all approval-gated:
 
 1. Fixing a mergify-opened backport PR of a PR the maintainer authored
    (`references/backporting.md`).
-2. `rook-code-review` review posting — sweep triage, or a single-PR
-   review the maintainer explicitly asked to post; each comment approved
-   in-session. Mechanics, including the COMMENT-only rule, live in that
+2. `rook-code-review` review posting — a review the maintainer
+   explicitly asked to post; each comment approved in-session.
+   Mechanics, including the COMMENT-only rule, live in that
    skill's `references/posting.md`.
 3. `rook-code-review` takeover writes — each write shown and approved
    in-session.

@@ -74,7 +74,7 @@ Malice-shaped code patterns (report neutrally as findings with the evidence):
   cousin).
 - Tests disabled, skipped, or weakened alongside functional changes.
 
-Author context (sweep mode collects it; single-PR mode notes it):
+Author context (note it on every PR target):
 
 - `authorAssociation` (FIRST_TIME_CONTRIBUTOR / CONTRIBUTOR / MEMBER),
   account PR history in this repo, burst patterns (many PRs in hours).

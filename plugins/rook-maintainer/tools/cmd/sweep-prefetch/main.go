@@ -1,7 +1,5 @@
-// sweep-prefetch: phase-0 metadata snapshot for a rook-triage or
-// rook-code-review sweep. Both call it — rook-triage's pipeline phase 0 and
-// rook-code-review's sweep phase 0 — so a change here must keep both callers
-// working.
+// sweep-prefetch: phase-0 metadata snapshot for a rook-triage sweep;
+// its pipeline phase 0 is the sole caller.
 //
 //	run.sh sweep-prefetch snapshot SWEEP_DIR --kind prs|issues \
 //	    [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]
