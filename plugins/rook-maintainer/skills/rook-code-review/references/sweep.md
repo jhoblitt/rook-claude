@@ -144,8 +144,9 @@ per-PR numbering over the verified survivors, recorded as each finding's
 Draft file frontmatter: `pr, id, path, line, side, severity, domain,
 confidence, status: pending|approved|edited|dropped|posted`; body = exactly
 the comment text to post, opening with the bold ID tag (`**C3/bug** — …`)
-so the posted comment is addressable from the PR thread. The user edits
-these files directly.
+so the posted comment is addressable from the PR thread, and carrying a
+few-line fix as a ```suggestion block (posting.md "Suggestion blocks").
+The user edits these files directly.
 
 Aggregate report: TLDR verdict counts; tables grouped
 ACCEPT / REQUEST CHANGES / REJECT (PR, one-line what-it-does, key finding
