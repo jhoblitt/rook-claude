@@ -1,0 +1,13 @@
+{
+  "repository": {
+    "pullRequest": {
+      "reviews": {
+        "pageInfo": { "hasNextPage": false, "endCursor": "DR1" },
+        "nodes": [
+          { "author": { "login": "bob" }, "state": "APPROVED" },
+          { "author": { "login": "dave" }, "state": "CHANGES_REQUESTED" }
+        ]
+      }
+    }
+  }
+}

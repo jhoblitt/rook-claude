@@ -201,21 +201,29 @@ triggers → multiple references.
 ## Scripts
 
 Deterministic tooling — run these, don't re-derive them by hand or hand
-them to an agent. Paths are this skill's `scripts/` unless marked
-**shared**; shared tooling lives at `${CLAUDE_PLUGIN_ROOT}/scripts/`, and
-each shared script's docstring names its callers and what changing it
-obliges:
+them to an agent. Every tool is a Go binary under
+`${CLAUDE_PLUGIN_ROOT}/tools/cmd/`, invoked through the launcher, which
+builds it on first use:
 
-- `validate_anchors.py` — pre-post validation of a review payload's inline
+```sh
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" <tool> [args...]
+```
+
+Tools marked **shared** are also run by `rook-triage`; a change there must
+keep both callers working, and each tool's package doc names its callers and
+what changing it obliges. The launcher fails loud — a non-zero exit is a real
+failure, never an empty result:
+
+- `validate-anchors` — pre-post validation of a review payload's inline
   anchors against the PR diff (path/line/side membership, multi-line key
   set). Spec: `references/posting.md`.
-- `sweep_prefetch.py` (**shared**) — sweep phase-0 metadata snapshot: one
+- `sweep-prefetch` (**shared**) — sweep phase-0 metadata snapshot: one
   batched GraphQL pass for the whole candidate pool, including the changed
   paths phase 1 routes references from. Spec: `references/sweep.md`.
-- `gen_review_dashboard.py` (**shared** location, code-review only) — sweep
+- `gen-review-dashboard` (**shared** location, code-review only) — sweep
   phase-3 `dashboard.html` from `findings.json` + `snapshot.json`. Spec:
   its docstring, which also fixes the `findings.json` shape.
-- `check_links.py` (**shared**) — liveness of every URL the diff adds, plus
+- `check-links` (**shared**) — liveness of every URL the diff adds, plus
   the control/format-character scan on those URLs. Replaces WebFetch for
   this pass entirely: it returns a status code and no page content, which is
   what makes diff-chosen hosts safe to probe. Spec:

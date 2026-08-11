@@ -1,0 +1,635 @@
+{
+ "data": {
+  "generated_from": "25 merged PRs back to 2025-07-31",
+  "areas": {
+   "object": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 3.0,
+      "raw": 3
+     },
+     {
+      "login": "zed",
+      "weighted_reviews": 3.0,
+      "raw": 3
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     },
+     {
+      "login": "grace",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 127,
+      "title": "object: zed reviews"
+     },
+     {
+      "number": 100,
+      "title": "object: fix zone sync (amended)"
+     },
+     {
+      "number": 111,
+      "title": "api: add field"
+     }
+    ]
+   },
+   "object-multisite": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "grace",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 100,
+      "title": "object: fix zone sync (amended)"
+     }
+    ]
+   },
+   "object-cosi": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "object-bucket-claims": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "grace",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 100,
+      "title": "object: fix zone sync (amended)"
+     }
+    ]
+   },
+   "ceph-mon": {
+    "reviewers": [
+     {
+      "login": "erin",
+      "weighted_reviews": 6.0,
+      "raw": 6
+     },
+     {
+      "login": "dave",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 119,
+      "title": "mon: same timestamp"
+     },
+     {
+      "number": 118,
+      "title": "mon: future merge"
+     },
+     {
+      "number": 123,
+      "title": "mon: filler d"
+     },
+     {
+      "number": 122,
+      "title": "mon: filler c"
+     },
+     {
+      "number": 121,
+      "title": "mon: filler b"
+     }
+    ]
+   },
+   "ceph-osd": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 124,
+      "title": "osd: big change"
+     },
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     }
+    ]
+   },
+   "ceph-mgr": {
+    "reviewers": [
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     }
+    ]
+   },
+   "ceph-dashboard": {
+    "reviewers": [
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     }
+    ]
+   },
+   "filesystem": {
+    "reviewers": [
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     }
+    ]
+   },
+   "ceph-nfs": {
+    "reviewers": [
+     {
+      "login": "carol",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     },
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 111,
+      "title": "api: add field"
+     },
+     {
+      "number": 114,
+      "title": "nfs: null-ish record"
+     }
+    ]
+   },
+   "csi": {
+    "reviewers": [
+     {
+      "login": "carol",
+      "weighted_reviews": 2.0,
+      "raw": 2
+     },
+     {
+      "login": "alice",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "Alice",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 101,
+      "title": "csi: bump ceph-csi"
+     },
+     {
+      "number": 111,
+      "title": "api: add field"
+     }
+    ]
+   },
+   "block": {
+    "reviewers": [
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     }
+    ]
+   },
+   "helm": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 111,
+      "title": "api: add field"
+     }
+    ]
+   },
+   "docs": {
+    "reviewers": [
+     {
+      "login": "alice",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 111,
+      "title": "api: add field"
+     },
+     {
+      "number": 116,
+      "title": "docs: caf\u00e9 r\u00e9sum\u00e9 \u2014 \ud83d\ude00"
+     }
+    ]
+   },
+   "design": {
+    "reviewers": [],
+    "recent_items": [
+     {
+      "number": 113,
+      "title": "design: proposal"
+     }
+    ]
+   },
+   "ci": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "erin",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 112,
+      "title": "cluster: sweep"
+     },
+     {
+      "number": 117,
+      "title": "test: handle \"quoted\" and C:\\path\tand\nnewline"
+     }
+    ]
+   },
+   "test": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 111,
+      "title": "api: add field"
+     }
+    ]
+   },
+   "crd": {
+    "reviewers": [
+     {
+      "login": "bob",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 111,
+      "title": "api: add field"
+     }
+    ]
+   },
+   "networking": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "nvmeof": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "ceph-external": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "discover": {
+    "reviewers": [
+     {
+      "login": "dave",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 115,
+      "title": "discover: probe"
+     }
+    ]
+   },
+   "monitoring": {
+    "reviewers": [],
+    "recent_items": []
+   },
+   "build": {
+    "reviewers": [
+     {
+      "login": "alice",
+      "weighted_reviews": 0.5,
+      "raw": 1
+     },
+     {
+      "login": "bob",
+      "weighted_reviews": 0.25,
+      "raw": 1
+     },
+     {
+      "login": "eve",
+      "weighted_reviews": 0.25,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 104,
+      "title": "build: bump go"
+     },
+     {
+      "number": 105,
+      "title": "build: makefile shuffle"
+     }
+    ]
+   },
+   "core": {
+    "reviewers": [
+     {
+      "login": "Bob",
+      "weighted_reviews": 1.5,
+      "raw": 2
+     },
+     {
+      "login": "bob",
+      "weighted_reviews": 1.5,
+      "raw": 2
+     },
+     {
+      "login": "alice",
+      "weighted_reviews": 1.0,
+      "raw": 1
+     },
+     {
+      "login": "carol",
+      "weighted_reviews": 0.5,
+      "raw": 1
+     }
+    ],
+    "recent_items": [
+     {
+      "number": 102,
+      "title": "core: util tweak"
+     },
+     {
+      "number": 103,
+      "title": "core: clusterd context"
+     }
+    ]
+   }
+  },
+  "authors_last_merged": {
+   "alice": "2026-07",
+   "bob": "2026-06",
+   "carol": "2026-05",
+   "dave": "2026-09",
+   "erin": "2026-09",
+   "eve": "2025-08",
+   "frank": "2026-02"
+  }
+ },
+ "flags": [
+  {
+   "type": "bucket-ambiguity",
+   "item": "1 PRs: no area rule matches \u2014 deploy/examples generic manifests (deliberately unbucketed)",
+   "evidence": "PR numbers: [106]",
+   "question": "kb v3 leaves this class unbucketed on purpose \u2014 confirm the gap is still intentional, or name the area these should count toward."
+  },
+  {
+   "type": "bucket-ambiguity",
+   "item": "2 PRs: no area rule matches \u2014 repo meta files (deliberately unbucketed)",
+   "evidence": "PR numbers: [107, 108]",
+   "question": "kb v3 leaves this class unbucketed on purpose \u2014 confirm the gap is still intentional, or name the area these should count toward."
+  },
+  {
+   "type": "bucket-ambiguity",
+   "item": "4 PRs: no area rule matches \u2014 ungrouped/misc",
+   "evidence": "PR numbers: [109, 110, 125, 126]; sample paths: {\"109\": [\"hack/foo.sh\", \"somefile.txt\"], \"110\": [\"OWNERS\", \"a1.txt\", \"a2.txt\", \"a3.txt\", \"a4.txt\", \"a5.txt\", \"a6.txt\", \"a7.txt\"], \"126\": [], \"125\": [\"misc/very/long/path/segment-0/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-1/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-2/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-3/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-4/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-5/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-6/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-7/xxxx",
+   "question": "Not in either deliberate unbucketed class \u2014 what area (if any) should each count toward, or is a taxonomy/classifier fix needed?"
+  },
+  {
+   "type": "bucket-ambiguity",
+   "item": "1 PRs match >=6 areas \u2014 pkg/apis/** type changes fanning into regenerated CRD docs/charts",
+   "evidence": "PR numbers: [111]",
+   "question": "Likely legitimate codegen blast-radius, not a classifier bug \u2014 confirm these should still count toward each touched area's reviewer stats."
+  },
+  {
+   "type": "bucket-ambiguity",
+   "item": "1 PRs match >=6 areas \u2014 cross-cutting sweep, no pkg/apis change",
+   "evidence": "PR numbers: [112]",
+   "question": "Confirm genuine cross-cutting refactors (shared helpers/test framework) rather than the classifier over-matching unrelated paths."
+  },
+  {
+   "type": "truncation",
+   "item": "PR #124",
+   "evidence": "files pageInfo.hasNextPage=true (mergedAt=2026-06-05T00:00:00Z)",
+   "question": "PR has more files than fetched (100 files / 30 reviews cap) \u2014 counts for it may be incomplete."
+  },
+  {
+   "type": "truncation",
+   "item": "PR #101",
+   "evidence": "reviews pageInfo.hasNextPage=true (mergedAt=None)",
+   "question": "PR has more reviews than fetched (100 files / 30 reviews cap) \u2014 counts for it may be incomplete."
+  },
+  {
+   "type": "spec-boundary",
+   "item": "fetch pipeline",
+   "evidence": "page 3: giving up after retries: boom",
+   "question": "Did this error drop or duplicate any PRs in the counted set?"
+  },
+  {
+   "type": "spec-boundary",
+   "item": "fetch pipeline",
+   "evidence": "page 3: GraphQL errors: [{\"message\": \"timeout\"}]",
+   "question": "Did this error drop or duplicate any PRs in the counted set?"
+  },
+  {
+   "type": "spec-boundary",
+   "item": "stop condition",
+   "evidence": "pagination stopped due to: \"it's broken\" (pages_fetched=3)",
+   "question": "Neither the cap nor a clean window/history boundary \u2014 is the dataset still valid for the stated window?"
+  },
+  {
+   "type": "coverage-gap",
+   "item": "design",
+   "evidence": "1 PR(s) bucketed, 0 non-bot/non-self reviews recorded",
+   "question": "Genuinely under-reviewed area, or is its path rule missing real hits?"
+  },
+  {
+   "type": "identity-unknown",
+   "item": "carol",
+   "evidence": "raw_reviews_total=14 across areas=['ceph-nfs', 'ceph-osd', 'core', 'crd', 'csi', 'docs', 'helm', 'object', 'object-bucket-claims', 'object-multisite', 'test']",
+   "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
+  },
+  {
+   "type": "identity-unknown",
+   "item": "erin",
+   "evidence": "raw_reviews_total=12 across areas=['block', 'ceph-dashboard', 'ceph-mgr', 'ceph-mon', 'ceph-osd', 'ci', 'filesystem']",
+   "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
+  },
+  {
+   "type": "identity-unknown",
+   "item": "dave",
+   "evidence": "raw_reviews_total=9 across areas=['block', 'ceph-dashboard', 'ceph-mgr', 'ceph-mon', 'ceph-osd', 'ci', 'discover', 'filesystem']",
+   "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
+  },
+  {
+   "type": "identity-unknown",
+   "item": "zed",
+   "evidence": "raw_reviews_total=3 across areas=['object']",
+   "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
+  },
+  {
+   "type": "identity-unknown",
+   "item": "grace",
+   "evidence": "raw_reviews_total=3 across areas=['object', 'object-bucket-claims', 'object-multisite']",
+   "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
+  }
+ ]
+}

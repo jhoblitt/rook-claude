@@ -1,0 +1,25 @@
+[
+  {
+    "number": 18100,
+    "kind": "test",
+    "next": "monitor",
+    "disposition": "Waiting on upstream; no snapshot row. Not café13001 nor 13001é nor _13001, but (13500) and a#13002 link.",
+    "ci": "no checks"
+  },
+  {
+    "number": 18150,
+    "kind": "feature",
+    "next": "comment-then-close",
+    "disposition": "CLOSE CANDIDATE - superseded by #13500.",
+    "ci": "red x3 failing: unit, integration",
+    "xlinks": [{"number": 13500}]
+  },
+  {
+    "number": 18250,
+    "kind": "docs",
+    "next": "request-reviewers",
+    "disposition": "Needs a docs reviewer & an approver.",
+    "ci": "",
+    "reviewers_proposed": ["subhamkrai"]
+  }
+]

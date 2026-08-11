@@ -12,11 +12,11 @@ Mine, with parallel agents, into `~/.cache/rook-triage/kb.json`:
   Sample: the last 24 months of merged PRs, capped at 4000, whichever bound
   hits first — record the actual count and oldest date in kb.json
   provenance. This is the PRIMARY reviewer-routing signal.
-  The fetch layer is `scripts/rt_fetch.py` (validated on the 2026-07-23
+  The fetch layer is `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-fetch` (validated on the 2026-07-23
   refresh): a single-cursor walk of `repository.pullRequests` — no
   search-API 1000-cap — emitting `rt_prs.jsonl` + `rt_fetch_state.json`
   (provenance: counted, oldest, stop reason, truncation flags for
-  files>100/reviews>30). The analysis layer is `scripts/rt_analyze.py`:
+  files>100/reviews>30). The analysis layer is `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze`:
   buckets the JSONL into the v3 area taxonomy (25 areas; recency weights
   1.0/0.5/0.25 at 6/12 months; bots and self-reviews excluded) and emits
   the `{data, flags}` contract below — bucket-ambiguity, truncation,
@@ -77,7 +77,7 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
    domain experts are @-mention or report-only (they may not be
    requestable on GitHub). Issues → @-mention 1–2 (≤3). Per-person
    per-sweep cap: 3 items (overflow goes in the report as "also
-   relevant", never posted). `scripts/validate_actions.py` re-checks the
+   relevant", never posted). `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` re-checks the
    reviewer and mention bounds immediately before any write, so a change
    to either number has to land there too.
 5. `references/routing-overrides.md` wins over all mined data, always.

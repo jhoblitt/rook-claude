@@ -1,0 +1,60 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": false, "endCursor": "PRCURSOR2" },
+      "nodes": [
+        {
+          "number": 88,
+          "title": "osd: rebuild the placement cache",
+          "state": "OPEN",
+          "isDraft": false,
+          "updatedAt": "2026-08-03T11:30:00Z",
+          "createdAt": "2026-07-03T09:00:00Z",
+          "author": { "login": "dana" },
+          "authorAssociation": "MEMBER",
+          "baseRefName": "master",
+          "mergeable": "MERGEABLE",
+          "reviewDecision": null,
+          "additions": 12,
+          "deletions": 3,
+          "changedFiles": 1,
+          "labels": { "nodes": [] },
+          "assignees": { "nodes": [] },
+          "files": {
+            "pageInfo": { "hasNextPage": false, "endCursor": null },
+            "nodes": [{ "path": "pkg/operator/osd.go" }]
+          },
+          "latestReviews": { "nodes": [] },
+          "reviewRequests": { "nodes": [] },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "PENDING",
+                    "contexts": {
+                      "pageInfo": { "hasNextPage": true, "endCursor": "CTXCURSOR-B" },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "name": "build",
+                          "status": "IN_PROGRESS",
+                          "conclusion": null,
+                          "checkSuite": {
+                            "databaseId": 7,
+                            "createdAt": "2026-08-03T08:00:00Z",
+                            "workflowRun": { "workflow": { "name": "canary" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

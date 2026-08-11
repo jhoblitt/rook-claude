@@ -1,0 +1,6 @@
+{
+  "repository": {
+    "n4": { "__typename": "Issue" },
+    "n7": { "__typename": "PullRequest" }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "repository": {
+    "pullRequest": {
+      "commits": {
+        "nodes": [
+          {
+            "commit": {
+              "statusCheckRollup": {
+                "state": "FAILURE",
+                "contexts": {
+                  "pageInfo": { "hasNextPage": false, "endCursor": "CTXCURSOR2" },
+                  "nodes": [
+                    {
+                      "__typename": "CheckRun",
+                      "name": "unit",
+                      "status": "IN_PROGRESS",
+                      "conclusion": null,
+                      "checkSuite": {
+                        "databaseId": 2,
+                        "createdAt": "2026-08-01T09:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    },
+                    {
+                      "__typename": "CheckRun",
+                      "name": "unit",
+                      "status": "COMPLETED",
+                      "conclusion": "SUCCESS",
+                      "checkSuite": {
+                        "databaseId": 2,
+                        "createdAt": "2026-08-01T09:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    },
+                    {
+                      "__typename": "CheckRun",
+                      "name": "lint",
+                      "status": "COMPLETED",
+                      "conclusion": "SKIPPED",
+                      "checkSuite": {
+                        "databaseId": 3,
+                        "createdAt": "2026-08-01T09:30:00Z",
+                        "workflowRun": null
+                      }
+                    },
+                    {
+                      "__typename": "StatusContext",
+                      "context": "ci/jenkins",
+                      "state": "FAILURE"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

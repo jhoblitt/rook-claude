@@ -1,0 +1,31 @@
+{
+  "repo": "rook/rook",
+  "pages_fetched": 3,
+  "counted": 25,
+  "seen_total": 30,
+  "oldest_mergedat": "2025-07-31T00:00:00+00:00",
+  "cutoff": "2024-08-01T00:00:00+00:00",
+  "cap": 4000,
+  "stop_reason": "it's broken",
+  "errors": [
+    "page 3: giving up after retries: boom",
+    "page 3: GraphQL errors: [{\"message\": \"timeout\"}]"
+  ],
+  "truncations": [
+    {
+      "number": 124,
+      "kind": "files",
+      "mergedAt": "2026-06-05T00:00:00Z"
+    },
+    {
+      "number": 101,
+      "kind": "reviews",
+      "mergedAt": null
+    },
+    {
+      "number": 9999,
+      "kind": "files",
+      "mergedAt": "2020-01-01T00:00:00Z"
+    }
+  ]
+}

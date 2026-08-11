@@ -83,12 +83,12 @@ API rejects the whole call, not just that comment. Fold it into the review
 BODY under "Other observations" and say there that it is unanchored.
 
 Do not check any of this by reading the diff. It is set membership over the
-diff's hunks, and `scripts/validate_anchors.py` decides it — every rule
-above, including the LEFT/RIGHT trap and the multi-line key set:
+diff's hunks, and the `validate-anchors` tool decides it — every rule above,
+including the LEFT/RIGHT trap and the multi-line key set:
 
 ```sh
 gh pr diff <n> | \
-  "${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/scripts/validate_anchors.py" \
+  bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-anchors \
     --review review.json
 ```
 

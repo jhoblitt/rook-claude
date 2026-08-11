@@ -1,0 +1,41 @@
+{
+ "repo": "rook/rook",
+ "kind": "issues",
+ "items": {
+  "4002": {
+   "number": 4002,
+   "title": "Allow the operator to skip CSI driver deployment",
+   "state": "OPEN",
+   "labels": ["feature", "csi"],
+   "assignees": []
+  },
+  "9001": {
+   "number": 9001,
+   "title": "How do I move a mon to another node?",
+   "state": "OPEN",
+   "labels": [],
+   "assignees": ["travisn"]
+  },
+  "12010": {
+   "number": 12010,
+   "title": "\"Quoted\" & <b>bold</b> title with 'apostrophes' + math = fun",
+   "state": "OPEN",
+   "labels": ["bug", "ceph-mon"],
+   "assignees": ["copilot-pull-request-reviewer", "BlaineEXE"]
+  },
+  "15003": {
+   "number": 15003,
+   "title": "mgr crash on RGW pools — non-ASCII: é 漢字",
+   "state": "OPEN",
+   "labels": ["bug"],
+   "assignees": ["BlaineEXE"]
+  },
+  "18999": {
+   "number": 18999,
+   "title": "Docs: quickstart is missing the CRD apply step",
+   "state": "OPEN",
+   "labels": ["docs"],
+   "assignees": []
+  }
+ }
+}

@@ -1,0 +1,33 @@
+{
+  "repository": {
+    "pullRequest": {
+      "commits": {
+        "nodes": [
+          {
+            "commit": {
+              "statusCheckRollup": {
+                "state": "FAILURE",
+                "contexts": {
+                  "pageInfo": { "hasNextPage": false, "endCursor": "CTXCURSOR-A" },
+                  "nodes": [
+                    {
+                      "__typename": "CheckRun",
+                      "name": "build",
+                      "status": "COMPLETED",
+                      "conclusion": "FAILURE",
+                      "checkSuite": {
+                        "databaseId": 7,
+                        "createdAt": "2026-08-03T08:00:00Z",
+                        "workflowRun": { "workflow": { "name": "canary" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

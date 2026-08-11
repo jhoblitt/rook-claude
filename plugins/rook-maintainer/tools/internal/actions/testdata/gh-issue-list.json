@@ -1,0 +1,31 @@
+[
+  {
+    "id": "I_kwDOAoBOd86KcVpF",
+    "labels": [
+      {
+        "id": "MDU6TGFiZWwxMjM=",
+        "name": "bug",
+        "description": "Something isn't working",
+        "color": "d73a4a"
+      },
+      {
+        "id": "MDU6TGFiZWwxMjQ=",
+        "name": "ceph-osd",
+        "description": "",
+        "color": "0e8a16"
+      }
+    ],
+    "number": 15012,
+    "state": "OPEN",
+    "title": "OSD prepare job fails on encrypted device",
+    "url": "https://github.com/rook/rook/issues/15012"
+  },
+  {
+    "id": "I_kwDOAoBOd86KcVpG",
+    "labels": [],
+    "number": 14877,
+    "state": "CLOSED",
+    "title": "docs: broken link in the object store guide",
+    "url": "https://github.com/rook/rook/issues/14877"
+  }
+]

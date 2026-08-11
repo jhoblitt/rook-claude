@@ -1,0 +1,9 @@
+[
+  {
+    "severity": "wontfix",
+    "domain": "style",
+    "summary": "requeue interval is hard coded",
+    "confidence": 35,
+    "status": "pending"
+  }
+]

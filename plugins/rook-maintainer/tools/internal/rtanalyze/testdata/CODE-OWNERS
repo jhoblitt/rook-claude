@@ -1,0 +1,17 @@
+# rook CODE-OWNERS (fixture)
+
+approvers:
+  - alice
+  - Bob
+  # a comment inside the list
+  - eve
+
+some-other-key: value
+  - notaroster
+
+reviewers:
+  - frank
+- dangling
+
+emeritus:
+  - zoe

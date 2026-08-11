@@ -1,0 +1,31 @@
+{
+  "repository": {
+    "issues": {
+      "pageInfo": { "hasNextPage": false, "endCursor": "ISSUECURSOR1" },
+      "nodes": [
+        {
+          "number": 30,
+          "title": "osd: crash on start",
+          "state": "OPEN",
+          "updatedAt": "2026-08-03T10:00:00Z",
+          "createdAt": "2026-07-03T10:00:00Z",
+          "author": { "login": "dave" },
+          "labels": { "nodes": [{ "name": "osd" }] },
+          "assignees": { "nodes": [{ "login": "erin" }, { "login": "frank" }] },
+          "comments": { "totalCount": 4 }
+        },
+        {
+          "number": 4,
+          "title": "docs: broken link",
+          "state": "OPEN",
+          "updatedAt": "2026-08-04T10:00:00Z",
+          "createdAt": "2026-07-04T10:00:00Z",
+          "author": null,
+          "labels": { "nodes": [] },
+          "assignees": { "nodes": [] },
+          "comments": { "totalCount": 0 }
+        }
+      ]
+    }
+  }
+}

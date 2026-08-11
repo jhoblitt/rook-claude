@@ -1,0 +1,43 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": true, "endCursor": "CURSOR2" },
+      "nodes": [
+        {
+          "number": 101,
+          "title": "osd: guard against a nil <spec>",
+          "mergedAt": "2025-06-01T10:00:00Z",
+          "updatedAt": "2025-06-02T11:30:00Z",
+          "author": { "login": "alice" },
+          "files": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "path": "pkg/operator/ceph/cluster/osd/osd.go" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "author": { "login": "bob" }, "state": "APPROVED" }]
+          }
+        },
+        {
+          "number": 103,
+          "title": "csi: bump the sidecar",
+          "mergedAt": "2024-06-01T09:00:00Z",
+          "updatedAt": "2025-12-31T23:00:00Z",
+          "author": { "login": "carol" },
+          "files": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "path": "pkg/operator/ceph/csi/spec.go" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [
+              { "author": { "login": "dave" }, "state": "COMMENTED" },
+              { "author": null, "state": "APPROVED" }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "rateLimit": { "cost": 1, "remaining": 4997, "resetAt": "2026-01-01T01:00:00Z" }
+}

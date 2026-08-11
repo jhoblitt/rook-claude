@@ -1,0 +1,9 @@
+[
+  {"number": 101, "action": "label", "params": {"labels": ["needs-info"]}},
+  {"number": 102, "action": "reviewers", "params": {"reviewers": ["travisn", "BlaineEXE"]}},
+  {"number": 101, "action": "comment", "params": {"mentions": ["travisn"]}},
+  {"number": 103, "action": "close", "params": {}},
+  {"number": 104, "action": "label", "params": {"labels": ["feature", "ceph-mon"]}},
+  {"number": 102, "action": "label", "params": {"labels": ["bug"]}},
+  {"number": 999, "action": "label", "params": {"labels": ["bug"]}}
+]

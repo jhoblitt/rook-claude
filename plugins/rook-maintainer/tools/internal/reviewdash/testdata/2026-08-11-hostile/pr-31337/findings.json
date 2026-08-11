@@ -1,0 +1,47 @@
+{
+  "pr": 31337,
+  "verdict": "REQUEST_CHANGES<script>alert('verdict')</script>",
+  "bug": "REAL\"><img src=x onerror=alert('bug')>",
+  "rationale": "the reporter pasted <script>alert('rationale')</script> into the PR body and the reviewer quoted it verbatim, which is exactly the path that has to stay inert — even past the 160 character cut",
+  "backport": {
+    "eligible": true,
+    "label": "backport-release-1.18\"><script>alert('label')</script>",
+    "reason": "reason & <b>markup</b>"
+  },
+  "needs_proposal_review": {
+    "flag": true,
+    "paths": [
+      "design/<script>alert('path1')</script>.md",
+      "design/b&b.md",
+      "design/c\"c.md",
+      "design/d-never-shown.md"
+    ]
+  },
+  "takeover_candidate": {
+    "flag": true,
+    "reason": "stalled\" onmouseover=\"alert('takeover')"
+  },
+  "findings": [
+    {
+      "id": "B1<script>alert('id')</script>",
+      "severity": "blocker",
+      "domain": "bug & <b>markup</b>",
+      "path": "pkg/<script>alert('path')</script>.go",
+      "line": 42,
+      "summary": "summary with & < > \" ' + characters",
+      "confidence": 99,
+      "status": "pending\" onmouseover=\"alert('status')"
+    },
+    {
+      "id": "N1",
+      "severity": "nit",
+      "domain": "style",
+      "path": "pkg/plain.go",
+      "line": 7,
+      "summary": "plain summary",
+      "confidence": 51,
+      "status": "approved"
+    }
+  ],
+  "clean": ["audited <b>area</b> one", "audited area & two"]
+}

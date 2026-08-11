@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "pullRequest": {
+      "files": {
+        "pageInfo": { "hasNextPage": true, "endCursor": "FILECURSOR2" },
+        "nodes": [{ "path": "pkg/operator/a.go" }, { "path": "pkg/operator/b.go" }]
+      }
+    }
+  }
+}

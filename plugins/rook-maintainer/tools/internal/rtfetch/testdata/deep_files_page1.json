@@ -1,0 +1,13 @@
+{
+  "repository": {
+    "pullRequest": {
+      "files": {
+        "pageInfo": { "hasNextPage": true, "endCursor": "DF1" },
+        "nodes": [
+          { "path": "pkg/operator/ceph/object/rgw.go" },
+          { "path": "pkg/operator/ceph/object/zone.go" }
+        ]
+      }
+    }
+  }
+}

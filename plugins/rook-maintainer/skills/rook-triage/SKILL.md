@@ -57,7 +57,7 @@ numbers, count cap.
 
 0. **Scope-confirm + snapshot.** Enumerate per scope+filters and fetch
    the shared metadata snapshot in one pass:
-   `${CLAUDE_PLUGIN_ROOT}/scripts/sweep_prefetch.py snapshot <sweep-dir>
+   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch snapshot <sweep-dir>
    --kind prs|issues`
    (all open items by default, `--numbers` for explicit scope). A
    report-only sweep settles NOTHING — prior assessment never shrinks
@@ -102,7 +102,7 @@ numbers, count cap.
 4. **Approve.** Walk proposed actions per item — each draft is an editable
    file under `actions/`; approve / edit / skip. Honor explicit batch
    authorization; never assume it.
-5. **Execute.** Run `scripts/validate_actions.py` immediately before every
+5. **Execute.** Run `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` immediately before every
    write — it decides label-set membership against a live `gh label list`,
    the label/mention/reviewer caps, the issues-only label rule, and the
    still-open recheck, and a non-zero exit sends those items back to the
@@ -146,7 +146,7 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
   mentions-user-check.json     # global @-token -> login resolution cache
   sweeps/<YYYY-MM-DD>-<slug>/
     sweep.json                 # scope, per-item status, action log
-    snapshot.json              # phase-0 live metadata (sweep_prefetch.py)
+    snapshot.json              # phase-0 live metadata (sweep-prefetch)
     report.md                  # the advise artifact
     batch-<k>.json             # raw triager output, one file per agent batch
     threads.json               # fetched issue bodies+comments (mention mining)
@@ -154,7 +154,7 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
     refs-types.json            # cross-ref Issue-vs-PullRequest classification
     skips.json                 # PR mode: skipped rows (class, author, title)
     actions/<N>-<k>.md         # one editable draft per proposed action
-    dashboard.html             # gen_*_dashboard.py output; publish via Artifact
+    dashboard.html             # gen-*-dashboard output; publish via Artifact
 ```
 
 Cold start: when `~/.cache/rook-triage/kb.json` is missing, seed it from
@@ -166,32 +166,40 @@ should be PR'd back to the plugin repo so every maintainer inherits it.
 
 ## Scripts
 
-Deterministic tier-0 tooling — run these, don't re-implement them. Paths
-are this skill's `scripts/` unless marked **shared**; shared tooling lives
-at `${CLAUDE_PLUGIN_ROOT}/scripts/`, and each shared script's docstring
-names its callers and what changing it obliges:
+Deterministic tier-0 tooling — run these, don't re-implement them. Every
+tool is a Go binary under `${CLAUDE_PLUGIN_ROOT}/tools/cmd/`, invoked
+through the launcher, which builds it on first use:
 
-- `rt_fetch.py` — kb-refresh fetch of merged PRs (files+reviews JSONL +
+```sh
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" <tool> [args...]
+```
+
+Tools marked **shared** are also run by `rook-code-review`; a change there
+must keep both callers working, and each tool's package doc names its callers
+and what changing it obliges. The launcher fails loud — a non-zero exit is a
+real failure, never an empty result:
+
+- `rt-fetch` — kb-refresh fetch of merged PRs (files+reviews JSONL +
   provenance/truncation state). Spec: `references/routing.md`.
-- `rt_analyze.py` — kb-refresh analysis: buckets the JSONL into the v3
+- `rt-analyze` — kb-refresh analysis: buckets the JSONL into the v3
   area taxonomy and emits the `{data, flags}` miner contract
   (offline; needs `--code-owners` or `--roster`; `--now` pins recency
   weighting for reproducible re-runs). Spec: `references/routing.md`.
-- `mine_mentions.py` — issue-thread @-mention mining (code-stripping,
+- `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
-- `sweep_prefetch.py` (**shared**) — phase-0 metadata snapshot (one
+- `sweep-prefetch` (**shared**) — phase-0 metadata snapshot (one
   batched GraphQL pass per corpus: titles, labels, assignees,
   authorAssociation, changed paths, reviews, CI rollup) plus the
   `classify-refs` subcommand for the cross-ref columns.
-- `gen_pr_dashboard.py` / `gen_issues_dashboard.py` — dashboards from
+- `gen-pr-dashboard` / `gen-issues-dashboard` — dashboards from
   canonical sweep-dir inputs only. Spec: `references/reporting.md`.
-- `validate_actions.py` — phase-5 pre-write validation of proposed actions
+- `validate-actions` — phase-5 pre-write validation of proposed actions
   (label-set membership, the caps, the issues-only label rule, still-open
   recheck). Spec: phase 5 above.
 
-All need authenticated `gh` (sandbox disabled) except `rt_analyze.py`, the
-two generators, and `validate_actions.py`, which are offline — the last one
+All need authenticated `gh` (sandbox disabled) except `rt-analyze`, the
+two generators, and `validate-actions`, which are offline — the last one
 judges the label snapshot it is handed rather than fetching its own.
 
 ## Relationship to rook-code-review

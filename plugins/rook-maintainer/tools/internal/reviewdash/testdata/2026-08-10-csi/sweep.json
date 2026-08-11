@@ -1,0 +1,12 @@
+{
+  "scope": "open PRs touching pkg/operator, 2026-08-01..2026-08-10",
+  "status": {
+    "18101": "posted",
+    "18102": "triaged"
+  },
+  "skipped": [
+    {"number": 18110, "reason": "draft"},
+    {"number": 18111, "reason": "authored by the sweeping maintainer"},
+    {"number": 18112}
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": true, "endCursor": "PRCURSOR1" },
+      "nodes": [
+        {
+          "number": 10,
+          "title": "core: drop the <old> guard & retry",
+          "state": "OPEN",
+          "isDraft": false,
+          "updatedAt": "2026-08-01T10:00:00Z",
+          "createdAt": "2026-07-01T10:00:00Z",
+          "author": { "login": "alice" },
+          "authorAssociation": "MEMBER",
+          "baseRefName": "master",
+          "mergeable": "MERGEABLE",
+          "reviewDecision": null,
+          "additions": 42,
+          "deletions": 7,
+          "changedFiles": 3,
+          "labels": { "nodes": [{ "name": "ceph" }, { "name": "bug" }] },
+          "assignees": { "nodes": [{ "login": "bob" }] },
+          "files": {
+            "pageInfo": { "hasNextPage": true, "endCursor": "FILECURSOR1" },
+            "nodes": [{ "path": "pkg/operator/a.go" }]
+          },
+          "latestReviews": {
+            "nodes": [
+              { "author": { "login": "bob" }, "state": "APPROVED" },
+              { "author": null, "state": "COMMENTED" }
+            ]
+          },
+          "reviewRequests": {
+            "nodes": [
+              { "requestedReviewer": { "login": "carol" } },
+              { "requestedReviewer": { "name": "storage-team" } },
+              { "requestedReviewer": {} },
+              { "requestedReviewer": null }
+            ]
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "PENDING",
+                    "contexts": {
+                      "pageInfo": { "hasNextPage": true, "endCursor": "CTXCURSOR1" },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "name": "build",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "checkSuite": {
+                            "databaseId": 1,
+                            "createdAt": "2026-07-01T11:00:00Z",
+                            "workflowRun": { "workflow": { "name": "canary" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

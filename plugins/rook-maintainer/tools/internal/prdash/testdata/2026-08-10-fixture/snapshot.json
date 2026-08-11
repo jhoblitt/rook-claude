@@ -1,0 +1,67 @@
+{
+  "repo": "rook/rook",
+  "kind": "prs",
+  "items": {
+    "18120": {
+      "number": 18120,
+      "title": "Fix RGW pool \"size\" & <b>replica</b> count when size=3+1 (backport 13001)",
+      "labels": ["ceph", "backport-release-1.14", "<script>"],
+      "assignees": ["travisn", "copilot-pull-request-reviewer"],
+      "reviews": {
+        "latest": [
+          {"login": "travisn", "state": "APPROVED"},
+          {"login": "BlaineEXE", "state": "CHANGES_REQUESTED"},
+          {"login": "copilot-pull-request-reviewer", "state": "COMMENTED"},
+          {"login": "subhamkrai", "state": "DISMISSED"},
+          {"login": "parth-gr", "state": "PENDING"},
+          {"login": "travisn", "state": "COMMENTED"}
+        ],
+        "requested": ["BlaineEXE", "rook/maintainers"]
+      },
+      "ci": {"state": "SUCCESS", "passing": 12, "failing": 0, "pending": 0, "total": 12, "failed": [], "truncated": false}
+    },
+    "18150": {
+      "number": 18150,
+      "title": "feat: add 'foo' bar",
+      "labels": [],
+      "assignees": [],
+      "reviews": {"latest": [], "requested": []},
+      "ci": {"state": "FAILURE", "passing": 2, "failing": 8, "pending": 0, "total": 10,
+             "failed": ["unit", "integration", "canary", "lint", "codegen", "crds", "helm", "multus"],
+             "truncated": false}
+    },
+    "18200": {
+      "number": 18200,
+      "title": "chore: bump csi sidecars",
+      "labels": ["ci"],
+      "assignees": [],
+      "reviews": {"latest": [{"login": "parth-gr", "state": "APPROVED"},
+                             {"login": "BlaineEXE", "state": "CHANGES_REQUESTED"}], "requested": []},
+      "ci": {"state": "PENDING", "passing": 6, "failing": 0, "pending": 3, "total": 9, "failed": [], "truncated": false}
+    },
+    "18250": {
+      "number": 18250,
+      "title": "docs: describe the toolbox",
+      "labels": ["documentation"],
+      "assignees": [],
+      "reviews": null,
+      "ci": {"state": null, "passing": 0, "failing": 0, "pending": 0, "total": 0, "failed": [], "truncated": false}
+    },
+    "18300": {
+      "number": 18300,
+      "title": "fix: nil deref in the object controller",
+      "labels": ["ceph"],
+      "assignees": [],
+      "reviews": {"latest": [], "requested": []},
+      "ci": {"state": "SUCCESS", "passing": 12, "failing": 0, "pending": 0, "total": 12, "failed": [], "truncated": false}
+    },
+    "18500": {
+      "number": 18500,
+      "title": "WIP: external mode rework",
+      "labels": ["do-not-merge"],
+      "assignees": ["BlaineEXE"],
+      "reviews": {"latest": [], "requested": ["travisn"]},
+      "ci": {"state": "PENDING", "passing": 1, "failing": 0, "pending": 3, "total": 4, "failed": [], "truncated": false}
+    }
+  }
+}

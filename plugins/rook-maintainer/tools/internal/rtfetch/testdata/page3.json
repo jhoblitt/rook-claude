@@ -1,0 +1,40 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": true, "endCursor": "CURSOR3" },
+      "nodes": [
+        {
+          "number": 90,
+          "title": "docs: fix a typo",
+          "mergedAt": "2023-03-01T08:00:00Z",
+          "updatedAt": "2023-03-01T08:30:00Z",
+          "author": { "login": "erin" },
+          "files": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "path": "Documentation/index.md" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": []
+          }
+        },
+        {
+          "number": 91,
+          "title": "ci: retire an old job",
+          "mergedAt": "2023-02-01T08:00:00Z",
+          "updatedAt": "2023-02-01T08:30:00Z",
+          "author": { "login": "frank" },
+          "files": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "path": ".github/workflows/old.yaml" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": []
+          }
+        }
+      ]
+    }
+  },
+  "rateLimit": { "cost": 1, "remaining": 4996, "resetAt": "2026-01-01T01:00:00Z" }
+}

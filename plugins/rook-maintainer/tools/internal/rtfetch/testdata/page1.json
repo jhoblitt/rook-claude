@@ -1,0 +1,40 @@
+{
+  "repository": {
+    "pullRequests": {
+      "pageInfo": { "hasNextPage": true, "endCursor": "CURSOR1" },
+      "nodes": [
+        {
+          "number": 101,
+          "title": "osd: guard against a nil <spec>",
+          "mergedAt": "2025-06-01T10:00:00Z",
+          "updatedAt": "2025-06-02T11:30:00Z",
+          "author": { "login": "alice" },
+          "files": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "path": "pkg/operator/ceph/cluster/osd/osd.go" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": false },
+            "nodes": [{ "author": { "login": "bob" }, "state": "APPROVED" }]
+          }
+        },
+        {
+          "number": 102,
+          "title": "object: sweeping refactor",
+          "mergedAt": "2025-05-01T09:00:00Z",
+          "updatedAt": "2025-05-02T09:00:00Z",
+          "author": null,
+          "files": {
+            "pageInfo": { "hasNextPage": true },
+            "nodes": [{ "path": "pkg/operator/ceph/object/rgw.go" }]
+          },
+          "reviews": {
+            "pageInfo": { "hasNextPage": true },
+            "nodes": []
+          }
+        }
+      ]
+    }
+  },
+  "rateLimit": { "cost": 1, "remaining": 4998, "resetAt": "2026-01-01T01:00:00Z" }
+}

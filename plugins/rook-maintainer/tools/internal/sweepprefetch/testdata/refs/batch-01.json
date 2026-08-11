@@ -1,0 +1,17 @@
+[
+ {
+  "number": 100,
+  "xlinks": [{ "number": 4, "why": "same area" }, { "number": 30 }],
+  "dups": []
+ },
+ {
+  "number": 101,
+  "xlinks": null,
+  "dups": [{ "number": 4 }]
+ },
+ {
+  "number": 102,
+  "xlinks": ["see #999"],
+  "dups": [{ "note": "no number here" }, null]
+ }
+]

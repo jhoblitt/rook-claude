@@ -12,7 +12,7 @@ All `gh` calls: `dangerouslyDisableSandbox: true`.
 1. Candidate pool — one batched GraphQL pass, the same snapshot
    `rook-triage` phase 0 takes (SKILL.md "Scripts"):
    ```sh
-   ${CLAUDE_PLUGIN_ROOT}/scripts/sweep_prefetch.py snapshot <sweep-dir> --kind prs
+   bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch snapshot <sweep-dir> --kind prs
    ```
    The script's docstring fixes `snapshot.json`'s shape. What this sweep
    consumes from it: `isDraft` — it enumerates every OPEN PR, so filter
@@ -144,7 +144,7 @@ pr-<N>/report.md            # per-PR report
 pr-<N>/findings.json        # verified findings + recomputed verdict, bug,
                             # backport, escalation flags, clean[] — the
                             # dashboard's only verdict source (shape in
-                            # gen_review_dashboard.py's docstring)
+                            # gen-review-dashboard's docstring)
 pr-<N>/drafts/c3.md         # one draft comment per finding, named by its ID (frontmatter below)
 dashboard.html              # regenerated each phase
 ```
@@ -177,7 +177,7 @@ cross-cutting observations (recurring defect patterns, contributor-level
 notes, security-scrutiny flags); the audited-and-clean statement.
 
 Dashboard: regenerate with
-`${CLAUDE_PLUGIN_ROOT}/scripts/gen_review_dashboard.py <sweep-dir>`; it
+`bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-review-dashboard <sweep-dir>`; it
 reads `findings.json`, `snapshot.json` and `sweep.json` only, so verdicts
 and counts cannot drift from the verified record. Then publish
 `dashboard.html` via the Artifact tool —

@@ -1,0 +1,6 @@
+[
+  {"number": 18600, "class": "draft", "author": "dependabot[bot]",
+   "title": "chore(deps): bump x from 1.2 to 1.3 (see 13001)"},
+  {"number": 18700, "class": "do-not-merge", "author": "someone",
+   "title": "WIP: <b>test</b> & 'quotes' for 18999, not rc18999 or 18999x"}
+]

@@ -1,0 +1,10 @@
+[
+  {"name": "bug"},
+  {"name": "feature"},
+  {"name": "docs"},
+  {"name": "core"},
+  {"name": "object"},
+  {"name": "ceph-mon"},
+  {"name": "ceph-osd"},
+  {"name": "needs-info"}
+]

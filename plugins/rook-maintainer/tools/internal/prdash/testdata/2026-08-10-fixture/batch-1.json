@@ -1,0 +1,42 @@
+[
+  {
+    "number": 18120,
+    "kind": "bug-fix",
+    "next": "merge",
+    "disposition": "READY - approved twice; see 13001 and #18999 (dup of 12999, not 130000). <script>alert('x')</script> a+b=c",
+    "ci": "green 12/12",
+    "xlinks": [
+      {"number": 13001},
+      {"number": 13001},
+      {"number": 18999},
+      12345,
+      {"note": "no number key"},
+      null
+    ],
+    "dups": [{"number": 17004}],
+    "reviewers_proposed": ["travisn (owns the ceph area)", "BlaineEXE"]
+  },
+  {
+    "number": 18200,
+    "kind": "chore",
+    "next": "rebase",
+    "takeover": true,
+    "disposition": "Author idle 90 days; takeover candidate.",
+    "ci": "6/9 passing"
+  },
+  {
+    "number": 18300,
+    "kind": "bug-fix",
+    "next": "comment: ask for a rebase",
+    "disposition": "Hygiene: fill-template missing.",
+    "ci": "12/12 passing"
+  },
+  {
+    "number": 18500,
+    "kind": "feature",
+    "next": "",
+    "skip": true,
+    "disposition": "WIP title; assessed signals only.",
+    "ci": "pending"
+  }
+]
