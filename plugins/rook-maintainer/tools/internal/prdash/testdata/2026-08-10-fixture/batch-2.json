@@ -20,6 +20,7 @@
     "next": "request-reviewers",
     "disposition": "Needs a docs reviewer & an approver.",
     "ci": "",
-    "reviewers_proposed": ["subhamkrai"]
+    "reviewers_proposed": ["subhamkrai"],
+    "cap_note": "BlaineEXE at cap (13001) \u2192 swapped for subhamkrai"
   }
 ]

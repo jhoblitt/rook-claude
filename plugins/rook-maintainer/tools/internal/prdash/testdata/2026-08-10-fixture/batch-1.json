@@ -14,7 +14,7 @@
       null
     ],
     "dups": [{"number": 17004}],
-    "reviewers_proposed": ["travisn (owns the ceph area)", "BlaineEXE"]
+    "reviewers_proposed": ["travisn (owns the ceph area)", "BlaineEXE", "travisn"]
   },
   {
     "number": 18200,

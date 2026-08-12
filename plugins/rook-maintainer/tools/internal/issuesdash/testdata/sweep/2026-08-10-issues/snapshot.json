@@ -32,7 +32,7 @@
   },
   "18999": {
    "number": 18999,
-   "title": "Docs: quickstart is missing the CRD apply step",
+   "title": "Docs: quickstart | missing the `kubectl apply` step *and* [links]",
    "state": "OPEN",
    "labels": ["docs"],
    "assignees": []

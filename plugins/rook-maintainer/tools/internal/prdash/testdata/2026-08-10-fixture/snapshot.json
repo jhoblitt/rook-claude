@@ -49,8 +49,8 @@
     },
     "18300": {
       "number": 18300,
-      "title": "fix: nil deref in the object controller",
-      "labels": ["ceph"],
+      "title": "fix: nil deref | `ceph status` in the object controller [see #13001]",
+      "labels": ["ceph", "needs|split"],
       "assignees": [],
       "reviews": {"latest": [], "requested": []},
       "ci": {"state": "SUCCESS", "passing": 12, "failing": 0, "pending": 0, "total": 12, "failed": [], "truncated": false}

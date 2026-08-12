@@ -456,6 +456,243 @@ func TestSummarizeRejectsMissingNumbers(t *testing.T) {
 	}
 }
 
+// sweepLedger writes a sweep.json shaped like the one a triage sweep leaves
+// behind — the run's own bookkeeping around the per-item ledger — so the split
+// has to be read out of the real file rather than a two-key stand-in.
+func sweepLedger(t *testing.T, items map[string]string) string {
+	t.Helper()
+	body, err := json.Marshal(map[string]any{
+		"sweep":        "2026-08-11-prs-test",
+		"mode":         "prs",
+		"report_only":  true,
+		"scope":        "all open",
+		"carried":      len(items),
+		"closed_since": []int{},
+		"actions_log":  []any{},
+		"items":        items,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return rawSweep(t, string(body))
+}
+
+func rawSweep(t *testing.T, body string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "sweep.json")
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+func summarizeSweep(t *testing.T, dir, sweep string) *PoolSummary {
+	t.Helper()
+	s, err := Summarize(SummaryOptions{SweepDir: dir, Sweep: sweep, Now: at(t, summaryNow)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
+}
+
+// The split is what phase 0 divides by to size its fan-out, so every item of
+// the pool lands on exactly one side of it and the header says which.
+func TestSummarizeSweepSplit(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		items  map[string]string
+		want   SweepSplit
+		header string
+	}{
+		{
+			name:   "all fresh",
+			items:  map[string]string{"10": "fresh", "11": "fresh", "12": "fresh", "13": "fresh"},
+			want:   SweepSplit{Fresh: 4},
+			header: "**Pool: 4 open PRs** (4 fresh, 0 carried, 1 draft)",
+		},
+		{
+			name:   "all carried",
+			items:  map[string]string{"10": "carried", "11": "carried", "12": "carried", "13": "carried"},
+			want:   SweepSplit{Carried: 4},
+			header: "**Pool: 4 open PRs** (0 fresh, 4 carried, 1 draft)",
+		},
+		{
+			name:   "mixed",
+			items:  map[string]string{"10": "fresh", "11": "carried", "12": "carried", "13": "fresh"},
+			want:   SweepSplit{Fresh: 2, Carried: 2},
+			header: "**Pool: 4 open PRs** (2 fresh, 2 carried, 1 draft)",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			sweep := sweepLedger(t, tc.items)
+			s := summarizeSweep(t, prPool(t), sweep)
+			if s.Split == nil || *s.Split != tc.want {
+				t.Fatalf("split = %+v, want %+v", s.Split, tc.want)
+			}
+			if s.Split.Fresh+s.Split.Carried+s.Split.Unlisted != s.Total {
+				t.Errorf("split %+v does not account for all %d items", *s.Split, s.Total)
+			}
+			if s.Sweep != sweep {
+				t.Errorf("sweep = %q, want %q", s.Sweep, sweep)
+			}
+			if got, _, _ := strings.Cut(s.Markdown(), "\n"); got != tc.header {
+				t.Errorf("header = %q, want %q", got, tc.header)
+			}
+		})
+	}
+}
+
+// An absent --sweep and a sweep that carried nothing forward are different
+// facts: the first is a pool nobody has assessed before, the second a pool
+// every item of which needs assessing again.
+func TestSummarizeSweepAbsentVersusZero(t *testing.T) {
+	absent := summarizeSweep(t, prPool(t), "")
+	if absent.Split != nil {
+		t.Fatalf("split = %+v with no sweep named, want it absent", *absent.Split)
+	}
+	var doc map[string]json.RawMessage
+	if err := json.Unmarshal(mustJSON(t, absent), &doc); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"split", "sweep"} {
+		if _, present := doc[key]; present {
+			t.Errorf("json carries %q with no sweep named:\n%s", key, mustJSON(t, absent))
+		}
+	}
+	if strings.Contains(absent.Markdown(), "carried") {
+		t.Errorf("markdown reports a split with no sweep named:\n%s", absent.Markdown())
+	}
+
+	all := summarizeSweep(t, prPool(t), sweepLedger(t, map[string]string{
+		"10": "carried", "11": "carried", "12": "carried", "13": "carried",
+	}))
+	if got := string(mustJSON(t, all)); !strings.Contains(got, `"fresh": 0`) {
+		t.Errorf("json dropped the zero fresh count:\n%s", got)
+	}
+}
+
+// The ledger records the assessable scope, not the pool: PR triage's skip
+// rules keep drafts and bots out of it, so a partly-classified pool is the
+// normal shape and the remainder is counted rather than dropped.
+func TestSummarizeSweepCountsPoolItemsTheLedgerSkips(t *testing.T) {
+	s := summarizeSweep(t, prPool(t), sweepLedger(t, map[string]string{
+		"10": "fresh", "13": "carried",
+	}))
+	if want := (SweepSplit{Fresh: 1, Carried: 1, Unlisted: 2}); *s.Split != want {
+		t.Errorf("split = %+v, want %+v", *s.Split, want)
+	}
+	want := "**Pool: 4 open PRs** (1 fresh, 1 carried, 2 the sweep does not list, 1 draft)"
+	if got, _, _ := strings.Cut(s.Markdown(), "\n"); got != want {
+		t.Errorf("header = %q, want %q", got, want)
+	}
+}
+
+// A ledger that classifies NO summarized item is the other corpus's sweep, or
+// another sweep entirely — item numbers being unique across a repo's issues
+// and PRs, the overlap of a matching pair is never empty. Reported as a split
+// it would read as a pool with nothing left to assess.
+func TestSummarizeSweepRejectsALedgerForAnotherPool(t *testing.T) {
+	sweep := sweepLedger(t, map[string]string{"4896": "carried", "5392": "carried"})
+	_, err := Summarize(SummaryOptions{
+		SweepDir: prPool(t), Sweep: sweep, Now: at(t, summaryNow),
+	})
+	if err == nil {
+		t.Fatal("Summarize() succeeded on a ledger for another pool")
+	}
+	want := "classifies none of the 4 summarized items"
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("error = %v, want it to say %q", err, want)
+	}
+	if !strings.Contains(err.Error(), sweep) {
+		t.Errorf("error = %v, want it to name %s", err, sweep)
+	}
+}
+
+// The other direction is routine too — --numbers narrows the pool below the
+// scope the ledger records, and a scope that shrank leaves entries behind — so
+// it is counted and shown rather than rejected.
+func TestSummarizeSweepCountsEntriesOutsideThePool(t *testing.T) {
+	sweep := sweepLedger(t, map[string]string{
+		"10": "fresh", "11": "carried", "12": "carried", "13": "fresh",
+		"14": "fresh", "15": "carried",
+	})
+	whole := summarizeSweep(t, prPool(t), sweep)
+	if want := (SweepSplit{Fresh: 2, Carried: 2, NotInPool: 2}); *whole.Split != want {
+		t.Errorf("split = %+v, want %+v", *whole.Split, want)
+	}
+	want := "**Pool: 4 open PRs** (2 fresh, 2 carried, 2 sweep items outside this pool, 1 draft)"
+	if got, _, _ := strings.Cut(whole.Markdown(), "\n"); got != want {
+		t.Errorf("header = %q, want %q", got, want)
+	}
+
+	filtered, err := Summarize(SummaryOptions{
+		SweepDir: prPool(t), Sweep: sweep, Now: at(t, summaryNow), Numbers: []int{11},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := (SweepSplit{Carried: 1, NotInPool: 5}); *filtered.Split != want {
+		t.Errorf("split = %+v, want %+v", *filtered.Split, want)
+	}
+	want = "**Pool: 1 open PR** (of 4 in the snapshot, 0 fresh, 1 carried, 5 sweep items outside this pool, 1 draft)"
+	if got, _, _ := strings.Cut(filtered.Markdown(), "\n"); got != want {
+		t.Errorf("header = %q, want %q", got, want)
+	}
+}
+
+// A sweep file that cannot answer the question must not answer it with zeros:
+// the phases that predate the split still write sweep.json, so an absent
+// ledger is the common shape of the wrong file, not an all-fresh pool.
+func TestSummarizeRejectsBadSweeps(t *testing.T) {
+	for _, tc := range []struct {
+		name, body, want string
+	}{
+		{name: "unparseable", body: `{"items": {"10": "fresh"`, want: "unexpected end of JSON input"},
+		{name: "no ledger", body: `{"sweep": "2026-08-11-prs-test", "mode": "prs"}`, want: "no per-item status"},
+		{name: "empty ledger", body: `{"items": {}}`, want: "no per-item status"},
+		{name: "ledger is not a map", body: `{"items": []}`, want: "cannot unmarshal array"},
+		{
+			name: "a status this tool does not know",
+			body: `{"items": {"10": "fresh", "11": "assessed", "12": "carried", "13": "fresh"}}`,
+			want: `item 11 is "assessed", want fresh or carried`,
+		},
+		{
+			name: "a status left blank",
+			body: `{"items": {"10": "fresh", "11": "", "12": "carried", "13": "fresh"}}`,
+			want: `item 11 is "", want fresh or carried`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			sweep := rawSweep(t, tc.body)
+			_, err := Summarize(SummaryOptions{
+				SweepDir: prPool(t), Sweep: sweep, Now: at(t, summaryNow),
+			})
+			if err == nil {
+				t.Fatalf("Summarize() succeeded on %s", tc.body)
+			}
+			if !strings.Contains(err.Error(), tc.want) {
+				t.Errorf("error = %v, want it to mention %q", err, tc.want)
+			}
+			if !strings.Contains(err.Error(), sweep) {
+				t.Errorf("error = %v, want it to name the sweep file", err)
+			}
+		})
+	}
+}
+
+func TestSummarizeRejectsAMissingSweep(t *testing.T) {
+	sweep := filepath.Join(t.TempDir(), "sweep.json")
+	_, err := Summarize(SummaryOptions{
+		SweepDir: prPool(t), Sweep: sweep, Now: at(t, summaryNow),
+	})
+	if err == nil {
+		t.Fatal("Summarize() succeeded with no sweep.json at --sweep")
+	}
+	if !strings.Contains(err.Error(), sweep) {
+		t.Errorf("error = %v, want it to name the sweep file it wanted", err)
+	}
+}
+
 func mustJSON(t *testing.T, s *PoolSummary) []byte {
 	t.Helper()
 	data, err := s.JSON()

@@ -1,0 +1,17 @@
+[
+ {"number": 17001, "kind": "bug",
+  "disposition": "keep-open — reproducible, fix in flight",
+  "actions": ["mention"],
+  "labels_proposed": [],
+  "routing": ["subhamkrai", "travisn"]},
+ {"number": 17002, "kind": "support",
+  "disposition": "support — needs an answer, then close",
+  "actions": ["mention", "label"],
+  "labels_proposed": ["support"],
+  "routing": ["SubhamKrai", "Madhu-1"]},
+ {"number": 17003, "kind": "bug",
+  "disposition": "keep-open — already has the right people on the thread",
+  "actions": [],
+  "labels_proposed": [],
+  "routing": []}
+]

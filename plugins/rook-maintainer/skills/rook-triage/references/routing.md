@@ -93,10 +93,15 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
    REQUESTS draw from approver/reviewer tiers only; contributor-tier
    domain experts are @-mention or report-only (they may not be
    requestable on GitHub). Issues → @-mention 1–2 (≤3). Per-person
-   per-sweep cap: 3 items (overflow goes in the report as "also
-   relevant", never posted). `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` re-checks the
-   reviewer and mention bounds immediately before any write, so a change
-   to either number has to land there too.
+   per-RUN cap: 3 items across every corpus the run touches (overflow goes
+   in the report as "also relevant", never posted). This number has two
+   code mirrors and a change has to land in both: `validate-actions`
+   re-checks the reviewer and mention BOUNDS before any write, and
+   `mdreport.PerPersonCap` is what the ledgers compare against. Nothing else
+   checks the cap, so `gen-run-ledger` is where a breach becomes visible —
+   and it must be the RUN-wide view, because a person proposed twice in each
+   of two corpora reads clean in both per-corpus ledgers and is over the cap
+   across the run.
 5. `references/routing-overrides.md` wins over all mined data, always.
 
 ## Etiquette (encoded, not vibes)

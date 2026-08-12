@@ -1,0 +1,36 @@
+{
+ "fetched_at": "2026-08-12T09:00:00.000000+00:00",
+ "repo": "rook/rook",
+ "kind": "prs",
+ "items": {
+  "18001": {
+   "number": 18001,
+   "title": "osd: stop the prepare job from racing the operator",
+   "labels": ["ceph-osd"],
+   "assignees": [],
+   "ci": {"total": 12, "passing": 12, "failing": 0, "pending": 0, "failed": []},
+   "reviews": {
+    "requested": ["Madhu-1"],
+    "latest": [{"login": "travisn", "state": "APPROVED"}]
+   }
+  },
+  "18002": {
+   "number": 18002,
+   "title": "object: multisite zone deletion",
+   "labels": ["ceph-rgw"],
+   "assignees": []
+  },
+  "18003": {
+   "number": 18003,
+   "title": "csi: bump the ceph-csi driver",
+   "labels": ["csi"],
+   "assignees": []
+  },
+  "18004": {
+   "number": 18004,
+   "title": "WIP: mon failover rework",
+   "labels": ["ceph-mon"],
+   "assignees": []
+  }
+ }
+}

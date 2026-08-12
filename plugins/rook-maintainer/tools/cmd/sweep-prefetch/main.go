@@ -4,7 +4,7 @@
 //	run.sh sweep-prefetch snapshot SWEEP_DIR --kind prs|issues \
 //	    [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]
 //	run.sh sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]
-//	run.sh sweep-prefetch pool-summary SWEEP_DIR [--viewer LOGIN] \
+//	run.sh sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN] \
 //	    [--now RFC3339] [--numbers 1,2,3 | --numbers-file F] [--json]
 //
 // snapshot enumerates every OPEN item of --kind, or exactly --numbers (numbers
@@ -17,11 +17,18 @@
 // --viewer's review, the age/author/label splits, the summed diff — as a
 // markdown block to present as-is, or as raw numbers with --json. It is the
 // aggregation phase 0 used to do by reading every item into a model's context,
-// and it is OFFLINE: the snapshot is its only input, so re-running it costs
-// nothing. --numbers narrows it to a filtered pool and fails on any number the
-// snapshot does not carry; --viewer is rejected on an issues snapshot, where no
-// review exists to count, rather than reported as zero. Pin --now to keep the
-// age buckets of two runs comparable.
+// and it is OFFLINE: it reads local files only, so re-running it costs nothing.
+// --sweep adds the fresh-vs-carried split, read from that sweep.json's per-item
+// ledger, which is what phase 0's cost estimate divides by: absent, no split is
+// reported at all, which is not the same fact as nothing carried. Pool items
+// the ledger classifies neither way — the drafts and bots a PR sweep's skip
+// rules leave out of its assessable scope — are counted as their own figure
+// rather than folded into either side, but a ledger that classifies NOTHING in
+// the pool is the wrong file and fails. --numbers narrows the summary to a
+// filtered pool and fails on any number the snapshot does not carry; --viewer
+// is rejected on an issues snapshot, where no review exists to count, rather
+// than reported as zero. Pin --now to keep the age buckets of two runs
+// comparable.
 //
 // Exit status is 2 for a usage error and 1 for a bad argument value, a failed
 // fetch or a failed write. snapshot and classify-refs need authenticated gh
@@ -52,8 +59,8 @@ func usage() {
 	fmt.Fprint(os.Stderr, "usage: sweep-prefetch snapshot SWEEP_DIR --kind prs|issues"+
 		" [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]\n"+
 		"       sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]\n"+
-		"       sweep-prefetch pool-summary SWEEP_DIR [--viewer LOGIN] [--now RFC3339]"+
-		" [--numbers 1,2,3 | --numbers-file F] [--json]\n")
+		"       sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN]"+
+		" [--now RFC3339] [--numbers 1,2,3 | --numbers-file F] [--json]\n")
 }
 
 func run() int {
@@ -134,6 +141,7 @@ func runClassifyRefs(args []string) int {
 
 func runPoolSummary(args []string) int {
 	fs := flag.NewFlagSet("sweep-prefetch pool-summary", flag.ContinueOnError)
+	sweep := fs.String("sweep", "", "sweep.json whose per-item status splits the pool into fresh and carried (omitted entirely when unset)")
 	viewer := fs.String("viewer", "", "login whose existing reviews are counted (prs only; omitted entirely when unset)")
 	now := fs.String("now", "", "RFC3339 timestamp the age buckets are measured from (default: current time); pin it for reproducible re-runs")
 	numbers := fs.String("numbers", "", "comma-separated item numbers to summarize instead of the whole snapshot")
@@ -147,6 +155,7 @@ func runPoolSummary(args []string) int {
 	}
 	opts := sweepprefetch.SummaryOptions{
 		SweepDir: sweepDir,
+		Sweep:    *sweep,
 		Viewer:   *viewer,
 		Now:      time.Now().UTC(),
 	}
