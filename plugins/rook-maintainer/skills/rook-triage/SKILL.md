@@ -72,9 +72,19 @@ numbers, count cap.
    item whose live `updatedAt` matches the one recorded with its stored
    assessment may carry that card forward (marked `carried`); changed
    items are re-assessed; only an EXECUTED action (sweep.json action
-   log) settles an item. Present counts, breakdown (fresh vs carried),
-   and cost estimate (~1 triager agent per ~10 items needing
-   assessment); get explicit confirmation before any fan-out. Warn if
+   log) settles an item. Present the pool with a script rather than
+   counting over the snapshot:
+   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch pool-summary <sweep-dir>
+   --sweep <sweep-dir>/sweep.json` (add `--viewer <login>` on a PR corpus;
+   pass `--sweep` only when that file already carries an `items` map —
+   State below — since a first run has nothing to carry and the flag fails
+   loud rather than reporting a split it cannot compute). Paste its
+   block — counts, the fresh / carried split, and the breakdowns — rather
+   than re-rendering it. Size the fan-out off `fresh`, not the total: at
+   ~1 triager agent per ~10 items NEEDING assessment, carried cards and
+   the items the ledger does not list (a PR corpus skips drafts and bots
+   by default, and they cost a skip row rather than an agent) are not
+   work. Then get explicit confirmation before any fan-out. Warn if
    `kb.json` is missing or >30 days old (`references/routing.md`
    fallback applies).
 1. **Assess** — fan out `rook-maintainer:rook-triager` agents (batches of

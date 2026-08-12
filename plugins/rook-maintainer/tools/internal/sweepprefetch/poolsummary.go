@@ -47,6 +47,10 @@ var stateOrder = []string{"OPEN", "MERGED", "CLOSED"}
 
 type SummaryOptions struct {
 	SweepDir string
+	// Sweep is the path to a sweep.json whose per-item status splits the pool
+	// into fresh and carried. Empty leaves the split out entirely, which is not
+	// the same fact as a pool with nothing carried.
+	Sweep string
 	// Viewer is a login whose existing reviews are counted. Empty means the
 	// aggregate is left out entirely, which is not the same fact as zero.
 	Viewer string
@@ -79,6 +83,21 @@ type CommentTotals struct {
 	None  int `json:"none"`
 }
 
+// SweepSplit divides the pool by the status the sweep recorded for each item.
+// Fresh items are the ones phase 0 sizes its triager fan-out from; carried ones
+// reuse the card a prior run stored. Unlisted are pool items the ledger says
+// nothing about — on a PR corpus, the drafts and bots the skip rules keep out
+// of the assessable scope — and Fresh, Carried and Unlisted together always
+// account for the whole pool. NotInPool counts the other direction, ledger
+// entries the summarized pool does not contain, so a split cannot be read as
+// covering more than it does.
+type SweepSplit struct {
+	Fresh     int `json:"fresh"`
+	Carried   int `json:"carried"`
+	Unlisted  int `json:"unlisted"`
+	NotInPool int `json:"not_in_pool"`
+}
+
 // PoolSummary is the whole of what pool-summary reports; its JSON field names
 // are the machine-readable contract of --json.
 type PoolSummary struct {
@@ -93,9 +112,15 @@ type PoolSummary struct {
 	// Numbers selected a subset of it.
 	SelectedFrom int      `json:"selected_from,omitempty"`
 	States       []Bucket `json:"states"`
+	// Sweep is the sweep.json the split was read from, and Split is nil when no
+	// sweep was named — a pool nobody has assessed before and a pool nothing
+	// carried forward from are different facts.
+	Sweep string      `json:"sweep,omitempty"`
+	Split *SweepSplit `json:"split,omitempty"`
 	// Drafts is nil for an issues corpus, which has no such state, and set —
-	// zero included — for a pull request corpus. It is load-bearing: a sweep
-	// sizes its fan-out off the pool, and its own pre-gate drops every draft.
+	// zero included — for a pull request corpus. It is load-bearing: PR triage
+	// skips drafts unless the user asks to include them, so the count is how
+	// much of the pool the fan-out will not have to assess.
 	Drafts *int   `json:"drafts,omitempty"`
 	Viewer string `json:"viewer,omitempty"`
 	// ReviewedByViewer is nil when no viewer was named.
@@ -119,11 +144,11 @@ type poolDoc struct {
 }
 
 // Summarize aggregates one <sweep-dir>/snapshot.json into the pool-wide counts
-// a rook-code-review or rook-triage sweep opens phase 0 with: how big the
-// corpus is, how much of it the viewer has already reviewed, how it splits by
-// age, author and label, and how much churn it carries.
+// rook-triage's phase 0 opens with: how big the corpus is, how much of it the
+// viewer has already reviewed, how it splits by age, author and label, and how
+// much churn it carries.
 //
-// It reads the snapshot and nothing else — no network, no gh — so re-running it
+// It reads local files and nothing else — no network, no gh — so re-running it
 // is free and a sweep dir summarizes long after the session that fetched it. An
 // unreadable, unparseable or item-less snapshot is an error: a summary nobody
 // could compute must never come back looking like an empty pool.
@@ -139,13 +164,28 @@ type poolDoc struct {
 // quietly shrinking the pool, and SelectedFrom then records what the subset was
 // drawn from so a filtered block cannot be mistaken for the whole corpus.
 //
+// Sweep adds the fresh-vs-carried split phase 0 estimates its cost from. The
+// split is READ from the sweep's own per-item ledger, never recomputed: whether
+// an item's live updatedAt still matches the one its stored assessment was
+// taken at is a comparison only the sweep holds both sides of.
+//
 // Decisions callers depend on:
 //
 //   - Age buckets are half-open on Now - createdAt: <7d is [0, 7d), 7-30d is
 //     [7d, 30d), 30-90d is [30d, 90d), >90d is everything at or past 90d.
 //   - Drafts are counted but not excluded. The pool is what the sweep was
 //     handed; how many of it is draft is what keeps a cost estimate honest,
-//     since the sweep's pre-gate skips them.
+//     since PR triage skips drafts by default and only reports a skip row for
+//     each.
+//   - The pool and Sweep's ledger need not be the same set, and neither side of
+//     the difference is an error by itself: the ledger records the assessable
+//     scope, which on a PR corpus is the pool minus the skip rules' drafts and
+//     bots, while Numbers narrows the pool below the ledger. Both differences
+//     are counted rather than dropped, as Unlisted and NotInPool. A ledger that
+//     classifies NONE of the summarized items is a different thing — the wrong
+//     file for this pool, item numbers being unique across a repo's issues and
+//     pull requests — and aborts, because "0 fresh" would otherwise read as
+//     nothing left to assess.
 //   - Bot authors take a "bot" row on the authorAssociation axis in place of
 //     their own association, because "19 of these are mergify" is the fact
 //     phase 0 acts on.
@@ -191,6 +231,12 @@ func Summarize(opts SummaryOptions) (*PoolSummary, error) {
 	}
 	if len(items) != len(doc.Items) {
 		s.SelectedFrom = len(doc.Items)
+	}
+	if opts.Sweep != "" {
+		if s.Split, err = sweepSplit(opts.Sweep, items); err != nil {
+			return nil, err
+		}
+		s.Sweep = opts.Sweep
 	}
 	states := map[string]int{}
 	authors := map[string]int{}
@@ -273,6 +319,58 @@ func Summarize(opts SummaryOptions) (*PoolSummary, error) {
 	return s, nil
 }
 
+const (
+	statusFresh   = "fresh"
+	statusCarried = "carried"
+)
+
+type sweepDoc struct {
+	Items map[string]string `json:"items"`
+}
+
+// sweepSplit counts the summarized items against the sweep's per-item ledger.
+// A sweep.json without that ledger is an error rather than an all-fresh pool:
+// the file is written across a sweep's whole life, and the phases that predate
+// the split record everything else about the run.
+func sweepSplit(path string, items map[string]json.RawMessage) (*SweepSplit, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var doc sweepDoc
+	if err := json.Unmarshal(data, &doc); err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	if len(doc.Items) == 0 {
+		return nil, fmt.Errorf("%s: no per-item status, so it records no fresh/carried split", path)
+	}
+
+	split := &SweepSplit{}
+	for _, key := range itemKeys(items) {
+		status, listed := doc.Items[key]
+		switch {
+		case !listed:
+			split.Unlisted++
+		case status == statusFresh:
+			split.Fresh++
+		case status == statusCarried:
+			split.Carried++
+		default:
+			return nil, fmt.Errorf("%s: item %s is %q, want %s or %s",
+				path, key, status, statusFresh, statusCarried)
+		}
+	}
+	if split.Unlisted == len(items) {
+		return nil, fmt.Errorf("%s: classifies none of the %d summarized items, so it is not this pool's ledger", path, len(items))
+	}
+	for key := range doc.Items {
+		if _, ok := items[key]; !ok {
+			split.NotInPool++
+		}
+	}
+	return split, nil
+}
+
 // selection narrows items to numbers. A number the snapshot does not carry
 // aborts the summary: the alternative is a pool quietly smaller than the one
 // the caller asked about, which is the failure this whole subcommand exists to
@@ -300,17 +398,21 @@ func selection(path string, items map[string]json.RawMessage, numbers []int) (ma
 }
 
 func joinNumbers(numbers []int) string {
+	keys := make([]string, 0, len(numbers))
+	for _, n := range numbers {
+		keys = append(keys, strconv.Itoa(n))
+	}
+	return joinKeys(keys)
+}
+
+func joinKeys(keys []string) string {
 	const shown = 10
 	tail := ""
-	head := numbers
+	head := keys
 	if len(head) > shown {
-		head, tail = head[:shown], fmt.Sprintf(" and %d more", len(numbers)-shown)
+		head, tail = head[:shown], fmt.Sprintf(" and %d more", len(keys)-shown)
 	}
-	parts := make([]string, 0, len(head))
-	for _, n := range head {
-		parts = append(parts, strconv.Itoa(n))
-	}
-	return strings.Join(parts, ", ") + tail
+	return strings.Join(head, ", ") + tail
 }
 
 // JSON renders the summary the way this package writes every other file: a
@@ -346,8 +448,16 @@ func (s *PoolSummary) Markdown() string {
 	if s.SelectedFrom > 0 {
 		notes = append(notes, fmt.Sprintf("of %s in the snapshot", comma(s.SelectedFrom)))
 	}
-	// A draft is work the sweep's own pre-gate will skip, so a pool sized
-	// without it buys fan-out for PRs nobody will review.
+	if s.Split != nil {
+		notes = append(notes, fmt.Sprintf("%s fresh, %s carried", comma(s.Split.Fresh), comma(s.Split.Carried)))
+		if s.Split.Unlisted > 0 {
+			notes = append(notes, fmt.Sprintf("%s the sweep does not list", comma(s.Split.Unlisted)))
+		}
+		if s.Split.NotInPool > 0 {
+			notes = append(notes, plural(s.Split.NotInPool,
+				"sweep item outside this pool", "sweep items outside this pool"))
+		}
+	}
 	if s.Drafts != nil && *s.Drafts > 0 {
 		notes = append(notes, plural(*s.Drafts, "draft", "drafts"))
 	}

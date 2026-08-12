@@ -17,9 +17,11 @@
 // field names, nesting and null-vs-absent are all load-bearing.
 //
 // Summarize reads that same snapshot back, offline, for the pool-summary
-// subcommand: the corpus-wide counts a sweep's phase 0 opens with come out of
-// the typed fields here instead of ~1.3 KB of JSON per item being routed
-// through a model's context to be counted by eye.
+// subcommand: the corpus-wide counts rook-triage's phase 0 opens with come out
+// of the typed fields here instead of ~1.3 KB of JSON per item being routed
+// through a model's context to be counted by eye. Given a sweep.json it also
+// counts that sweep's fresh-vs-carried ledger over the same pool, which is the
+// other half of what phase 0 estimates its fan-out from.
 package sweepprefetch
 
 import (
