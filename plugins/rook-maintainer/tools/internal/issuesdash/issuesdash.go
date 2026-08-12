@@ -30,8 +30,15 @@ import (
 const (
 	emDash      = "\u2014"
 	maxMentions = 8
+
+	// copilotLogin also appears verbatim in cells.html.tmpl, which cannot
+	// reach a Go constant.
+	copilotLogin = "copilot-pull-request-reviewer"
 )
 
+// Item is one triager assessment out of a batch-*.json array. CapNote records
+// why a routing set had to be swapped; it reaches the markdown ledger only,
+// since the dashboard has no room for it.
 type Item struct {
 	Number         json.Number       `json:"number"`
 	Kind           string            `json:"kind"`
@@ -41,6 +48,7 @@ type Item struct {
 	Routing        []json.RawMessage `json:"routing"`
 	XLinks         []json.RawMessage `json:"xlinks"`
 	Dups           []json.RawMessage `json:"dups"`
+	CapNote        string            `json:"cap_note"`
 }
 
 type SnapItem struct {
@@ -49,8 +57,13 @@ type SnapItem struct {
 	Assignees []string `json:"assignees"`
 }
 
+// Sweep is one sweep dir's canonical inputs. Batches keeps the file list, not
+// just the items it parsed: a dir with no batch file at all renders the same
+// empty table as a dir whose triager found nothing, and only the caller can
+// say whether that is a finished sweep or a missing input.
 type Sweep struct {
 	Dir      string
+	Batches  []string
 	Items    []Item
 	Snapshot map[string]SnapItem
 	Mentions map[string][]string
@@ -68,6 +81,7 @@ func Load(dir string) (*Sweep, error) {
 		return nil, err
 	}
 	sort.Strings(batches)
+	s.Batches = batches
 	for _, path := range batches {
 		var items []Item
 		if err := readJSON(path, &items); err != nil {
@@ -142,16 +156,21 @@ type Page struct {
 }
 
 type Row struct {
-	Class       string
-	Number      string
-	Kind        string
-	Title       string
+	Class  string
+	Number string
+	Kind   string
+	Title  string
+	// Missing says the snapshot has no entry for this row: its title, labels
+	// and assignees are unavailable rather than empty, and no renderer may
+	// present the difference as "none".
+	Missing     bool
 	Actions     List
 	Disposition []Seg
 	Refs        []string
 	Assignees   []string
 	Mentions    []MentionRow
 	Labels      LabelsCell
+	CapNote     string
 }
 
 type List struct {
@@ -189,12 +208,13 @@ func (s *Sweep) Page() Page {
 
 func (s *Sweep) row(it Item) Row {
 	n := it.Number.String()
-	snap := s.Snapshot[n]
+	snap, found := s.Snapshot[n]
 	return Row{
 		Class:       Class(*it.Disposition),
 		Number:      n,
 		Kind:        it.Kind,
 		Title:       snap.Title,
+		Missing:     !found,
 		Actions:     List{Items: it.Actions},
 		Disposition: Linkify(*it.Disposition),
 		Refs:        s.PullRefs(it),
@@ -204,6 +224,7 @@ func (s *Sweep) row(it Item) Row {
 			Current:  List{Items: snap.Labels},
 			Proposed: List{Items: it.LabelsProposed, Bold: true},
 		},
+		CapNote: it.CapNote,
 	}
 }
 

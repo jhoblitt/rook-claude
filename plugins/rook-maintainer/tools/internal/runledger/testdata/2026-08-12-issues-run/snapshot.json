@@ -1,0 +1,25 @@
+{
+ "fetched_at": "2026-08-12T09:00:02.000000+00:00",
+ "repo": "rook/rook",
+ "kind": "issues",
+ "items": {
+  "17001": {
+   "number": 17001,
+   "title": "osd prepare job hangs on a wiped disk",
+   "labels": ["bug", "ceph-osd"],
+   "assignees": []
+  },
+  "17002": {
+   "number": 17002,
+   "title": "How do I move a mon to another node?",
+   "labels": [],
+   "assignees": []
+  },
+  "17003": {
+   "number": 17003,
+   "title": "rgw: bucket notification topics are not reconciled",
+   "labels": ["bug", "ceph-rgw"],
+   "assignees": []
+  }
+ }
+}

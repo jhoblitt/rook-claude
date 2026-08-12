@@ -40,23 +40,62 @@ orchestrator — JSON only, no prose around it.
 
 ## Output
 
-One JSON array, one object per item:
+One JSON array, one object per item, written to the batch file the brief
+names. The shape differs by corpus, and it is a CONTRACT: the phase-3
+generators render `report.md`'s tables and the reviewer/mention ledger
+directly from these fields, so a renamed or omitted field silently empties
+a column rather than degrading into prose. Emit an absent signal as `""` /
+`[]`, never as a paraphrase in a neighbouring field.
+
+PR items:
 
 ```json
-[{"number": 0, "type": "issue|pr", "kind": "bug|feature|support|docs|meta",
-  "completeness": {"complete": true, "missing": ["exact template fields"]},
-  "signals": {"ci": {"passing": 0, "total": 0, "failed": ["check names"], "analysis": "short why-plausible"},
-              "mergeable": "", "size": "", "template": "",
-              "assignees": [], "existing_reviewers": [{"login": "", "state": "REQUESTED|APPROVED|CHANGES_REQUESTED|COMMENTED"}],
-              "trust": "authorAssociation + history — factual, no intent claims"},
-  "labels": {"current": [], "proposed": ["issues only — empty for PRs"], "layer": "glob|regex|kb|llm"},
-  "dups": [{"number": 0, "confidence": "CONFIRMED|POSSIBLE", "reason": ""}],
-  "xlinks": [{"number": 0, "kind": "fixes|fixed-by|related",
-              "confidence": "CONFIRMED|POSSIBLE", "reason": ""}],
-  "routing": {"mentions": [], "reviewers": [], "evidence": "KB/blame basis"},
-  "disposition": "", "next": "one verb",
-  "proposed_actions": [{"action": "label|comment|close|convert|reviewers",
-    "params": {}, "draft": "full comment text opening with the AI-agent marker"}],
-  "flags": {"suspicious_content": "", "escalate": "", "takeover_candidate": ""},
-  "evidence": ["one line per load-bearing fact"]}]
+[{"number": 18010, "kind": "bug|feature|support|docs|meta",
+  "ci": "green 56/56",
+  "disposition": "the assessment, one or two clauses — triage's own judgment",
+  "next": "one verb — suggest-Fixes-#N(self)",
+  "reviewers_existing": "BlaineEXE (CHANGES_REQUESTED→COMMENTED, active)",
+  "reviewers_proposed": ["BlaineEXE", "subhamkrai"],
+  "cap_note": "subhamkrai at cap → assembly swaps BlaineEXE",
+  "labels_proposed": [],
+  "skip": "WIP title",
+  "takeover": true,
+  "close_class": true,
+  "dups":   [{"number": 17970, "confidence": "CONFIRMED|POSSIBLE", "note": ""}],
+  "xlinks": [{"number": 18020, "kind": "fixes|fixed-by|related", "confidence": "CONFIRMED|POSSIBLE"}],
+  "draft_comment": "full comment text, opening with the AI-agent marker",
+  "draft_comment_note": "anything the assembler must fix before posting"}]
 ```
+
+Issue items:
+
+```json
+[{"number": 17883, "kind": "bug|feature|support|docs|meta",
+  "disposition": "", "actions": ["label"],
+  "labels_proposed": ["object-bucket-claims"],
+  "routing": ["subhamkrai"],
+  "cap_note": "",
+  "close_class": true,
+  "flags": {"suspicious_content": "", "escalate": "", "takeover_candidate": ""},
+  "dups":   [{"number": 11696, "confidence": "CONFIRMED|POSSIBLE"}],
+  "xlinks": [{"number": 17318, "kind": "related", "confidence": "CONFIRMED"}],
+  "draft_comment": ""}]
+```
+
+Field notes, because several are load-bearing in ways the names do not show:
+
+- `labels_proposed` is ISSUES ONLY. Emit `[]` on a PR — triage never labels
+  PRs (SKILL.md ground rules), and the generators drop a PR's proposals
+  rather than render them.
+- `reviewers_proposed` / `routing` carry bare logins; a PR entry may append
+  a parenthetical note (`"sp98 (adjudicator, not requested)"`) which the
+  generator splits off. The ledger charges a login once per item, so listing
+  one person twice on one item is not a way to weight them.
+- `cap_note` is what the "Cap-swapped sets" table renders: say who was at
+  cap and who replaced them. Without it a swap is invisible in the report.
+- `skip` is the skip-class reason for a row that must still appear (WIP,
+  draft, bot, do-not-merge); `close_class` marks a proposal that must
+  survive phase 2's refutation.
+- `ci` is your short read for the disposition column's benefit. It is NOT
+  the CI cell — that is computed from the snapshot's rollup, so never
+  write `passing/total` here expecting it to be used.

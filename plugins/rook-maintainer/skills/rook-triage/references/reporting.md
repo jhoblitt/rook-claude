@@ -19,7 +19,43 @@ corpus (SKILL.md "State"), so a `both` run publishes two artifacts rather
 than one overwriting the other; favicon stays
 🗂️.
 
-## Contract the model honors when writing report.md
+## Assembling report.md
+
+The per-item tables and the reviewer ledger are GENERATED, not typed. Run
+the sweep dir's own generator with `--markdown` — `gen-pr-dashboard` for a
+PR sweep, `gen-issues-dashboard` for an issues sweep, exactly as for the
+dashboard — which writes `<sweep-dir>/report-tables.md` from the same
+canonical inputs. Write the synthesis to `<sweep-dir>/report-notes.md`,
+then concatenate, notes first:
+
+```sh
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-pr-dashboard <sweep-dir> --markdown     # or gen-issues-dashboard
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-run-ledger <prs-dir> <issues-dir>       # one dir for a single-corpus run
+cat <sweep-dir>/report-notes.md <sweep-dir>/report-tables.md <sweep-dir>/run-ledger.md \
+  > <sweep-dir>/report.md
+```
+
+`gen-run-ledger` writes the same fragment into every dir the run touches,
+because the cap spans them: a maintainer reading only the issues report has
+to see a breach the PR dir contributed to.
+
+Both steps are yours: you write `report-notes.md` and you run both commands.
+The tables never enter context — not to write, not to copy. What
+`report-notes.md` holds is what no lookup can produce: the disposition
+evidence behind each proposal, cross-cutting observations, and the
+repo-hygiene notes.
+
+This is not a style preference. Hand-typing the ledger for the
+`2026-07-23-prs-assessable` sweep recorded "subhamkrai 3/3" while the
+batches proposed them on four PRs — a cap breach reported as compliant,
+from one dropped row.
+
+## Contract the generators implement
+
+Below is the spec the `--markdown` renderers satisfy; a row that violates
+it is a bug in the generator, not a note for the writer. Read it when
+changing a generator or auditing its output — never to reproduce it by
+hand.
 
 - **Every issue/PR reference is a clickable link, everywhere** — tables,
   disposition text, evidence, skip rows: `[#N](url)` (the `/issues/N` URL

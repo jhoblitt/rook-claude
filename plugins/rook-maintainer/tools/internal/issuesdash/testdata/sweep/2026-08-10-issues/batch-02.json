@@ -6,13 +6,13 @@
   "actions": ["propose close as duplicate"],
   "labels_proposed": ["duplicate", "wontfix"],
   "dups": [{"number": 15003}, {"number": 15004}],
-  "routing": ["BlaineEXE", "sp98"]
+  "routing": ["BlaineEXE", "sp98", "BlaineEXE"]
  },
  {
   "number": 18999,
   "kind": "docs",
   "disposition": "needs-info — no logs, no version",
-  "actions": ["ask for the operator log"],
+  "actions": ["ask for the operator log", "check `get pods | grep osd`"],
   "routing": ["evil\" onmouseover=alert(1) <b>"]
  },
  {

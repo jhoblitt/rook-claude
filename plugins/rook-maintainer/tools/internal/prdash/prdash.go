@@ -44,6 +44,10 @@ const (
 	copilotLogin  = "copilot-pull-request-reviewer"
 	dashboardFile = "dashboard.html"
 	failedShown   = 6
+
+	// classProposed marks the reviewer rows triage is proposing rather than
+	// reporting; the ledger counts them against the per-person cap.
+	classProposed = "prop"
 )
 
 // Text tolerates a non-string JSON scalar because the Python it replaces
@@ -118,7 +122,9 @@ func scalar(raw json.RawMessage) string {
 	return string(raw)
 }
 
-// Item is one triager assessment out of a batch-*.json array.
+// Item is one triager assessment out of a batch-*.json array. CapNote records
+// why a reviewer set had to be swapped; it reaches the markdown ledger only,
+// since the dashboard has no room for it.
 type Item struct {
 	Number            int    `json:"number"`
 	Kind              Text   `json:"kind"`
@@ -130,6 +136,7 @@ type Item struct {
 	XLinks            []Ref  `json:"xlinks"`
 	Dups              []Ref  `json:"dups"`
 	ReviewersProposed []Text `json:"reviewers_proposed"`
+	CapNote           Text   `json:"cap_note"`
 }
 
 // Skip is one draft/bot row out of skips.json.
@@ -167,10 +174,14 @@ type SnapItem struct {
 	Reviews   *Reviews `json:"reviews"`
 }
 
-// Sweep is the canonical sweep-dir input set.
+// Sweep is the canonical sweep-dir input set. Batches keeps the file list, not
+// just the items it parsed: a dir with no batch file at all renders the same
+// empty table as a dir whose triager found nothing, and only the caller can
+// say whether that is a finished sweep or a missing input.
 type Sweep struct {
 	Dir      string
 	Date     string
+	Batches  []string
 	Items    []Item
 	Snap     map[string]SnapItem
 	Skips    []Skip
@@ -191,6 +202,7 @@ func Load(dir string) (*Sweep, error) {
 	if err != nil {
 		return nil, err
 	}
+	s.Batches = batches
 	for _, b := range batches {
 		var items []Item
 		if err := readJSON(b, &items, true); err != nil {
@@ -262,13 +274,18 @@ type Reviewer struct {
 	Class string
 	Icon  string
 	Title string
+	Note  string
 }
 
 type Row struct {
-	Class       string
-	Number      int
-	Kind        string
-	Title       string
+	Class  string
+	Number int
+	Kind   string
+	Title  string
+	// Missing says the snapshot has no entry for this row: its title, labels,
+	// assignees, reviews and CI counts are unavailable rather than empty, and
+	// no renderer may present the difference as "none".
+	Missing     bool
 	Chip        Chip
 	Next        string
 	Disposition []Seg
@@ -276,6 +293,7 @@ type Row struct {
 	Assignees   []User
 	Reviewers   []Reviewer
 	Labels      []string
+	CapNote     string
 }
 
 type SkipRow struct {
@@ -316,7 +334,7 @@ func (s *Sweep) Page() Page {
 }
 
 func (s *Sweep) row(it Item) Row {
-	snap := s.Snap[strconv.Itoa(it.Number)]
+	snap, found := s.Snap[strconv.Itoa(it.Number)]
 	next := string(it.Next)
 	if next == "" {
 		next = emDash
@@ -326,6 +344,7 @@ func (s *Sweep) row(it Item) Row {
 		Number:      it.Number,
 		Kind:        string(it.Kind),
 		Title:       snap.Title,
+		Missing:     !found,
 		Chip:        NewChip(snap.CI, string(it.CI)),
 		Next:        next,
 		Disposition: Linkify(string(it.Disposition)),
@@ -333,6 +352,7 @@ func (s *Sweep) row(it Item) Row {
 		Assignees:   users(snap.Assignees),
 		Reviewers:   Reviewers(it.ReviewersProposed, snap.Reviews),
 		Labels:      snap.Labels,
+		CapNote:     string(it.CapNote),
 	}
 }
 
@@ -565,8 +585,8 @@ func Reviewers(proposed []Text, rv *Reviews) []Reviewer {
 		if note != "" {
 			title = "proposed reviewer " + emDash + " " + note
 		}
-		rows = append(rows, Reviewer{User: userOf(login), Class: "prop",
-			Icon: iconPropose, Title: title})
+		rows = append(rows, Reviewer{User: userOf(login), Class: classProposed,
+			Icon: iconPropose, Title: title, Note: note})
 	}
 	return rows
 }

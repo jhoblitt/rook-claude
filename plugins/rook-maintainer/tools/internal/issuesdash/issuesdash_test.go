@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -340,3 +341,209 @@ func excerpt(b []byte, at int) string {
 	end := min(at+80, len(b))
 	return string(b[min(at, len(b)):end])
 }
+
+func renderMarkdown(t *testing.T, dir string) string {
+	t.Helper()
+	sweep, err := Load(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := RenderMarkdown(&buf, sweep.Page()); err != nil {
+		t.Fatalf("RenderMarkdown() = %v", err)
+	}
+	return buf.String()
+}
+
+func TestGoldenMarkdown(t *testing.T) {
+	tests := []struct{ name, dir, golden string }{
+		{"populated sweep", sweepDir, "testdata/sweep.golden.md"},
+		{"no rows, no optional inputs", emptyDir, "testdata/empty.golden.md"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := []byte(renderMarkdown(t, tc.dir))
+			if *update {
+				if err := os.WriteFile(tc.golden, got, 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			want, err := os.ReadFile(tc.golden)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, want) {
+				at := firstDiff(got, want)
+				t.Errorf("fragment differs from %s at byte %d\n got: %q\nwant: %q",
+					tc.golden, at, excerpt(got, at), excerpt(want, at))
+			}
+		})
+	}
+}
+
+// The fragment rule stated on mdreport.Section, checked against real output.
+func TestMarkdownIsAFragment(t *testing.T) {
+	for _, dir := range []string{sweepDir, emptyDir} {
+		doc := renderMarkdown(t, dir)
+		if !strings.HasPrefix(doc, "\n## ") {
+			t.Errorf("%s: fragment starts with %q", dir, doc[:min(len(doc), 40)])
+		}
+		if !strings.HasSuffix(doc, "\n") {
+			t.Errorf("%s: fragment does not end with a newline", dir)
+		}
+		for _, line := range strings.Split(doc, "\n") {
+			if strings.HasPrefix(line, "# ") {
+				t.Errorf("%s: fragment carries a document title: %q", dir, line)
+			}
+		}
+	}
+}
+
+// Rows are ordered by number, and the ledger follows the table rather than
+// splitting it.
+func TestMarkdownOrdering(t *testing.T) {
+	doc := renderMarkdown(t, sweepDir)
+	table, ledger := strings.Index(doc, "\n## Assessed issues"),
+		strings.Index(doc, "\n## Mention ledger")
+	if table < 0 || ledger < table {
+		t.Fatalf("sections out of order: table at %d, ledger at %d", table, ledger)
+	}
+	var got []string
+	for _, row := range tables(doc[table:ledger])[0].rows {
+		m := rowNumber.FindStringSubmatch(row[0])
+		if m == nil {
+			t.Fatalf("row does not open with a linked number: %q", row[0])
+		}
+		got = append(got, m[1])
+	}
+	want := []string{"4002", "7777", "9001", "12010", "15003", "18999"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("row order = %v, want %v", got, want)
+	}
+}
+
+// Every column of every row survives a renderer's split, which is only true
+// while the cells are escaped: one raw "|" in an issue title shifts the rest
+// of that row under the wrong headers.
+func TestMarkdownRowsKeepTheirColumns(t *testing.T) {
+	for _, tbl := range tables(renderMarkdown(t, sweepDir)) {
+		for _, row := range tbl.rows {
+			if len(row) != len(tbl.header) {
+				t.Errorf("row %q has %d cells, want %d (header %v)",
+					row, len(row), len(tbl.header), tbl.header)
+			}
+		}
+	}
+}
+
+func TestMarkdownEscapesReporterText(t *testing.T) {
+	doc := renderMarkdown(t, sweepDir)
+	for _, want := range []string{
+		`Docs: quickstart \| missing the \` + "`kubectl apply\\`" + ` step \*and\* \[links\]`,
+		`check \` + "`get pods \\| grep osd\\`",
+		`"Quoted" \& \<b>bold\</b> title with 'apostrophes' + math = fun`,
+		`**evil" onmouseover=alert(1) \<b>**`,
+	} {
+		if !strings.Contains(doc, want) {
+			t.Errorf("expected %q in the fragment", want)
+		}
+	}
+}
+
+// Proposed routing is what the cap bounds; mentions the thread already carries
+// are somebody else's ping and never count.
+func TestMarkdownMentionLedger(t *testing.T) {
+	doc := renderMarkdown(t, sweepDir)
+	for _, want := range []string{
+		"## Mention ledger (per-person per-sweep cap: 3)",
+		"| mentioned | proposed | cap | status |",
+		"| BlaineEXE | 1 | 3 | — |",
+		"| travisn | 1 | 3 | — |",
+	} {
+		if !strings.Contains(doc, want) {
+			t.Errorf("ledger is missing %q", want)
+		}
+	}
+	if strings.Contains(doc, "Cap-swapped") {
+		t.Error("a cap-swap section appeared without a cap_note")
+	}
+	if strings.Contains(doc, "| subhamkrai |") {
+		t.Error("a login only mentioned in a thread reached the ledger")
+	}
+}
+
+// 12010 routes BlaineEXE twice. The cap charges that once: counting it twice
+// reports a breach on a sweep that stayed inside the cap, and nothing
+// downstream re-checks the number.
+func TestMarkdownLedgerChargesADuplicateRoutingOnce(t *testing.T) {
+	doc := renderMarkdown(t, sweepDir)
+	if !strings.Contains(doc, "| BlaineEXE | 1 | 3 | — |") {
+		t.Errorf("BlaineEXE was routed on one issue; the ledger says otherwise:\n%s", doc)
+	}
+}
+
+func TestMarkdownEmptySweep(t *testing.T) {
+	doc := renderMarkdown(t, emptyDir)
+	for _, want := range []string{
+		"## Assessed issues (0)",
+		"_None._",
+		"_No @-mentions proposed in this sweep._",
+	} {
+		if !strings.Contains(doc, want) {
+			t.Errorf("expected %q in the fragment:\n%s", want, doc)
+		}
+	}
+}
+
+type mdTable struct {
+	header []string
+	rows   [][]string
+}
+
+// tables parses the fragment the way a renderer would: a run of lines starting
+// with the delimiter, split on delimiters that are not backslash escaped.
+func tables(doc string) []mdTable {
+	var out []mdTable
+	var cur *mdTable
+	for _, line := range strings.Split(doc, "\n") {
+		if !strings.HasPrefix(line, "|") {
+			cur = nil
+			continue
+		}
+		cells := splitCells(line)
+		switch {
+		case cur == nil:
+			out = append(out, mdTable{header: cells})
+			cur = &out[len(out)-1]
+		case cells[0] == "---":
+		default:
+			cur.rows = append(cur.rows, cells)
+		}
+	}
+	return out
+}
+
+func splitCells(line string) []string {
+	var cells []string
+	var cur strings.Builder
+	esc := false
+	for _, r := range line {
+		switch {
+		case esc:
+			cur.WriteRune(r)
+			esc = false
+		case r == '\\':
+			cur.WriteRune(r)
+			esc = true
+		case r == '|':
+			cells = append(cells, strings.TrimSpace(cur.String()))
+			cur.Reset()
+		default:
+			cur.WriteRune(r)
+		}
+	}
+	cells = append(cells, strings.TrimSpace(cur.String()))
+	return cells[1 : len(cells)-1] // a row opens and closes with the delimiter
+}
+
+var rowNumber = regexp.MustCompile(`\A\[#(\d+)\]`)
