@@ -21,7 +21,25 @@ import (
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtfetch"
 )
 
-func run() int {
+// checkBounds names the first walk bound that would make the fetch count
+// nothing, or returns "" when every bound is usable. Split out so a test can
+// reach it without reaching the walk: a bound that gets past here starts a live
+// GraphQL fetch, which is not something a unit test may do.
+func checkBounds(o rtfetch.Options) (flag, why string) {
+	switch {
+	case o.Months <= 0:
+		return "--months", "the cutoff would land in the future, so no PR is in the window"
+	case o.Cap <= 0:
+		return "--cap", "the walk stops once counted >= cap, which holds before the first PR"
+	case o.PageSize <= 0:
+		return "--page-size", "it is the GraphQL page size"
+	case o.MaxPages <= 0:
+		return "--max-pages", "the walk stops once the page number exceeds it"
+	}
+	return "", ""
+}
+
+func run(args []string) int {
 	fs := flag.NewFlagSet("rt-fetch", flag.ContinueOnError)
 	fs.Usage = func() {
 		_, _ = fmt.Fprint(fs.Output(), "usage: rt-fetch --out-dir DIR [flags]\n")
@@ -40,7 +58,7 @@ func run() int {
 	fs.BoolVar(&opts.DeepFetchOnly, "deep-fetch-only", false,
 		"skip the walk; deep-fetch an existing --out-dir")
 
-	if err := fs.Parse(os.Args[1:]); err != nil {
+	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return 0
 		}
@@ -52,6 +70,16 @@ func run() int {
 		return 2
 	}
 
+	// A non-positive bound makes the walk count nothing while still writing the
+	// state file the assembler reads as a complete history — the failure this
+	// module refuses everywhere else. WindowCutoff deliberately permits a
+	// non-positive --months (Python parity) and names the caller as the place
+	// to reject it; this is that caller.
+	if flag, why := checkBounds(opts); flag != "" {
+		_, _ = fmt.Fprintf(os.Stderr, "rt-fetch: %s must be positive: %s\n", flag, why)
+		return 2
+	}
+
 	if err := rtfetch.New(opts).Run(context.Background()); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "rt-fetch: %v\n", err)
 		return 1
@@ -60,5 +88,5 @@ func run() int {
 }
 
 func main() {
-	os.Exit(run())
+	os.Exit(run(os.Args[1:]))
 }
