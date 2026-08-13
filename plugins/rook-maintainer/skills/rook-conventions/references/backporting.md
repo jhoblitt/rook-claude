@@ -51,3 +51,20 @@ Anyone else's → leave it alone and ask.
 
 Prefer `--force-with-lease`, and re-fetch the live mergify branch head before
 rebasing so you replay what the PR currently shows.
+
+Two defects survive a clean-looking cherry-pick, and no linter catches either.
+
+Content can outrun the branch's tooling: a backported doc that names a make
+target or a script existing only on master is valid markdown, passes every
+linter, and fails only for the reader. Check the diff against the release
+branch before pushing:
+
+```sh
+git diff origin/release-X.Y...HEAD |
+  bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-refs --root .
+```
+
+A non-zero exit means the text documents something this branch does not have:
+adapt it to the branch rather than dropping it. And a file the source PR only
+MODIFIED that appears as a NEW file in the backport means the commit creating
+it never landed here — drop that commit instead of carrying a dead file.

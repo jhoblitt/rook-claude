@@ -231,6 +231,11 @@ changing it obliges:
   this pass entirely: it returns a status code and no page content, which is
   what makes diff-chosen hosts safe to probe. Spec:
   `references/docs-sync.md`.
+- `validate-refs` — every make target and repo-relative path the diff's added
+  lines name, resolved against the branch being reviewed. Mechanizes the
+  docs-sync rule that documented commands must exist; a `MISSING` verdict is a
+  `docs-sync` finding. Spec: `references/docs-sync.md` and
+  `rook-conventions/references/backporting.md`.
 
 ## Severity and verdicts
 
