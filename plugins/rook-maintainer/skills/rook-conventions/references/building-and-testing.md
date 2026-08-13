@@ -15,10 +15,15 @@ concluding anything.
 
 Before any push that feeds a rook PR and changes Go code: run BOTH
 `make test` and `make golangci-lint` and confirm they pass. Never push code
-that fails either. Docs- or workflow-only pushes may skip both.
+that fails either. Docs- or workflow-only pushes may skip both. A push that
+changes `deploy/charts/**` also runs `make test.helm`.
 
-Unit-test CI only covers `GO_SUBDIRS` (`cmd/`, `pkg/`): `_test.go` under
-`tests/framework/` compiles under golangci-lint but never runs in CI.
+Go unit-test CI only covers `GO_SUBDIRS` (`cmd/`, `pkg/`): `_test.go` under
+`tests/framework/` compiles under golangci-lint but never runs in CI. Chart
+unit tests are a separate suite — `deploy/charts/*/tests/*_test.yaml`, run by
+`make test.helm` (`helm-unittest --strict`) and enforced as the
+`helm-unittests` check. They satisfy the PR checklist's unit-test box
+(rook-code-review `references/docs-sync.md`).
 
 A `make golangci-lint` failure in code the change never touched is usually a
 stale cache, not a real finding. A branch switch — or another session's

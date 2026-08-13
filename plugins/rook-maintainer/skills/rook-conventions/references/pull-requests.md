@@ -41,11 +41,9 @@ messages rather than growing the description.
 - Fill the PR template checklist against the actual diff:
   - "Documentation has been updated" only when `Documentation/` changed —
     godoc/code comments do NOT count;
-  - "Unit tests have been added" only when `_test.go` files outside
-    `tests/integration/` changed;
   - "Integration tests have been added" only when integration tests changed;
-  - the `PendingReleaseNotes.md` box follows rook-code-review
-    `references/docs-sync.md`.
+  - the "Unit tests have been added" and `PendingReleaseNotes.md` boxes
+    follow rook-code-review `references/docs-sync.md`.
 - Experimental / instrumentation-only / not-yet-intended-to-land PRs get the
   `do-not-merge` label at open (best-effort).
 - In a multi-PR campaign, open at most ~3 PRs before checking in with the
