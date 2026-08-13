@@ -7,7 +7,11 @@ canon shipped with the design-review feature. The PR-description cases
 guard the description-shape canon, captured from the kubectl-rook-ceph
 PR 461 postmortem (2026-08-03). The unset-field cases guard the
 unset-semantics canon in kubernetes-crd.md, captured from a maintainer
-field report (2026-08-10).
+field report (2026-08-10). The credential cases guard the
+credential-handling canon in security.md (spec:
+`docs/superpowers/specs/2026-08-11-credential-handling-design.md`),
+captured from a maintainer field report of a plain-CR-field false
+positive (2026-08-11).
 
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
@@ -44,7 +48,11 @@ crossref cases are fully hermetic — no toolchain, checkout, or network;
 they exercise their canon inline against fixture proposals, PR metadata,
 and issue threads embedded in the prompt. The PR-description and backport
 cases are hermetic in the same way, drafting against a change summary or a
-PR fixture embedded in the prompt.
+PR fixture embedded in the prompt. The credential cases are hermetic
+except `secret-url-not-probed`, which additionally runs the checkout's
+`check-links` tool (Go toolchain, no network — credential URLs are
+skipped before any probe); `run-manual.sh` grants that one case `Write`
+and `Bash` on top of the read-only default so it can.
 
 | Case | Guards |
 |---|---|
@@ -65,3 +73,28 @@ PR fixture embedded in the prompt.
 | `backport-feature-beats-docs` | A new CRD field that also touches `Documentation/` is NOT backport-eligible: feature beats the documentation row. The precision guard paired with `backport-docs-eligible`. |
 | `unset-field-unmanaged` | A new spec field written to Ceph only while set, with no stated rationale, yields a changes-requested finding whose fix shape is unset-or-justify — and the report states what removing the field leaves behind in Ceph. |
 | `unset-field-justified` | A creation-time-only pool hint whose commit message and godoc state the Ceph-cannot-express-it rationale has its unset behavior reported but NOT flagged — the anti-pontification guard paired with `unset-field-unmanaged`. |
+| `secret-non-credential-field` | Logging `spec.gateway.instances` yields no leak finding with security.md routed — the anti-pontification guard for the leak family, and the plain-CR-field false positive that prompted the canon. |
+| `secret-misnamed-field` | A pre-existing `Password` field whose godoc and `Enum` marker show it holds a mode is neither a leak when logged nor a field owed a Secret reference — the name-driven false-positive guard. |
+| `secret-name-safe` | Logging a Secret's `Name` and its `tls.crt` payload draws no finding: seeding is per field, never per object, and a served certificate is designed for disclosure. |
+| `secret-derived-encoding` | A base64 log of a CephX key and a SHA-256 checksum annotation of that same key are two separate blockers — encoding and one-way hashing both keep the taint — while a public key derived from `tls.key` stays clean. |
+| `secret-url-userinfo` | A logged URL carrying the Keystone password in its userinfo is a blocker on the whole URL, not on a separable component, while the same URL with the userinfo stripped draws nothing. |
+| `secret-url-presigned` | A logged presigned URL is a blocker — a bearer capability whose 15-minute expiry is no defense — while a detached artifact-signature URL is not: authorizing is the test, signature-shaped is not. |
+| `secret-url-not-probed` | A literal presigned URL committed to a `Documentation/` page is a blocker, and the report carries `check-links`' `skipped-credential` verdict for it rather than a liveness result or an absent network request. |
+| `secret-legacy-field-newly-logged` | A new log line printing the pre-existing `adminPassword` is one blocker on the sink; the legacy plaintext declaration this diff never touches is not made this change's defect. |
+| `secret-derived-from-field` | A base64 of the `adminPassword` CR field logged at debug is a blocker: a field carrying credential material seeds taint with no Secret read anywhere, and debug level is a named leak channel rather than a mitigation. |
+| `secret-provenance-recall` | Two leaks of different provenance in one diff — a mon CephX key logged in Go, a repository secret echoed from a workflow `run:` step — land as two blockers, neither absorbed into the other nor waived because Actions masks registered values. |
+| `secret-api-response` | A `%+v` of a `radosgw-admin user info` struct carrying `SecretKey`, and an admin keyring read off a PVC path, are two blockers: what taints is the field, not whether the value came from a k8s Secret. |
+| `credential-contract-new` | Two new plaintext `KeystoneSpec` fields are a blocker whose fix is the `*corev1.SecretKeySelector` pair the API already uses — with `ServiceUser`, the identifying half, inside that fix rather than cleared. |
+| `credential-contract-repurposed` | Repurposing the pre-existing generic `extra` field to carry an auth token is a blocker anchored on the controller lines, and the fix adds a Secret reference beside `extra` rather than retyping a field whose shape is already frozen. |
+| `credential-contract-legacy-untouched` | A rename of two locals reading the legacy `adminUser`/`adminPassword` draws no credential finding — the storage-contract rule binds to a contract the diff introduces; the precision guard paired with `credential-contract-new`. |
+| `credential-value-in-flight` | Minted S3 keys written into a Secret payload and an admin password moved from argv onto `cmd.Stdin` are both clean — serialization to the API server is not what makes a storage contract; the anti-pontification guard for the contract rule. |
+| `credential-inline-env-value` | An inline `value:` credential on the operator Deployment is a blocker whose fix is a Secret reference, while the neighbouring `valueFrom.secretKeyRef` — the fix shape itself — draws nothing. |
+| `credential-literal-existing-field` | A live credential filled into a shipped example is a blocker anchored on `deploy/examples/object.yaml`, never waived as test-only, and never escalated into a demand that the legacy field be redeclared. |
+| `credential-contract-url-field` | A new `endpoint` field documented as a URL with the account embedded is a blocker whose fix references the WHOLE URL from a Secret — a plaintext host beside separate credential fields is the split the canon forbids. |
+| `routing-chart-value` | `references/security.md` routes onto a chart-only branch through the always-load row — no trigger path matched, no PR machinery — and the new `keystonePassword` value is a blocker whose fix is a Secret reference. |
+| `routing-cli-flag` | `references/security.md` routes onto an ordinary Go diff under `cmd/` that matches no trigger path, and the new `client-secret` flag is a blocker with `client-id`, the identifying half, inside the same Secret-sourced fix. |
+| `same-site-fusion` | One credential at one site fuses to ONE finding when the storage contract is the only sink (variant A) and splits into TWO when a log sink with a different fix is added (variant B). Its report shape is the suite's only exception: a shared routed-reference list, then a `Variant A` and a `Variant B` section each with its own verdict line. |
+| `cap-exempt-security-consequence` | A CONFIRMED security consequence on the fourth of four knobs rides architecture.md's cap exemption — four knob findings, the three taste knobs kept and the exempt one added, since the exemption is a rescue from the cut and not a slot inside it. |
+| `cap-no-exemption-for-adjacent` | A credential-adjacent knob whose cost is only PLAUSIBLE buys no exemption: exactly three knob findings and no cap-exemption claim of any kind — the precision guard paired with `cap-exempt-security-consequence`. |
+| `cap-exempt-proposal-overflow` | In proposal mode a design point carrying both a migration concern and a traced security consequence reports BOTH — the one-concern-per-decision cap drops, defers, or merges neither, and no other decision carries more than one. |
+| `cap-question-still-capped` | An untraced security-shaped question is never exempt: exactly three questions drawn from the diff's four rationale gaps, with the key-selection question dead rather than carried as a fourth, an appendix, or a clause on another finding. |

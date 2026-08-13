@@ -12,7 +12,7 @@ variant on its own and report its findings under a `Variant A` and a
 Both variants also carry the operator-side hunk that reads
 `ROOK_KEYSTONE_ADMIN_PASSWORD` out of the operator config and hands it
 to the gateway's keystone client; that hunk is elided from this
-excerpt, and its `pw :=` line is shown as context in hunk set B.
+excerpt, and its `pw :=` line is shown in hunk set B.
 
 Your entire final answer is the review report — the routed-reference
 list from spine step 1, verdict line, findings in the skill's finding
@@ -58,8 +58,8 @@ Hunk set B — present in variant B only:
 ```diff
 --- a/pkg/operator/ceph/object/keystone.go
 +++ b/pkg/operator/ceph/object/keystone.go
-@@ -96,4 +96,6 @@ func (r *ReconcileCephObjectStore) keystoneAuth(cr *cephv1.CephObjectStore) error {
- 	pw := k8sutil.GetOperatorSetting("ROOK_KEYSTONE_ADMIN_PASSWORD", "")
+@@ -96,3 +96,6 @@ func (r *ReconcileCephObjectStore) keystoneAuth(cr *cephv1.CephObjectStore) error {
++	pw := k8sutil.GetOperatorSetting("ROOK_KEYSTONE_ADMIN_PASSWORD", "")
 +
 +	logger.Infof("keystone admin password from the operator config: %q", pw)
  

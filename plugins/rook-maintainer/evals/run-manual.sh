@@ -67,6 +67,18 @@ GRADE="$OUT_DIR/grade.md"
 declare -a MODEL_ARGS=()
 [ -n "$MODEL" ] && MODEL_ARGS=(--model "$MODEL")
 
+# secret-url-not-probed's prompt orders a check-links run over a diff the
+# subject writes out itself, so the read-only default cannot carry it.
+declare -a ALLOWED_TOOLS=(Read Grep Glob)
+case "$CASE" in
+secret-url-not-probed)
+	ALLOWED_TOOLS+=(Write Bash)
+	# tools/run.sh dies when CLAUDE_PLUGIN_ROOT is unset; the checkout under
+	# test is the canon this run exists to exercise.
+	export CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT"
+	;;
+esac
+
 # Prompts go in on stdin, never as the positional argument: --allowedTools and
 # --add-dir are variadic, so a trailing prompt is parsed as more tool names.
 subject_prompt() {
@@ -105,7 +117,7 @@ subject_prompt() {
 # un-redirected run grades the wrong canon and fails for the wrong reason.
 echo "==> subject pass: $CASE" >&2
 subject_prompt | claude -p "${MODEL_ARGS[@]}" \
-	--add-dir "$PLUGIN_ROOT" --allowedTools Read Grep Glob | tee "$REPORT"
+	--add-dir "$PLUGIN_ROOT" --allowedTools "${ALLOWED_TOOLS[@]}" | tee "$REPORT"
 
 if [ "$SUBJECT_ONLY" = "1" ]; then
 	echo "==> report: $REPORT" >&2

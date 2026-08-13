@@ -5,8 +5,8 @@ security-looking trigger path — no Go, no `pkg/apis/**`, no
 `deploy/examples/**` — and the target is a branch, so no PR machinery
 runs either. `references/security.md` is routed anyway by the
 always-load row (`any diff-shaped target`), which keys on the target
-being diff-shaped, not on its paths and not on its shape: the same
-routing holds for a working-tree or commit-range target. Under that
+being diff-shaped, not on its paths and not on whether it is a PR: the
+same routing holds for a working-tree or commit-range target. Under that
 reference the new value is a credential-bearing storage contract this
 diff introduces — a chart value is named in the rule — and the templated
 ConfigMap key is what materializes it, into a world-readable store, the

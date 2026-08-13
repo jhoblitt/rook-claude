@@ -1,6 +1,6 @@
 # Credential handling in rook-code-review
 
-- **Status**: approved design, not yet implemented
+- **Status**: implemented (this PR)
 - **Date**: 2026-08-11
 - **Affects**: `plugins/rook-maintainer/skills/rook-code-review` —
   `SKILL.md` routing table and Scripts entry, `references/security.md`,

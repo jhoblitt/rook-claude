@@ -13,7 +13,7 @@ store's RGW keystone config — so a security cost stated against it is
 asset/actor/gain vocabulary over an untraced chain: PLAUSIBLE at best,
 and architecture.md holds that PLAUSIBLE never exempts. The prompt
 stipulates any such candidate force-ranks LAST, so the 3-finding design
-cap kills it and the report truncates to the three taste knobs.
+cap kills it and the report truncates to three knob findings.
 
 Pass if and only if ALL of:
 
