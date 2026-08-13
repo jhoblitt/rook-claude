@@ -9,10 +9,14 @@
 //	run.sh check-links check URL [URL...]
 //	run.sh check-links extract --diff-file F
 //
-// Exit status is 1 when any URL is dead, suspect or suspicious, so the probe
-// doubles as a gate. See internal/links for why this never returns page
-// content. Reaching non-GitHub hosts needs the sandbox disabled — DNS does not
-// resolve inside it, and the non-public-address guard needs DNS.
+// Exit status is 1 when any URL is dead, suspect, suspicious or errored, so
+// the probe doubles as a gate. See internal/links for why this never returns
+// page content. Reaching non-GitHub hosts needs the sandbox disabled — DNS
+// does not resolve inside it, and the non-public-address guard needs DNS.
+//
+// Credential-shaped URLs are partitioned out before any probe; the shapes,
+// the skipped-credential verdict, and its gating semantics live in
+// internal/links/credential.go and docs-sync.md's liveness bullet.
 package main
 
 import (
@@ -83,8 +87,12 @@ func run() int {
 			results = append(results, r)
 		}
 	} else {
-		p := links.NewProber(*timeout, *allowPrivate)
-		results = p.CheckAll(context.Background(), urls, *workers)
+		skips, probe := links.PartitionCredential(urls)
+		results = skips
+		if len(probe) > 0 {
+			p := links.NewProber(*timeout, *allowPrivate)
+			results = append(results, p.CheckAll(context.Background(), probe, *workers)...)
+		}
 	}
 
 	if err := report(os.Stdout, results, *asJSON); err != nil {
