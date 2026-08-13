@@ -151,10 +151,17 @@ the `design` domain; this contract is its equivalent bar:
   governs the doc's decisions, the 3-finding cap the code's design
   findings, and the target carries 3 questions total. The cap
   is the anti-pontification mechanism — a review drowning in design
-  commentary reads as taste, not judgment. Needs-evidence enforcement
-  concerns (the security canon above) are exempt from the cap kill:
-  they report even when force-ranked out — the caps bound taste, never
-  a blocking security premise.
+  commentary reads as taste, not judgment. Two cap-exempt categories
+  report even when force-ranked out — the caps bound taste, never a
+  blocking security premise: needs-evidence enforcement concerns (the
+  security canon above), and a design finding whose CONFIRMED cost
+  traces a concrete security consequence — the changed decision opens
+  a named access or disclosure path, to an actor who should not have
+  it, reaching a protected asset that actor can newly use or learn.
+  PLAUSIBLE never exempts — vocabulary cannot make a cost traced —
+  permitted behavior does not qualify, and questions are never exempt:
+  the cap is their gate, and an untraceable security concern is either
+  needs-evidence or it waits.
 - Severity: design findings default to changes-requested. Blocker only
   when the shape ships a compat or migration hazard on merge — which is
   usually also an `api-compat` or `bug` finding, and should be reported

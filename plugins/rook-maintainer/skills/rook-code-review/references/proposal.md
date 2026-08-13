@@ -176,9 +176,9 @@ reviewed.
    `rebuttal:` (the strongest author counter the attack beat); inline
    quick-pass reports omit it. Caps for this mode: one concern per
    decision, force-ranked within the decision; 3 questions per target.
-   Needs-evidence enforcement concerns are exempt from both cuts
-   (architecture.md). MISSING is a ledger judgment, not a finding,
-   unless promoted to a concern.
+   architecture.md's cap-exempt categories are exempt from both cuts.
+   MISSING is a ledger judgment, not a finding, unless promoted to a
+   concern.
 4. **Claim audit**: VERIFIED / REFUTED / INFERENCE per claim, with
    evidence.
 5. **Attacked and survived**: which perspectives ran and what held —
