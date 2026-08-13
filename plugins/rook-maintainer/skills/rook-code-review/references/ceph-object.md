@@ -48,8 +48,11 @@ import of `github.com/ceph/go-ceph` or `github.com/aws/aws-sdk-go-v2`.
 - **`UsePathStyle = true` is mandatory** for RGW (no virtual-host bucket
   DNS). A new S3 client without it works in unit tests and fails against
   real RGW — blocker.
-- Credentials come from Secrets; watch their journey (security.md
-  secret-leak check) — never into logs, never as literal strings in specs.
+- Credentials come from Secrets; watch their journey per security.md's
+  credential canon ("What counts as a secret"), the sole generator — this
+  bullet raises no findings. Literal credentials in specs route through
+  its storage-contract rule; consuming a legacy plaintext source is, by
+  itself, no finding.
 - Integration tests build clients via `tests/integration/object/util/client`
   (S3, SNS, admin) so TLS matches the pass — not hand-rolled configs.
 
