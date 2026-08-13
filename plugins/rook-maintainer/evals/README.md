@@ -57,7 +57,7 @@ PR fixture embedded in the prompt.
 | `full-path-anchors` | Finding anchors carry full repo-relative paths when basenames collide across packages, and the defect lands in the right `cluster.go` (diff-only inline review). |
 | `reuse-reinvention` | Spine pass j reports a name-reachable re-implementation of an existing `k8sutil` helper as a `duplication` finding naming the bypassed mechanism, and scopes its clean claim to what name queries can reach. |
 | `reuse-parallel-siblings` | A new per-resource controller mirroring a sibling's structure is NOT flagged as duplication — the anti-pontification guard for pass j. |
-| `pr-description-shape` | Given a feature summary and a stated motivation, the drafted PR description leads with that motivation and stays under 250 words before the checklist. |
+| `pr-description-shape` | Given a feature summary and a stated motivation, the drafted PR description leads with that motivation, stays under 100 words of prose before the checklist, and pads no section to fill the shape. |
 | `pr-description-motivation-gate` | Given a feature request with no stated motivation, the agent asks the maintainer for it instead of presenting an invented rationale as fact. |
 | `crossref-overclose` | Spine pass k reports an active closing keyword on a PARTIAL relationship as a `cross-ref` finding at changes-requested, naming the outstanding item and what GitHub does on merge, and anchors it `PR-level` rather than on a diff line. |
 | `crossref-dependabot-noise` | A dependabot PR quoting an upstream changelog full of `#N` — two with closing keywords — yields NO `cross-ref` finding; the anti-pontification guard for pass k. |
