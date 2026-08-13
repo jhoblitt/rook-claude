@@ -127,7 +127,12 @@ checklist:
 
 - "Documentation has been updated" — only `Documentation/**` counts; godoc
   and code comments do not.
-- "Unit tests have been added" — `_test.go` under `cmd/`/`pkg/`.
+- "Unit tests have been added" — `_test.go` under `cmd/`/`pkg/`, or a
+  helm-unittest suite under `deploy/charts/*/tests/*_test.yaml` (harness:
+  rook-conventions `references/building-and-testing.md`). A chart-only change
+  is covered by its helm-unittest cases alone; flagging it for adding no
+  `_test.go` is a false positive — the template's parenthetical predates
+  that harness.
 - "Integration tests have been added" — under `tests/integration/`.
 - "Pending release notes updated" — see the PendingReleaseNotes row above;
   also breaking-change marking for Ceph-config overrides.
