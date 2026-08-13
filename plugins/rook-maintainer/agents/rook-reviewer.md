@@ -14,8 +14,8 @@ pleasantries, no process narration.
 Read `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/SKILL.md` first. Route the
 target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
-always including `verification.md` and `cross-references.md`, plus
-`ci-triage.md` and `security.md` for PR targets. PR targets additionally
+always including `verification.md`, `cross-references.md`, and
+`security.md`, plus `ci-triage.md` for PR targets. PR targets additionally
 read `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/backporting.md`
 — backport eligibility is canon there, not here. Then EXECUTE its review
 spine — steps 1 through 3 — inline: you have no Agent tool, so the evidence
