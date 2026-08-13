@@ -58,7 +58,13 @@ tree — a doc that names real identifiers is checkable:
 - Example YAML → every field must exist in the current CRD schema
   (`deploy/examples/crds.yaml` is greppable); enums valid; kinds/apiVersions
   current.
-- Commands and make targets → exist in the Makefile / scripts.
+- Commands, make targets, and referenced repo paths → the `validate-refs`
+  tool, not a hand check: `git diff origin/master... | bash
+  "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-refs --root .`. `MISSING` is a
+  `docs-sync` finding — the text names something this branch does not have,
+  which is how a backport comes to document a master-only target.
+  `UNRESOLVABLE` is not a finding; it reports what the static parse could not
+  read, and is the part still checked by hand.
 - Version claims ("since v1.17", "requires Ceph Squid") → check
   `cephver`/release notes.
 - Never hand-edited: `Documentation/CRDs/specification.md`,
