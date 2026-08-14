@@ -1,6 +1,13 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"os"
+	"regexp"
+	"sort"
+	"strings"
+	"testing"
+)
 
 // Hostile codepoints appear only as \u escapes here, never as literal bytes:
 // a test for invisible-character handling that itself contains invisible
@@ -13,7 +20,8 @@ func TestEvaluate(t *testing.T) {
 	}{
 		{"allowlisted host", "https://docs.ceph.com/en/squid/radosgw/", false},
 		{"allowlisted root", "https://github.com/rook/rook", false},
-		{"dot-bounded subdomain", "https://raw.githubusercontent.com/rook/rook/master/README.md", false},
+		{"raw content host", "https://raw.githubusercontent.com/rook/rook/master/README.md", false},
+		{"dot-bounded subdomain", "https://www.rfc-editor.org/rfc/rfc7231.html", false},
 		{"uppercase host", "https://GitHub.com/rook/rook", false},
 		{"explicit port", "https://github.com:443/rook/rook", false},
 		{"trailing dot host", "https://github.com./rook/rook", false},
@@ -22,6 +30,9 @@ func TestEvaluate(t *testing.T) {
 		{"lookalike suffix", "https://evilgithub.com/rook/rook", true},
 		{"lookalike prefix", "https://github.com.evil.test/rook", true},
 		{"userinfo smuggling", "https://github.com@evil.test/rook", true},
+		{"gist content host", "https://gist.githubusercontent.com/someone/1/raw/x.md", true},
+		{"objects content host", "https://objects.githubusercontent.com/github-production-release-asset/x", true},
+		{"lookalike raw prefix", "https://evilraw.githubusercontent.com/rook/rook/master/README.md", true},
 		{"plain http", "http://docs.ceph.com/en/squid/", true},
 		{"non-web scheme", "file:///etc/passwd", true},
 		{"scheme relative", "//github.com/rook/rook", true},
@@ -56,6 +67,124 @@ func TestEvaluateHonorsExtraAllow(t *testing.T) {
 	}
 	if d := evaluate("https://sub.spec.example.test/rfc", extra); d.deny {
 		t.Fatalf("subdomain of extra-allowed host denied: %s", d.reason)
+	}
+}
+
+const (
+	referencePath   = "../../skills/rook-code-review/references/docs-sync.md"
+	allowlistMarker = "so it is WebFetch and it is allowlisted:"
+)
+
+// separatorPattern is what may sit between two backticked hosts in the bullet:
+// an optional comma and whitespace, nothing else. Prose after the last host
+// ends the list, which is what keeps the parser from walking off into the rest
+// of the document and inventing an allowlist.
+var separatorPattern = regexp.MustCompile(`^,?\s*$`)
+
+// parseReferenceAllowlist returns the hosts the reviewer reads. Every failure
+// mode is an error rather than an empty result: a parser that silently matches
+// nothing would report the two lists as trivially equal, which is the exact
+// drift this test exists to catch.
+func parseReferenceAllowlist(doc string) ([]string, error) {
+	if n := strings.Count(doc, allowlistMarker); n != 1 {
+		return nil, fmt.Errorf("found %d occurrences of %q, want exactly 1", n, allowlistMarker)
+	}
+	rest := doc[strings.Index(doc, allowlistMarker)+len(allowlistMarker):]
+
+	var hosts []string
+	for {
+		open := strings.Index(rest, "`")
+		if open < 0 || !separatorPattern.MatchString(rest[:open]) {
+			break
+		}
+		span := rest[open+1:]
+		end := strings.Index(span, "`")
+		if end < 0 {
+			return nil, fmt.Errorf("unterminated code span after host %q", lastOf(hosts))
+		}
+		host := span[:end]
+		if host == "" || strings.ContainsAny(host, " \t\n") {
+			return nil, fmt.Errorf("code span %q in the allowlist is not a host", host)
+		}
+		hosts = append(hosts, host)
+		rest = span[end+1:]
+	}
+	if len(hosts) < 2 {
+		return nil, fmt.Errorf("parsed %d hosts after the marker, want the full list", len(hosts))
+	}
+	return hosts, nil
+}
+
+func lastOf(hosts []string) string {
+	if len(hosts) == 0 {
+		return "(none)"
+	}
+	return hosts[len(hosts)-1]
+}
+
+func TestAllowedHostsMatchesReference(t *testing.T) {
+	doc, err := os.ReadFile(referencePath)
+	if err != nil {
+		t.Fatalf("cannot read %s: %v", referencePath, err)
+	}
+	hosts, err := parseReferenceAllowlist(string(doc))
+	if err != nil {
+		t.Fatalf("cannot parse the allowlist out of %s: %v", referencePath, err)
+	}
+
+	inCode := make(map[string]bool, len(allowedHosts))
+	for _, h := range allowedHosts {
+		inCode[h] = true
+	}
+	inProse := make(map[string]bool, len(hosts))
+	for _, h := range hosts {
+		inProse[h] = true
+	}
+
+	var missing, extra []string
+	for _, h := range hosts {
+		if !inCode[h] {
+			missing = append(missing, h)
+		}
+	}
+	for _, h := range allowedHosts {
+		if !inProse[h] {
+			extra = append(extra, h)
+		}
+	}
+	sort.Strings(missing)
+	sort.Strings(extra)
+	if len(missing) > 0 || len(extra) > 0 {
+		t.Fatalf("allowedHosts has drifted from %s\n  in the reference, not in the code: %v\n  in the code, not in the reference: %v",
+			referencePath, missing, extra)
+	}
+}
+
+func TestParseReferenceAllowlist(t *testing.T) {
+	const bullet = "claims? This one needs the page, " + allowlistMarker +
+		"\n  `a.test`, `b.test`,\n  `c.test`. A load-bearing citation to any OTHER host\n"
+
+	hosts, err := parseReferenceAllowlist("intro\n- **Accuracy**: " + bullet + "- **Stability**: `master`\n")
+	if err != nil {
+		t.Fatalf("well-formed bullet did not parse: %v", err)
+	}
+	if strings.Join(hosts, ",") != "a.test,b.test,c.test" {
+		t.Fatalf("parsed %v, want the three hosts of the bullet", hosts)
+	}
+
+	broken := map[string]string{
+		"marker absent":     "- **Accuracy**: skim the target. `a.test`, `b.test`\n",
+		"marker duplicated": bullet + bullet,
+		"list absent":       "- **Accuracy**: " + allowlistMarker + " see above.\n",
+		"single host":       "- **Accuracy**: " + allowlistMarker + " `a.test`. Prose.\n",
+		"span unterminated": "- **Accuracy**: " + allowlistMarker + " `a.test`, `b.test\n",
+	}
+	for name, doc := range broken {
+		t.Run(name, func(t *testing.T) {
+			if got, err := parseReferenceAllowlist(doc); err == nil {
+				t.Fatalf("parsed %v, want an error", got)
+			}
+		})
 	}
 }
 

@@ -78,14 +78,7 @@ func run() int {
 
 	var results []links.Result
 	if mode == "extract" {
-		for _, u := range urls {
-			r := links.Result{URL: links.Sanitize(u), Verdict: "extracted"}
-			if links.HasHiddenRunes(u) {
-				r.Verdict = "suspicious"
-				r.Note = "control or format characters inside URL"
-			}
-			results = append(results, r)
-		}
+		results = extract(urls)
 	} else {
 		skips, probe := links.PartitionCredential(urls)
 		results = skips
@@ -105,6 +98,19 @@ func run() int {
 		}
 	}
 	return 0
+}
+
+func extract(urls []string) []links.Result {
+	var results []links.Result
+	for _, u := range urls {
+		r := links.Result{URL: links.SafeURL(u), Verdict: "extracted"}
+		if links.HasHiddenRunes(u) {
+			r.Verdict = "suspicious"
+			r.Note = "control or format characters inside URL"
+		}
+		results = append(results, r)
+	}
+	return results
 }
 
 func readDiff(path string) (string, error) {
