@@ -87,7 +87,10 @@ messages, examples, workflows:
   URLs whose shape suggests credential material — userinfo, signature or
   token query parameters — are skipped, not probed: a probe would
   exercise a presigned URL's capability, so the filter deliberately
-  over-matches. A skip reports as `skipped-credential` (non-gating; a
+  over-matches. The same refusal applies mid-probe: a redirect whose
+  `Location` is credential-bearing is not followed, because a redirect
+  target is chosen by the server rather than by the diff. A skip reports
+  as `skipped-credential` (non-gating; a
   skipped URL carrying hidden runes reports `suspicious` instead, which
   gates) and is a candidate, not a verdict: judge it — and the shapes the
   filter cannot see, such as a bare capability path segment — per
@@ -110,7 +113,12 @@ messages, examples, workflows:
   and triage agents the `webfetch-guard` PreToolUse hook enforces this list, so
   a denied fetch there is the control working, not an obstacle to route around.
   A session running the pass inline is not guarded and owes the list the same
-  obedience unprompted (`ROOK_WEBFETCH_GUARD=on` extends the hook to it).
+  obedience unprompted (`ROOK_WEBFETCH_GUARD=on` extends the hook to it). The
+  hook binds three exact agent NAMES, so a `general-purpose` agent standing in
+  for one of them is unguarded too — and unlike the inline case it also loses
+  the narrow tool roster the agent file declares. A fallback brief therefore
+  bans WebFetch outright: return a load-bearing citation unverified rather
+  than fetch it unconfined.
 - **Stability**: GitHub links to specific lines/files pin a SHA or tag, not
   `master`; docs.ceph.com links pin a release path (`/en/squid/`) when the
   claim is version-specific; strip tracking params.
