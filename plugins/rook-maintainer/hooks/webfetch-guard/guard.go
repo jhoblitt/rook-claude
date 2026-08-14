@@ -7,11 +7,13 @@ import (
 )
 
 // allowedHosts is the trusted-source list from
-// skills/rook-code-review/references/docs-sync.md. Keep the two in sync: the
-// reference file is what the reviewer reads, this is what actually holds.
+// skills/rook-code-review/references/docs-sync.md, which is what the reviewer
+// reads while this is what actually holds. TestAllowedHostsMatchesReference
+// enforces the equality; entries are narrow because hostAllowed also admits
+// every subdomain of one.
 var allowedHosts = []string{
 	"github.com",
-	"githubusercontent.com",
+	"raw.githubusercontent.com",
 	"docs.ceph.com",
 	"tracker.ceph.com",
 	"kubernetes.io",
