@@ -83,7 +83,18 @@ messages, examples, workflows:
   check-links audit`, sandbox disabled — it resolves DNS itself, which the
   sandbox blocks); it probes status only and
   returns no page content, so arbitrary diff-chosen hosts are safe to hit
-  and no per-link approval is spent. `dead`, `soft-404-suspect` and `error`
+  and no per-link approval is spent.
+  URLs whose shape suggests credential material — userinfo, signature or
+  token query parameters — are skipped, not probed: a probe would
+  exercise a presigned URL's capability, so the filter deliberately
+  over-matches. A skip reports as `skipped-credential` (non-gating; a
+  skipped URL carrying hidden runes reports `suspicious` instead, which
+  gates) and is a candidate, not a verdict: judge it — and the shapes the
+  filter cannot see, such as a bare capability path segment — per
+  security.md "What counts as a secret", with a genuinely
+  credential-bearing URL committed to the tree a finding per its
+  "Credential storage contracts".
+  `dead`, `soft-404-suspect` and `error`
   are findings; `suspicious` (control or format characters inside a URL) is
   a `security`/`suspicious-content` finding — invisible codepoints in a link
   are ASCII smuggling, not a typo.

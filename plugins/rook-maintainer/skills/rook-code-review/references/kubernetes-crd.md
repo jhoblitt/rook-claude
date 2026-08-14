@@ -93,6 +93,12 @@ CR, an example manifest. See docs-sync.md "Chart parity".
   feature added in code owes the matching chart knob (and operator.yaml
   entry) even when the diff touches neither charts nor docs — check
   docs-sync.md "Chart parity" whenever a diff introduces one.
+- **Credential fields**: a spec field carrying credential material takes a
+  Secret reference, never a plaintext string — blocker. security.md's
+  credential canon ("What counts as a secret" / "Credential storage
+  contracts") is the sole generator and holds the taxonomy, the
+  introduces-only bound, and the fix shapes; this bullet is awareness
+  only and raises no findings.
 
 ## Unset-field semantics
 

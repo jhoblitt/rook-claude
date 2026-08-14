@@ -194,8 +194,7 @@ triggers → multiple references.
 | object store / RGW / OBC / COSI code, go-ceph or aws-sdk imports | `references/ceph-object.md` |
 | mon / osd / mgr / mds / csi / `cephver` / Ceph version or image bumps | `references/ceph-ecosystem.md` |
 | `Documentation/**`, `deploy/examples/**`, helm charts, `PendingReleaseNotes.md`, or code whose behavior docs describe | `references/docs-sync.md` |
-| `.github/workflows/**`, `.mergify.yml`, scripts run by workflows | `references/github-actions.md` + `references/security.md` |
-| `go.mod`, `build/`, Dockerfiles, `tests/scripts/`, exec call sites, TLS, secrets, RBAC | `references/security.md` |
+| `.github/workflows/**`, `.mergify.yml`, scripts run by workflows | `references/github-actions.md` |
 | any decision-magnitude trigger (full trigger list inside — fires on decision weight, discovered while reviewing, not from paths) | `references/architecture.md` |
 | `design/**` (design docs, in any diff) | `references/architecture.md` — the orchestrating session also runs proposal mode on the doc (see Modes) |
 | PR CI status consulted | `references/ci-triage.md` |
@@ -205,6 +204,7 @@ triggers → multiple references.
 | reading review threads, or posting a review (any mode) | `references/posting.md` |
 | any added symbol, step, template, or procedure (pass j) | `references/reuse.md` |
 | any PR or branch target (pass k) | `references/cross-references.md` |
+| any diff-shaped target | `references/security.md` |
 | always, before reporting | `references/verification.md` |
 
 ## Scripts
@@ -226,8 +226,11 @@ changing it obliges:
 - `validate-anchors` — pre-post validation of a review payload's inline
   anchors against the PR diff (path/line/side membership, multi-line key
   set). Spec: `references/posting.md`.
-- `check-links` — liveness of every URL the diff adds, plus the
-  control/format-character scan on those URLs. Replaces WebFetch for
+- `check-links` — liveness of every URL the diff adds, minus
+  credential-material skips (reported as `skipped-credential`, never
+  probed — a probe would exercise the capability; `references/security.md`
+  "What counts as a secret"), plus the control/format-character scan on
+  those URLs. Replaces WebFetch for
   this pass entirely: it returns a status code and no page content, which is
   what makes diff-chosen hosts safe to probe. Spec:
   `references/docs-sync.md`.
