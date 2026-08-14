@@ -29,3 +29,12 @@ jobs:
         uses: wagoid/commitlint-github-action@b948419dd99f3fd78a6548d48f94e3df7f6bf3ed # v6.2.1
         with:
           configFile: .commitlintrc.yml
+
+      # commitlint cannot catch this: a breaking-change footer is valid
+      # conventional-commits, so nothing distinguishes one from prose that
+      # happened to wrap the keyword onto a line start.
+      - name: Reject undeclared breaking-change footers
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: .github/scripts/check-breaking-footer.sh "$BASE_SHA" "$HEAD_SHA"
