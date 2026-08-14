@@ -22,8 +22,9 @@ notes=$(gh api "${args[@]}" --jq '.body' | sed '/^\*\*Full Changelog\*\*:/d')
 
 prs=$(printf '%s\n' "${notes}" | grep -oE '/pull/[0-9]+' | grep -oE '[0-9]+' | sort -un || true)
 
-# Only a PR's closing links record which issues a release actually resolved:
-# this repo's commits reference issues with "Refs #N", which closes nothing.
+# Only a PR's closing links record which issues a release actually resolved. A
+# commit that merely mentions an issue closes nothing, and the notes writer
+# labels every reference "closes" whatever keyword introduced it.
 issues=""
 if [ -n "${prs}" ]; then
   query="query{repository(owner:\"${repo%%/*}\",name:\"${repo##*/}\"){"
