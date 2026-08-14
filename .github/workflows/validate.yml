@@ -72,7 +72,11 @@ jobs:
           done
 
       - name: shellcheck
-        run: shellcheck plugins/rook-maintainer/hooks/*.sh plugins/rook-maintainer/tools/run.sh
+        run: |
+          shellcheck \
+            .github/scripts/release-notes.sh \
+            plugins/rook-maintainer/hooks/*.sh \
+            plugins/rook-maintainer/tools/run.sh
 
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.18.1

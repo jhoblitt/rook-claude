@@ -12,6 +12,9 @@ concurrency:
 
 permissions:
   contents: write
+  # The release notes name the PRs in the range and the issues they close.
+  issues: read
+  pull-requests: read
 
 jobs:
   release:
@@ -29,6 +32,13 @@ jobs:
         with:
           node-version: 22
 
+      # conventional-changelog-conventionalcommits stays on 9.x. Preset 10
+      # renamed the writer's mainTemplate key and compiled its partials into
+      # functions; conventional-changelog-writer@8, which
+      # release-notes-generator@14 loads, renders neither and emits notes
+      # holding nothing but the compare link — with no error. Dependabot
+      # cannot see a pin inside a run block, so bump this by hand, and only
+      # once release-notes-generator handles preset 10.
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,5 +48,5 @@ jobs:
             --package @semantic-release/changelog@7.0.0 \
             --package @semantic-release/exec@7.1.0 \
             --package @semantic-release/git@11.0.1 \
-            --package conventional-changelog-conventionalcommits@10.2.1 \
+            --package conventional-changelog-conventionalcommits@9.3.1 \
             semantic-release
