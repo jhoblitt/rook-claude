@@ -90,7 +90,8 @@ numbers, count cap.
 1. **Assess** — fan out `rook-maintainer:rook-triager` agents (batches of
    ~10, launched at the ground-rules width; fall back to
    `general-purpose` carrying the agent contract inline if the type is
-   unavailable). Each agent brief names the sweep's `snapshot.json`;
+   unavailable, and its fetch ban with it — rook-code-review
+   `references/docs-sync.md`). Each agent brief names the sweep's `snapshot.json`;
    agents consume it for metadata (title/labels/assignees/reviews/CI
    rollup) and spend their own `gh` calls only on depth the snapshot
    lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (area
