@@ -1,3 +1,25 @@
+## [0.16.0](https://github.com/jhoblitt/rook-claude/compare/v0.15.0...v0.16.0) (2026-08-14)
+
+### Features
+
+* **rook-conventions:** fence untrusted spans and gate what acts on them ([5224c24](https://github.com/jhoblitt/rook-claude/commit/5224c240aa4aad5bb084f45e3539ed4167ec90a4))
+
+### Bug Fixes
+
+* **rook-code-review:** pin authority docs and confine the fallback agent ([0137c6e](https://github.com/jhoblitt/rook-claude/commit/0137c6e1a5c8959afaa37e6c5fbf138a1a273668))
+* **rook-maintainer:** confine the injection-exposed subagents ([83d8536](https://github.com/jhoblitt/rook-claude/commit/83d85366d9be3e2a69e01e34e27aa80e55386ba9))
+* **rook-maintainer:** escape the rebase-notice hook's JSON output ([762ca9f](https://github.com/jhoblitt/rook-claude/commit/762ca9f5318200aaf8188c0f185bc870a92943b2))
+* **rook-maintainer:** stop check-links reshipping and probing credentials ([e6e0d29](https://github.com/jhoblitt/rook-claude/commit/e6e0d29bcd984af8a8b7dacaf66593153166e347))
+* **rook-triage:** carry the fallback fetch ban into the triager dispatch ([f924dfa](https://github.com/jhoblitt/rook-claude/commit/f924dfaa2c7a25fc4279c4b163bf8f15c7d97b3a))
+
+
+## What's Changed
+* ci: restore the dropped release notes and name PRs and issues by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/63
+* chore: backfill the release notes the changelog never recorded by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/64
+* ci: state the closing-link rationale without citing one repo's habit by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/65
+* fix(rook-maintainer): close the audit's security findings by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/66
+* ci: reject a breaking change the subject never declared by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/67
+
 ## [0.15.0](https://github.com/jhoblitt/rook-claude/compare/v0.14.1...v0.15.0) (2026-08-14)
 
 ### Features
