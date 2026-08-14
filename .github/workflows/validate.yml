@@ -74,7 +74,7 @@ jobs:
       - name: shellcheck
         run: |
           shellcheck \
-            .github/scripts/release-notes.sh \
+            .github/scripts/*.sh \
             plugins/rook-maintainer/hooks/*.sh \
             plugins/rook-maintainer/tools/run.sh
 
