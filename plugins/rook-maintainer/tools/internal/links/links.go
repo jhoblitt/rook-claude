@@ -211,56 +211,70 @@ func NewProber(timeout int, allowPrivate bool) *Prober {
 
 func (p *Prober) Probe(ctx context.Context, raw string) Result {
 	if HasHiddenRunes(raw) {
-		return Result{URL: Sanitize(raw), Verdict: "suspicious",
+		return Result{URL: SafeURL(raw), Verdict: "suspicious",
 			Note: "control or format characters inside URL"}
+	}
+	// PartitionCredential is the caller's gate, but this one is exported and
+	// an exercised capability is unrecoverable, so the refusal lives here too.
+	if bearing, reason := CredentialBearing(raw); bearing {
+		return Result{URL: SafeURL(raw), Verdict: "skipped-credential",
+			Note: credentialNote(reason)}
 	}
 	parsed, err := url.Parse(raw)
 	if err != nil {
-		return Result{URL: Sanitize(raw), Verdict: "blocked", Note: "URL does not parse"}
+		return Result{URL: SafeURL(raw), Verdict: "blocked", Note: "URL does not parse"}
 	}
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return Result{URL: Sanitize(raw), Verdict: "blocked", Note: "non-http scheme"}
+		return Result{URL: SafeURL(raw), Verdict: "blocked", Note: "non-http scheme"}
 	}
 
 	current, status, hops := raw, 0, 0
 	for hops <= MaxHops {
 		cur, err := url.Parse(current)
 		if err != nil || cur.Hostname() == "" {
-			return Result{URL: Sanitize(raw), Verdict: "blocked", Hops: hops, Note: "no host"}
+			return Result{URL: SafeURL(raw), Verdict: "blocked", Hops: hops, Note: "no host"}
 		}
 		if !p.AllowPrivate {
 			if reason := NonPublicAddress(cur.Hostname()); reason != "" {
-				return Result{URL: Sanitize(raw), Verdict: "blocked", Hops: hops, Note: reason}
+				return Result{URL: SafeURL(raw), Verdict: "blocked", Hops: hops, Note: reason}
 			}
 		}
 		var location string
 		status, location, err = p.head(ctx, current)
 		if err != nil {
-			return Result{URL: Sanitize(raw), Verdict: "error", Hops: hops, Note: "request failed"}
+			return Result{URL: SafeURL(raw), Verdict: "error", Hops: hops, Note: "request failed"}
 		}
 		if !isRedirect(status) || location == "" {
 			break
 		}
 		if HasHiddenRunes(location) {
-			return Result{URL: Sanitize(raw), Verdict: "suspicious", Status: status, Hops: hops,
+			return Result{URL: SafeURL(raw), Verdict: "suspicious", Status: status, Hops: hops,
 				Note: "control or format characters in Location"}
 		}
 		next, err := cur.Parse(location)
 		if err != nil {
-			return Result{URL: Sanitize(raw), Verdict: "error", Status: status, Hops: hops,
+			return Result{URL: SafeURL(raw), Verdict: "error", Status: status, Hops: hops,
 				Note: "unparsable Location"}
+		}
+		// The hop target is server-chosen, so an implicit-flow callback or a
+		// presigned object can arrive here; following it spends the capability
+		// just as probing one from the diff would.
+		if bearing, reason := CredentialBearing(next.String()); bearing {
+			return Result{URL: SafeURL(raw), Verdict: "skipped-credential", Status: status,
+				Hops: hops, FinalURL: SafeURL(next.String()),
+				Note: "redirect to credential-material URL (" + reason + "): not followed"}
 		}
 		current, hops = next.String(), hops+1
 	}
 	if hops > MaxHops {
-		return Result{URL: Sanitize(raw), Verdict: "dead", Status: status, Hops: hops,
+		return Result{URL: SafeURL(raw), Verdict: "dead", Status: status, Hops: hops,
 			Note: "redirect limit exceeded"}
 	}
 
-	res := Result{URL: Sanitize(raw), Verdict: Classify(raw, current, status),
+	res := Result{URL: SafeURL(raw), Verdict: Classify(raw, current, status),
 		Status: status, Hops: hops}
 	if current != raw {
-		res.FinalURL = Sanitize(current)
+		res.FinalURL = SafeURL(current)
 	}
 	return res
 }

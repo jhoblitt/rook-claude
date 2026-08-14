@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 )
 
@@ -135,6 +136,62 @@ func TestProbeFollowsRedirectsHopByHop(t *testing.T) {
 			t.Errorf("%s: verdict = %q (status %d, final %q), want %q",
 				tc.path, got.Verdict, got.Status, got.FinalURL, tc.verdict)
 		}
+	}
+}
+
+// A redirect can land on a credential URL — an implicit-flow callback, a
+// presigned object — and following it spends the capability exactly as
+// probing one straight from the diff would. The target is server-chosen, so
+// the guard cannot live at the call site that partitions the diff's URLs.
+func TestProbeStopsAtRedirectIntoCredentialURL(t *testing.T) {
+	var probed atomic.Int32
+	mux := http.NewServeMux()
+	mux.HandleFunc("/download", redirectTo("/object?X-Amz-Signature=SECRETSIG"))
+	mux.HandleFunc("/object", func(w http.ResponseWriter, _ *http.Request) {
+		probed.Add(1)
+		w.WriteHeader(200)
+	})
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+
+	got := NewProber(5, true).Probe(context.Background(), srv.URL+"/download")
+	if n := probed.Load(); n != 0 {
+		t.Errorf("prober made %d request(s) to the credential URL", n)
+	}
+	if got.Verdict != "skipped-credential" {
+		t.Errorf("verdict = %q (note %q), want skipped-credential", got.Verdict, got.Note)
+	}
+	if got.Bad() {
+		t.Error("a refused hop is a report line, not a gate failure")
+	}
+	if strings.Contains(got.URL+got.FinalURL+got.Note, "SECRETSIG") {
+		t.Errorf("result reships credential material: %+v", got)
+	}
+	if !strings.Contains(got.FinalURL, "X-Amz-Signature=REDACTED") {
+		t.Errorf("final URL = %q; the refused target must stay identifiable", got.FinalURL)
+	}
+}
+
+// PartitionCredential is the caller's gate, but Probe is exported and the
+// cost of a missed partition is an exercised capability, so the prober
+// refuses these itself.
+func TestProbeRefusesCredentialURL(t *testing.T) {
+	var probed atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		probed.Add(1)
+		w.WriteHeader(200)
+	}))
+	defer srv.Close()
+
+	got := NewProber(5, true).Probe(context.Background(), srv.URL+"/o?X-Amz-Signature=SECRETSIG")
+	if n := probed.Load(); n != 0 {
+		t.Errorf("prober made %d request(s) to the credential URL", n)
+	}
+	if got.Verdict != "skipped-credential" {
+		t.Errorf("verdict = %q (note %q), want skipped-credential", got.Verdict, got.Note)
+	}
+	if strings.Contains(got.URL, "SECRETSIG") {
+		t.Errorf("URL %q reships credential material", got.URL)
 	}
 }
 
