@@ -16,10 +16,43 @@ plugins:
           release: patch
   - - "@semantic-release/release-notes-generator"
     - preset: conventionalcommits
+      # presetConfig.types replaces the preset's default list, which hides
+      # docs/refactor/perf. Every type releaseRules above can cut a release
+      # from has to be visible here, or a release built only from those types
+      # ships notes with nothing under the header.
+      presetConfig:
+        types:
+          - type: feat
+            section: Features
+          - type: fix
+            section: Bug Fixes
+          - type: perf
+            section: Performance Improvements
+          - type: refactor
+            section: Refactoring
+          - type: docs
+            section: Documentation
+          - type: revert
+            section: Reverts
+          - type: chore
+            hidden: true
+          - type: ci
+            hidden: true
+          - type: build
+            hidden: true
+          - type: test
+            hidden: true
+          - type: style
+            hidden: true
   - - "@semantic-release/changelog"
     - changelogFile: CHANGELOG.md
+  # semantic-release joins every plugin's generateNotes output in plugin
+  # order, so exec's stdout lands after the commit-derived notes above.
   - - "@semantic-release/exec"
-    - prepareCmd: >-
+    - generateNotesCmd: >-
+        .github/scripts/release-notes.sh
+        "${nextRelease.gitTag}" "${lastRelease.gitTag || ''}"
+      prepareCmd: >-
         jq --arg v "${nextRelease.version}" '.version = $v'
         plugins/rook-maintainer/.claude-plugin/plugin.json > plugin.json.tmp &&
         mv plugin.json.tmp plugins/rook-maintainer/.claude-plugin/plugin.json
