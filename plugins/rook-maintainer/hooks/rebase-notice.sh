@@ -28,5 +28,17 @@ if [ $((now - last)) -gt 180 ]; then
 fi
 behind=$(git rev-list --count "HEAD..origin/$def" 2>/dev/null || echo 0)
 [ "${behind:-0}" -gt 0 ] 2>/dev/null || exit 0
+# Ref names arrive as untrusted data -- gh pr checkout, a fetched contributor
+# ref, a third-party clone -- and git bars neither the double quote nor the
+# comma, so a raw name would end additionalContext early and hand the harness
+# a document nobody wrote. jq is the obvious encoder but is not guaranteed
+# present, and this fires on every prompt in every repo; sed is. Whatever sed
+# cannot represent (a control character) or cannot do (be missing) comes back
+# empty, and an unencodable notice is one the hook declines to emit.
+escape() { printf '%s' "$1" | LC_ALL=C sed -e '/[[:cntrl:]]/d' -e 's/[\\"]/\\&/g' 2>/dev/null; }
+branch=$(escape "$branch") || exit 0
+def=$(escape "$def") || exit 0
+[ -n "$branch" ] || exit 0
+[ -n "$def" ] || exit 0
 printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"origin/%s is %s commit(s) ahead of this branch (%s); a rebase onto %s is recommended before pushing/merging."}}\n' "$def" "$behind" "$branch" "$def"
 exit 0
