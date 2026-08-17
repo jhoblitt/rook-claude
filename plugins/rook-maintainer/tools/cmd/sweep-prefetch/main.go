@@ -1,5 +1,7 @@
-// sweep-prefetch: phase-0 metadata snapshot for a rook-triage sweep;
-// its pipeline phase 0 is the sole caller.
+// sweep-prefetch: phase-0 metadata snapshot for a rook-triage sweep.
+// Callers: rook-triage's pipeline phase 0, and rook-systemic-prs Phase 2,
+// which reuses the PR snapshot to exclude candidates an open PR already
+// touches.
 //
 //	run.sh sweep-prefetch snapshot SWEEP_DIR --kind prs|issues \
 //	    [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]
@@ -33,6 +35,9 @@
 // Exit status is 2 for a usage error and 1 for a bad argument value, a failed
 // fetch or a failed write. snapshot and classify-refs need authenticated gh
 // (run with the sandbox disabled); pool-summary needs no network at all.
+//
+// Spec: skills/rook-triage/SKILL.md phase 0, whose "State" section also names
+// the sweep-dir files each subcommand writes.
 package main
 
 import (

@@ -1,9 +1,8 @@
 # Label map — canonical roles → rook's real labels
 
-Scope: label PROPOSALS apply to ISSUES only — triage never labels PRs
-(the path-glob table below still drives PR **area inference** for routing
-and KB bucketing; PR reports show current labels only, and backport labels
-belong to `rook-code-review`'s flag-and-confirm flow).
+Scope: label PROPOSALS apply to ISSUES only (SKILL.md ground rules). The
+path-glob table below still drives PR **area inference** for routing and KB
+bucketing — inferring an area is not proposing a label.
 
 Rules: intersect every proposal with live `gh label list` · ADD only —
 never remove a human-applied label · ≤5 per item · under-label.

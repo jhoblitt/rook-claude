@@ -3,6 +3,6 @@
 
 _None._
 
-## Mention ledger (per-person per-sweep cap: 3)
+## Mention ledger (per-person per-RUN cap: 3)
 
 _No @-mentions proposed in this sweep._

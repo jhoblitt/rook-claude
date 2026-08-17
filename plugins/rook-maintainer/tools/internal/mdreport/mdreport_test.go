@@ -198,7 +198,7 @@ func TestLedgerFlagsTheCap(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, want := range []string{
-		"## Reviewer ledger (per-person per-sweep cap: 3)",
+		"## Reviewer ledger (per-person per-RUN cap: 3)",
 		"| reviewer | proposed | cap | status |",
 		"| a | 5 | 3 | OVER CAP by 2 |",
 		"| b | 3 | 3 | at cap |",

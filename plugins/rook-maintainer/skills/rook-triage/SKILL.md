@@ -20,7 +20,7 @@ approval-gated layer on top. Stopping at the report is a complete run.
 | Mode | Trigger | What it does |
 |---|---|---|
 | **issues** | "triage the issues", "issue N" | Issue backlog (or one issue): kind, completeness, dup/cross-link, labels, routing. Read `references/issue-triage.md`. |
-| **prs** | "triage the PRs", "pr N" | PR backlog (or one PR): cheap sort — CI/mergeability/template/trust, dup/cross-link, current-label report (triage never labels PRs), reviewer routing, route-to-deep-review. Read `references/pr-triage.md`. |
+| **prs** | "triage the PRs", "pr N" | PR backlog (or one PR): cheap sort — CI/mergeability/template/trust, dup/cross-link, current-label report (ground rules "Labels: issues only"), reviewer routing, route-to-deep-review. Read `references/pr-triage.md`. |
 | **both** | "triage the backlog" | Both corpora in one run, one sweep dir each (State below). Default when unscoped — confirm at phase 0. |
 | **kb refresh** | "refresh the triage kb" | Rebuild the routing knowledge base. Read `references/routing.md`. |
 
@@ -34,10 +34,10 @@ numbers, count cap.
   `suspicious-content` flag on the item's card.
 - **Labels: issues only.** PRs are NEVER labeled by triage — reports show
   a PR's current labels, and the sole PR-label flow is rook-code-review's
-  backport flag-and-confirm. Issue proposals use real labels only
-  (enumerate `gh label list` and intersect; never invent), under-label
-  (≤5 per item), and never category-label an incomplete issue — request
-  the missing info instead. A "+1"/"me too" comment is not information.
+  backport flag-and-confirm. Issue proposals follow
+  `references/label-map.md` "Rules", and completeness comes first
+  (`references/issue-triage.md`) — a "+1"/"me too" comment is not
+  information.
 - **Comments are rare, short, and attributed.** At most one comment per
   item per state change; every posted comment carries the AI-agent
   attribution (rook-conventions "Signing GitHub comments").
@@ -86,12 +86,20 @@ numbers, count cap.
    by default, and they cost a skip row rather than an agent) are not
    work. Then get explicit confirmation before any fan-out. Warn if
    `kb.json` is missing or >30 days old (`references/routing.md`
-   fallback applies).
+   fallback applies). On a PR corpus, close phase 0 AFTER that
+   confirmation with the batched checklist pass
+   (`references/pr-triage.md`) — it is one `gh` call per audited PR, so a
+   run abandoned at the gate spends none of them; phase 1 depends on its
+   `checklist.jsonl`.
 1. **Assess** — fan out `rook-maintainer:rook-triager` agents (batches of
    ~10, launched at the ground-rules width; fall back to
    `general-purpose` carrying the agent contract inline if the type is
    unavailable, and its fetch ban with it — rook-code-review
-   `references/docs-sync.md`). Each agent brief names the sweep's `snapshot.json`;
+   `references/docs-sync.md`). Each agent brief names the sweep's
+   `snapshot.json`, its `checklist.jsonl` on a PR corpus, and that agent's
+   search allowance — `references/cross-linking.md` states how the run's
+   shared ceiling divides across the width you launched, and whether this
+   agent is the solo case, because it cannot see its siblings to tell;
    agents consume it for metadata (title/labels/assignees/reviews/CI
    rollup) and spend their own `gh` calls only on depth the snapshot
    lacks (thread content, dup searches, blame). Three layers, cheapest first: deterministic (area
@@ -136,9 +144,8 @@ numbers, count cap.
    still-open recheck, and a non-zero exit sends those items back to the
    report instead of to GitHub. Two things it does NOT decide, which stay
    here: whether a human answered or relabelled the item since assessment,
-   and the per-person per-sweep cap, which is enforced at selection
-   (`references/routing.md`) because it is a property of the sweep rather
-   than of any one action. Then post, record in `sweep.json`, report URLs.
+   and the per-person per-RUN cap, which is enforced at selection
+   (`references/routing.md`). Then post, record in `sweep.json`, report URLs.
 
 Resume: every phase restarts from `sweep.json`. Re-runs adjust lifecycle
 state only; a category settled by an EXECUTED action is never
@@ -191,7 +198,10 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
     threads.json               # fetched issue bodies+comments (mention mining)
     issues-mentions.json       # mined thread @-mentions (mentions column)
     refs-types.json            # cross-ref Issue-vs-PullRequest classification
-    skips.json                 # PR mode: skipped rows (class, author, title)
+    skips.json                 # PR mode: skipped rows (class, author, title),
+                               #   written by the phase-0 checklist pass
+    checklist.jsonl            # PR mode: validate-checklist verdicts; which PRs it
+                               #   covers is the tool's (`references/pr-triage.md`)
     actions/<N>-<k>.md         # one editable draft per proposed action
     dashboard.html             # gen-*-dashboard output; publish via Artifact
 ```
@@ -205,7 +215,7 @@ a single top-level `kind` over incompatible item shapes, and
 so a shared dir would have each corpus overwrite the other's.
 
 Two rules stay RUN-scoped across both dirs, because they bound what one
-person receives rather than what one sweep does: the per-person cap
+person receives rather than what one sweep does: the per-person per-RUN cap
 (`references/routing.md`, which `validate-actions` does not re-check) and cross-linking's comment-on-ONE-side rule. Phase 4
 reconciles the two action sets against each other before approval;
 without that, a `both` run pings one maintainer twice over and comments
@@ -220,17 +230,13 @@ should be PR'd back to the plugin repo so every maintainer inherits it.
 
 ## Scripts
 
-Deterministic tier-0 tooling — run these, don't re-implement them. Every
-tool is a Go binary under `${CLAUDE_PLUGIN_ROOT}/tools/cmd/`, invoked
-through the launcher, which builds it on first use:
+Deterministic tier-0 tooling — run these, don't re-implement them. The
+launcher contract is rook-conventions `references/plugin-tools.md`; what
+this skill runs:
 
-```sh
-bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" <tool> [args...]
-```
-
-Each tool's package doc names its callers and what changing it obliges.
-The launcher fails loud — a non-zero exit is a real failure, never an
-empty result:
+- `validate-checklist` — PR-template checklist conformance, batched over a
+  sweep (`references/pr-triage.md`). Spec: rook-code-review
+  `references/docs-sync.md`.
 
 - `rt-fetch` — kb-refresh fetch of merged PRs (files+reviews JSONL +
   provenance/truncation state). Spec: `references/routing.md`.

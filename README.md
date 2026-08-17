@@ -79,7 +79,7 @@ flowchart TD
     M -->|takeover| K1["adopt in place, or supersede +<br/>per-ID outcome ledger"]
 
     subgraph SPINE["the review spine — every diff-shaped target"]
-        S1["scope + route references"] --> S2[["evidence passes a–i — parallel agents<br/>(i: design read on decision-magnitude triggers)"]]
+        S1["scope + route references"] --> S2[["evidence passes a–k — parallel agents<br/>(i: design read on decision-magnitude triggers)"]]
         S2 --> S3[["verify — refutation + confidence gates,<br/>verifier agents per finding group"]]
         S3 --> S4["gap sweep — one fresh agent attacks<br/>the review's own coverage claim"]
         S4 --> S5["report — verdict + B/C/N/Q findings"]
@@ -189,10 +189,10 @@ Validate after changes:
 claude plugin validate .
 ```
 
-Regression evals for agent LSP usage, component loading, and design
-review live under
-`plugins/rook-maintainer/evals/` (see its README; `claude plugin eval`
-is early-access and currently a no-op on stock installs).
+Regression evals guarding this plugin's own behavior live under
+`plugins/rook-maintainer/evals/`, whose README inventories every case and
+how to run one today (`claude plugin eval` is early-access and currently a
+no-op on stock installs).
 
 Content changes land via PR to this repo. Commit messages follow
 [Conventional Commits](https://www.conventionalcommits.org/) — commitlint

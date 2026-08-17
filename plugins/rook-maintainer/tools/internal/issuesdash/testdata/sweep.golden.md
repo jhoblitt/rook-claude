@@ -10,7 +10,7 @@
 | [#15003](https://github.com/rook/rook/issues/15003) | bug | mgr crash on RGW pools — non-ASCII: é 漢字 | ask for a must-gather; re-test on [#12001](https://github.com/rook/rook/issues/12001) | keep-open — reproducible on v1.18; tracked by [#14002](https://github.com/rook/rook/issues/14002) and [#4123](https://github.com/rook/rook/issues/4123), superseded 19000 | [#15004](https://github.com/rook/rook/pull/15004), [#15006](https://github.com/rook/rook/pull/15006) | BlaineEXE | travisn, BlaineEXE, sp98, subhamkrai, parth-gr, Madhu-1, satoru-takeuchi, Copilot, +2 more · propose: **travisn** | bug · propose: **ceph-mgr** |
 | [#18999](https://github.com/rook/rook/issues/18999) | docs | Docs: quickstart \| missing the \`kubectl apply\` step \*and\* \[links\] | ask for the operator log; check \`get pods \| grep osd\` | needs-info — no logs, no version | — | — | propose: **evil" onmouseover=alert(1) \<b>** | docs |
 
-## Mention ledger (per-person per-sweep cap: 3)
+## Mention ledger (per-person per-RUN cap: 3)
 
 | mentioned | proposed | cap | status |
 | --- | --- | --- | --- |

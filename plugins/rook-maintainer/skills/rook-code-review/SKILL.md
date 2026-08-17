@@ -181,8 +181,9 @@ re-verifies, gap-sweeps, and assigns IDs.
      issue; verify that claim against the issue's outstanding items
      (`references/cross-references.md`). Reads the tracker, not the repo.
 3. **Verify.** Every candidate finding goes through
-   `references/verification.md` (refutation attempt, confidence score,
-   false-positive exclusions, rook precedents). Report only what survives.
+   `references/verification.md`, in the order that file sets: mechanical
+   pre-filter, then the refutation pass and confidence score, then the
+   judgment exclusions and rook precedents. Report only what survives.
 4. **Gap sweep** (PR targets, large diffs, and the pre-pr gate): one
    fresh agent takes the diff, the surviving findings, and the
    audited-and-clean list, and hunts what both missed — the attack on
@@ -222,18 +223,9 @@ triggers → multiple references.
 ## Scripts
 
 Deterministic tooling — run these, don't re-derive them by hand or hand
-them to an agent. Every tool is a Go binary under
-`${CLAUDE_PLUGIN_ROOT}/tools/cmd/`, invoked through the launcher, which
-builds it on first use:
-
-```sh
-bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" <tool> [args...]
-```
-
-The launcher fails loud — a non-zero exit is a real failure, never an
-empty result. Each tool's package doc names its callers (some sit in
-`rook-conventions` and the `rook-reviewer` agent definition) and what
-changing it obliges:
+them to an agent. The launcher contract is rook-conventions
+`references/plugin-tools.md`; some of the callers it refers to sit there and
+in the `rook-reviewer` agent definition. The tools this skill uses:
 
 - `validate-anchors` — pre-post validation of a review payload's inline
   anchors against the PR diff (path/line/side membership, multi-line key
@@ -251,6 +243,9 @@ changing it obliges:
   docs-sync rule that documented commands must exist; a `MISSING` verdict is a
   `docs-sync` finding. Spec: `references/docs-sync.md` and
   `rook-conventions/references/backporting.md`.
+- `validate-checklist` — PR-template checklist conformance, for one PR or a
+  whole triage sweep (`sweep <sweep-dir>`). A non-conforming verdict is a
+  `docs-sync` finding. Spec: `references/docs-sync.md`.
 
 ## Severity and verdicts
 

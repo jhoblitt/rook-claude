@@ -23,10 +23,8 @@ import (
 )
 
 const (
-	// PerPersonCap is the per-person per-sweep routing cap of
-	// references/routing.md, "Selection". validate-actions deliberately does
-	// not re-check it (SKILL.md phase 5), which makes this ledger the only
-	// place a breach becomes visible.
+	// PerPersonCap mirrors the number in references/routing.md, "Selection".
+	// Its scope, and why a ledger is where a breach surfaces, are that file's.
 	PerPersonCap = 3
 
 	// ReportFile is the name both renderers write the fragment under, in the
@@ -268,7 +266,7 @@ type Ledger struct {
 }
 
 func (l Ledger) Write(w io.Writer) error {
-	if err := Section(w, 2, "%s (per-person per-sweep cap: %d)",
+	if err := Section(w, 2, "%s (per-person per-RUN cap: %d)",
 		l.Heading, PerPersonCap); err != nil {
 		return err
 	}

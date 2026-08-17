@@ -80,8 +80,8 @@ hand.
   xlinks/dups, each classified Issue-vs-PullRequest via a live
   `issueOrPullRequest` lookup, never by guessing.
 - **Labels column shows CURRENT labels.** Issues additionally mark
-  proposed additions distinctly; PRs never get label proposals (backport
-  labels belong to rook-code-review's flag-and-confirm flow).
+  proposed additions distinctly; a PR row has none to mark (SKILL.md
+  ground rules).
 - **Mention mining is `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" mine-mentions`'s job** — fence-aware
   code-stripping per comment-document, real GitHub mention semantics, and
   live login resolution (a bare `@\w+` scan turns shell prompts, emails,
@@ -90,4 +90,5 @@ hand.
   `issues-mentions.json` into the sweep dir and caches resolutions in
   `~/.cache/rook-triage/mentions-user-check.json`.
 - **Reviewer ledger table** in the report: per-person proposed counts vs
-  the per-sweep cap, and which sets were cap-swapped.
+  the per-RUN cap, and which sets were cap-swapped. Its counts are this
+  sweep's alone — only `gen-run-ledger` sums them across the run.
