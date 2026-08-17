@@ -3,10 +3,8 @@
 NOT review: no diff reading beyond changed paths + size. Substantive PRs
 route to `rook-code-review`, one review per PR.
 
-**Triage never proposes or applies labels on PRs** — rook does not label
-PRs by type/area. Reports show the labels currently present, nothing more;
-the only PR-labeling flow anywhere is `rook-code-review`'s backport
-flag-and-confirm. (Issue labeling is unaffected — see `label-map.md`.)
+**Triage never proposes or applies labels on PRs** (SKILL.md ground rules)
+— rook does not label PRs by type/area at all.
 
 Skip conditions:
 
@@ -14,21 +12,40 @@ Skip conditions:
   explicitly asks to include drafts.
 - **`do-not-merge` is ALWAYS skipped**, even in an include-drafts run —
   the label is an explicit human hold that triage never overrides.
-- Also never routed/pinged/commented: WIP title/label · mergify backport
-  branches · dependabot/bot authors.
+- Also never routed/pinged/commented: WIP title/label · bot authors, which
+  covers mergify's backports and dependabot alike — the classifier matches
+  the login, and the snapshot carries no head branch to match instead.
 - Every skipped PR still appears in the report as a skip row with its
   reason (draft / do-not-merge / WIP / bot) — silent omission would read
-  as coverage.
+  as coverage. The batched pass below writes those rows to `skips.json`;
+  they are never hand-produced.
 
 ## Signals per PR
 
 CI rollup (green/red/pending, which checks) · mergeable/conflicts · size
-(files, ±lines) · template checklist present AND conforming (verbatim
-template, only boxes toggled — the rook-code-review docs-sync canon) ·
+(files, ±lines) · template checklist conformance — `validate-checklist`'s
+verdict, never a read of the body, batched once per sweep (below) ·
 links an issue (any closing keyword — `Resolves` is the one rook's PR
 template ships) · duplicate-of-open-PR · author trust (association,
 history, burst pattern). **Trust changes review depth, never the merge
 decision.**
+
+### Checklist conformance, batched
+
+One sweep-scoped pass, sequenced by SKILL.md phase 0:
+
+```sh
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-checklist sweep <sweep-dir> \
+     --root <rook-checkout>       # --include-drafts on an include-drafts run
+```
+
+It writes `<sweep-dir>/checklist.jsonl`, one `{"number":N,"verdict":"..."}`
+row per audited PR. Take conformance from that `verdict` and never re-derive
+it by reading the body; read `unaudited` as a PR the pass could not audit,
+which is NOT `no-checklist`. What the pass itself audits, skips and exits is
+its package doc (`tools/cmd/validate-checklist/main.go`); what the verdicts
+mean, and the single-PR form, are rook-code-review
+`references/docs-sync.md`.
 
 ## Card (report format)
 
@@ -50,13 +67,10 @@ approve-CI-run (report-only; a maintainer act in the UI).
 
 ## Reviewer requests
 
-2–3 preferred, 1–5 acceptable — never 0 when routing confidence exists,
-never >5, and ALWAYS at least one approver-tier reviewer (CODE-OWNERS
-`approvers:`); reviewer-tier members may fill the remaining slots, but a
-set of only reviewer-tier picks is invalid. Selection per
-`references/routing.md`; execution
-`gh pr edit N --add-reviewer a,b` (a gated write like any other).
-@-mention fallback only when a reviewer request is not possible.
+Count, bounds, tier rule and selection are `references/routing.md`,
+"Selection". Execution is `gh pr edit N --add-reviewer a,b` (a gated write
+like any other); @-mention fallback only when a reviewer request is not
+possible.
 
 ## Comment templates
 

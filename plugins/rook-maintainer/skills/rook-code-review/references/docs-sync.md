@@ -4,6 +4,22 @@ Both directions are review dimensions: code that changed without its docs,
 and docs that changed without (or against) their code. The couplings below
 are mechanical — check them, don't guess.
 
+## The generated set
+
+Six paths are machine-written, and this is the plugin's statement of which:
+
+- `zz_generated.deepcopy.go` and `pkg/client/**` — `make codegen`
+- `deploy/examples/crds.yaml`,
+  `deploy/charts/rook-ceph/templates/resources.yaml` and
+  `Documentation/CRDs/specification.md` — `make crds`
+- `Documentation/Helm-Charts/{operator,ceph-cluster}-chart.md` — helm-docs,
+  whose editable source is the `.gotmpl.md`
+
+A manual hunk in any of them is a blocker: the next regen clobbers it, and
+crds-gen CI fails. WHICH change obliges which regeneration is Direction 1's
+table; this is the set itself, and every pass that asks "is this file
+generated?" answers it here.
+
 ## Direction 1: code changed → are docs current?
 
 | Code change | Must be in the same changeset |
@@ -67,11 +83,7 @@ tree — a doc that names real identifiers is checkable:
   read, and is the part still checked by hand.
 - Version claims ("since v1.17", "requires Ceph Squid") → check
   `cephver`/release notes.
-- Never hand-edited: `Documentation/CRDs/specification.md`,
-  `deploy/examples/crds.yaml`, `deploy/charts/rook-ceph/templates/resources.yaml`,
-  `Documentation/Helm-Charts/{operator,ceph-cluster}-chart.md`. A manual hunk
-  in any of these is a blocker (it will be clobbered by the next regen and
-  fails crds-gen CI).
+- Never hand-edited: "The generated set" above.
 
 ## URL integrity (diff-scoped)
 
@@ -131,18 +143,24 @@ messages, examples, workflows:
 
 Two independent checks — a checklist can fail either:
 
-**1. Conformance — is the checklist the unmodified template?** The canonical
-checklist is `origin/master:.github/PULL_REQUEST_TEMPLATE.md`. A conforming
-checklist reproduces every template item verbatim — same wording, links,
-order, and the "Overwriting Ceph's configurations" sub-bullet — differing
-ONLY in checkbox state (`[ ]`→`[x]`). Any item reworded, relabelled,
-link-stripped, appended-to (e.g. "— N/A: ..."), reordered, added, dropped, or
-wrapped in a code fence is NON-CONFORMING → changes-requested, regardless of
-whether the checks happen to be honest. Rewriting the checklist is a hallmark
-of AI-burst PRs; diff the block against the template rather than eyeballing it.
+**1. Conformance — is the checklist the unmodified template?** The
+`validate-checklist` tool decides it, never a reading of the block:
+conformance is byte-identity with the items of
+`origin/master:.github/PULL_REQUEST_TEMPLATE.md` — the ref the contributor
+cannot rewrite — modulo checkbox state (`[ ]`→`[x]`), which makes it a
+comparison rather than a judgment. `gh pr view <n> --json body -q .body | bash
+"${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-checklist --root .`, or
+`--template FILE` where no rook checkout is at hand. Every `ALTERED`,
+`MISSING`, `EXTRA` and `PROBLEM` line it prints is NON-CONFORMING →
+changes-requested, regardless of whether the checks happen to be honest;
+`PROBLEM` is the block itself, duplicated or wrapped in a code fence, and a
+body carrying no checklist at all comes back `NO-CHECKLIST` — the same
+finding, with no block to point at. Rewriting the checklist is a hallmark of
+AI-burst PRs.
 
-**2. Correctness — do the checked boxes match the diff?** Within a conforming
-checklist:
+**2. Correctness — do the checked boxes match the diff?** The tool reports
+each item's check state and stops there; whether a ticked box is TRUE needs
+the diff, and is the reviewer's. Within a conforming checklist:
 
 - "Documentation has been updated" — only `Documentation/**` counts; godoc
   and code comments do not.
