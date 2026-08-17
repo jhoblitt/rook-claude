@@ -7,6 +7,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"testing"
+	"unicode/utf8"
 )
 
 // Hostile codepoints appear only as \u escapes: a test for invisible-character
@@ -89,8 +90,26 @@ func TestSanitize(t *testing.T) {
 	if got := Sanitize("git\u200bhub.com"); got != "github.com" {
 		t.Errorf("Sanitize kept a format character: %q", got)
 	}
-	if got := Sanitize(strings.Repeat("a", 400)); len(got) > MaxURLChars+3 {
+	if got := Sanitize(strings.Repeat("a", 400)); len(got) > MaxURLBytes+3 {
 		t.Errorf("Sanitize did not bound length: %d", len(got))
+	}
+}
+
+// The cap counts bytes, so a URL of multi-byte runes puts the cut inside a
+// sequence: 298 ASCII bytes then three-byte runes lands it two bytes in.
+func TestSanitizeCutsOnARuneBoundary(t *testing.T) {
+	got := Sanitize(strings.Repeat("a", 298) + strings.Repeat("€", 10))
+	if !utf8.ValidString(got) {
+		t.Errorf("truncation split a rune: %q", got)
+	}
+	if !strings.HasSuffix(got, "...") {
+		t.Errorf("truncation dropped its marker: %q", got)
+	}
+	if len(got) > MaxURLBytes+3 {
+		t.Errorf("truncation did not bound length: %d", len(got))
+	}
+	if short := Sanitize("https://tracker.ceph.com/issues/€1234"); short != "https://tracker.ceph.com/issues/€1234" {
+		t.Errorf("Sanitize altered a string under the cap: %q", short)
 	}
 }
 

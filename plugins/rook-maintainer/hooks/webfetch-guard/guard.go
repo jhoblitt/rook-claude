@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 // allowedHosts is the trusted-source list from
@@ -281,7 +282,7 @@ func hostLabel(host string) string {
 // The URL came from the diff, so the deny reason is the one place this hook
 // echoes untrusted input.
 func sanitizeForMessage(s string) string {
-	const limit = 120
+	const maxBytes = 120
 	var b strings.Builder
 	for _, r := range s {
 		if unicode.Is(unicode.Cf, r) || unicode.Is(unicode.Cc, r) ||
@@ -290,9 +291,20 @@ func sanitizeForMessage(s string) string {
 		}
 		b.WriteRune(r)
 	}
-	out := b.String()
-	if len(out) > limit {
-		return out[:limit] + "..."
+	return truncate(b.String(), maxBytes)
+}
+
+// truncate bounds s to limit BYTES, backing the cut off to the nearest rune
+// boundary. A cap that lands inside a multi-byte sequence would otherwise emit
+// half of one into the deny message.
+func truncate(s string, limit int) string {
+	if len(s) <= limit {
+		return s
 	}
-	return out
+	for n := limit; n > 0; n-- {
+		if utf8.ValidString(s[:n]) {
+			return s[:n] + "..."
+		}
+	}
+	return "..."
 }

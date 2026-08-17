@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 // Hostile codepoints appear only as \u escapes here, never as literal bytes:
@@ -356,6 +357,21 @@ func TestSanitizeForMessage(t *testing.T) {
 	}
 	if got := sanitizeForMessage(string(long)); len(got) > 130 {
 		t.Errorf("sanitize did not bound length: %d", len(got))
+	}
+}
+
+// The cap counts bytes, so a host of multi-byte runes puts the cut inside a
+// sequence: 118 ASCII bytes then three-byte runes lands it one byte in.
+func TestSanitizeForMessageCutsOnARuneBoundary(t *testing.T) {
+	got := sanitizeForMessage(strings.Repeat("a", 118) + strings.Repeat("€", 10))
+	if !utf8.ValidString(got) {
+		t.Errorf("truncation split a rune: %q", got)
+	}
+	if !strings.HasSuffix(got, "...") {
+		t.Errorf("truncation dropped its marker: %q", got)
+	}
+	if len(got) > 123 {
+		t.Errorf("truncation did not bound length: %d", len(got))
 	}
 }
 

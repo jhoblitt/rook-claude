@@ -25,10 +25,11 @@ import (
 	"sync"
 	"time"
 	"unicode"
+	"unicode/utf8"
 )
 
 const (
-	MaxURLChars    = 300
+	MaxURLBytes    = 300
 	MaxHops        = 4
 	DefaultWorkers = 8
 	userAgent      = "rook-review-linkcheck"
@@ -83,10 +84,23 @@ func Sanitize(s string) string {
 		}
 		return r
 	}, s)
-	if len(out) > MaxURLChars {
-		return out[:MaxURLChars] + "..."
+	return truncate(out, MaxURLBytes)
+}
+
+// truncate bounds s to limit BYTES, backing the cut off to the nearest rune
+// boundary. A cap that lands inside a multi-byte sequence would otherwise emit
+// half of one, and a plain-text or markdown sink has no U+FFFD substitution to
+// heal it the way a JSON encoder does.
+func truncate(s string, limit int) string {
+	if len(s) <= limit {
+		return s
 	}
-	return out
+	for n := limit; n > 0; n-- {
+		if utf8.ValidString(s[:n]) {
+			return s[:n] + "..."
+		}
+	}
+	return "..."
 }
 
 func trimUnbalanced(u string) string {
