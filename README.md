@@ -123,8 +123,9 @@ so the rule that untrusted content may not enter review context does not
 depend on the model choosing to follow it. Written in Go and built on first
 use; a denial explains itself and routes the caller to `check-links`,
 which answers liveness without fetching content at all. The launcher fails
-open so a missing toolchain cannot brick WebFetch, but every verdict the
-guard itself reaches fails closed.
+open so a missing toolchain cannot brick WebFetch, and says so on the
+transcript when it does, so an unadjudicated fetch is never a silent one;
+every verdict the guard itself reaches fails closed.
 
 It applies **only inside `rook-reviewer`, `rook-triager` and
 `design-attacker`** — the three agents that both carry WebFetch and read
