@@ -112,10 +112,13 @@ barrier. Small inline reviews collapse the double-edged spine steps
 into a single context.
 
 Two hooks. `rebase-notice` (`UserPromptSubmit`): warns when the repo's
-default branch has advanced past your current branch, so a session in a
-stale worktree knows a rebase is needed. Default-branch aware
-(`origin/HEAD`, falling back to `main`/`master`), fetches at most once per
-3 minutes, and stays silent when there is nothing to say.
+default branch has advanced past the checked-out branch, so a session in a
+stale worktree knows a rebase is needed — and when the default branch
+ITSELF is behind, where a fast-forward is what is wanted and every worktree
+cut from it inherits the staleness. Default-branch aware (`origin/HEAD`,
+falling back to `main`/`master`), fetches at most once per 3 minutes, and
+stays silent when there is nothing to say. Ref names arrive fenced as
+repository-derived data, not as advice in the harness's voice.
 
 `webfetch-guard` (`PreToolUse`, matcher `WebFetch`): holds page fetches to
 the trusted-source allowlist in `rook-code-review/references/docs-sync.md`,
