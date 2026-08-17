@@ -1,3 +1,21 @@
+## [0.17.0](https://github.com/jhoblitt/rook-claude/compare/v0.16.0...v0.17.0) (2026-08-17)
+
+### Features
+
+* **rook-maintainer:** decide PR-template conformance with a tool ([0b78116](https://github.com/jhoblitt/rook-claude/commit/0b78116496d81e71b5e8d220afa290876c5779c7))
+
+### Bug Fixes
+
+* **rook-maintainer:** match dispatch and retrieval to the work ([738d981](https://github.com/jhoblitt/rook-claude/commit/738d9812ae72dc201049e44197ce3b3322dfcf50))
+
+### Refactoring
+
+* **rook-maintainer:** give each restated rule a single home ([5399787](https://github.com/jhoblitt/rook-claude/commit/5399787326dead2e12659e5975ac4e68949192e0))
+
+
+## What's Changed
+* fix(rook-maintainer): close the audit's remaining findings by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/68
+
 ## [0.16.0](https://github.com/jhoblitt/rook-claude/compare/v0.15.0...v0.16.0) (2026-08-14)
 
 ### Features
