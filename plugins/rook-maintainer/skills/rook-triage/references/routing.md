@@ -2,7 +2,9 @@
 
 ## kb refresh
 
-Mine, with parallel agents, into `~/.cache/rook-triage/kb.json`:
+Rebuild `~/.cache/rook-triage/kb.json` from five sources — the commit and
+review signals are shipped Go tools end to end, the rest are mined by
+parallel agents:
 
 - `CODE-OWNERS` — the authority roster (approvers/reviewers tiers; the
   file is flat/repo-wide, so per-area truth must be mined, not read).
@@ -37,15 +39,10 @@ Mine, with parallel agents, into `~/.cache/rook-triage/kb.json`:
   the `{data, flags}` contract below — bucket-ambiguity, truncation,
   spec-boundary, identity-unknown (vs a `--code-owners` roster),
   coverage-gap. Run both rather than letting miners hand-roll them; the
-  miner/orchestrator's job starts at resolving the emitted flags.
-  Shard for concurrency: split the window into DISJOINT merged-date slices
-  via the search API (`is:pr is:merged merged:<from>..<to>`), one miner per
-  slice in parallel; every slice must stay under the search API's
-  1000-result cap (~6 months at rook's merge rate), and a slice that
-  returns 1000 results is presumed truncated — split it and re-mine, don't
-  accept it. The assembler is the merge barrier. Disjoint slices fetch each
-  PR exactly once — the only added token cost is the extra copies of the
-  miner brief.
+  miner/orchestrator's job starts at resolving the emitted flags. One
+  `rt-fetch` walk covers the whole window — `--months` is its only window
+  control and its output basenames are fixed, so a second walk into the same
+  `--out-dir` overwrites the first instead of dividing the work.
 - Issue participation per area label (who answers what).
 - Live `gh label list` (validates `label-map.md`; flag drift).
 
@@ -81,7 +78,7 @@ snapshot via a PR to the plugin repo — one mine serves every installer.
    For an issue there is no diff, so derive from that file's keyword layer.
 2. Score = recency-decayed (commits + 2×reviews) within the area. Drop:
    the item's author · anyone inactive >6 months · anyone already at
-   their per-sweep cap.
+   their per-RUN cap (step 4).
 3. Pick: the top-scored candidate + rotate the remainder (item number mod
    pool size) — spreads load; never always-ping the top of git blame.
 4. Bounds: PRs → request 2–3 reviewers (hard bounds 1–5), and the set MUST

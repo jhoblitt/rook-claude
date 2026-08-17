@@ -69,9 +69,13 @@ the body already carries it, and is empty only when none is warranted.
 4. `discovery` — tracking-issue search: is there an issue this change
    resolves that it references nowhere? Run the search shape defined in
    rook-triage's `references/cross-linking.md`, capped at **2 queries per
-   reviewer when reviewers run concurrently** — GitHub's search API allows
-   30 requests per minute, and several concurrent reviewers each spending
-   that file's full per-item budget burst past it. SKIP when the PR already
+   reviewer** — deliberately tighter than that file's formula would give at
+   panel width, because pass k asks one question and a review panel can
+   overlap a triage wave already spending the same ceiling. It is a floor,
+   not a derivation; the shared-bucket rule it tightens is that file's. The
+   cap is unconditional: read silence about siblings as "a panel is in
+   flight", never as "I am the exception", the way `rook-reviewer.md` reads
+   silence about `git fetch`. SKIP when the PR already
    carries an active closing keyword to an open issue: the issue it should
    reference is already referenced.
 5. `competing-PR` — for each OPEN issue this change references or `discovery`

@@ -4,11 +4,12 @@
 //
 // One cursor walks repository.pullRequests (states: MERGED, UPDATED_AT DESC).
 // That connection has no search-API 1000-result cap, so a single walk covers
-// any window; the search-API slice sharding in routing.md is only for parallel
-// miners. The walk stops on a full page whose PRs are all updatedAt-older than
-// the cutoff: updatedAt >= mergedAt always holds and pages are updatedAt
-// ordered, so no in-window PR can follow such a page. A mergedAt-based stop is
-// NOT safe — a mass comment sweep over old PRs floats them back to the top.
+// any window — which is why routing.md shards nothing and hands the whole
+// window to one invocation. The walk stops on a full page whose PRs are all
+// updatedAt-older than the cutoff: updatedAt >= mergedAt always holds and
+// pages are updatedAt ordered, so no in-window PR can follow such a page. A
+// mergedAt-based stop is NOT safe — a mass comment sweep over old PRs floats
+// them back to the top.
 //
 // Per-PR truncation (files > 100, reviews > 30) is flagged rather than
 // silently dropped; the miner turns the flags into `truncation` entries per the

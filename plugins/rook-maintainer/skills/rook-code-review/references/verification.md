@@ -4,15 +4,55 @@ Findings agents propose; verification disposes. The point is precision: a
 review that cries wolf gets ignored, and a posted comment that is wrong costs
 maintainer trust. Nothing reaches the report without passing this file.
 
+## Order of operations
+
+The mechanical pre-filter below runs FIRST, over the candidate list, before
+verification reads any code: before a verifier agent is dispatched in a
+fan-out review, and before the second pass begins inline. Its tests read the
+candidate's anchor, the candidate's own text, and the diff — never the code —
+so nothing it drops may cost an agent whose verdict the drop would then
+discard. The refutation pass runs on what survives, and the judgment
+exclusions apply to that pass's verdicts, because each of them needs
+something read — the code, the surrounding package, `.golangci.yaml`, the PR
+body — that only the pass pays for. Which list an exclusion belongs to is
+decided by what it must READ, never by how strong it is: both stages exclude
+regardless of confidence.
+
+## Mechanical pre-filter — before verification reads any code
+
+Drop from the candidate list. No code read, no agent spent:
+
+- **Anchors outside the diff.** A candidate whose `file:line` is not a line
+  this change modified is pre-existing; if it is serious, mention it once in
+  the summary body rather than as a finding. It reaches the refutation pass
+  only when the candidate ITSELF claims the change makes the issue worse or
+  copies it into new code — that claim is in the candidate's text, so routing
+  on it stays mechanical, and the pass then verifies the claim like any other.
+- **Generated-path anchors.** A candidate anchored inside a generated file —
+  `docs-sync.md` "The generated set" — points at output nobody edits;
+  the fix, if there is one, is in the source plus a regen. A candidate whose
+  claim IS the generation survives: a hand-edited hunk in such a file, or a
+  regenerated artifact missing from the changeset, is a `docs-sync` finding at
+  the severity that file sets. This test carries the volume, which is why it
+  runs before dispatch and not after — one added CRD kind regenerates a whole
+  `pkg/client/**` tree, and `reuse.md` drops the same class before it queries
+  for the same reason.
+- **Anything the repo's linters/CI already catch**, matched by the
+  candidate's CLASS against the roster. rook CI runs errcheck, govet, gosec,
+  ineffassign, staticcheck, unused, gofmt+gofumpt (`.golangci.yaml`),
+  `make test`, codegen/crds-gen cleanliness checks, DCO, and commitlint.
+  Exception: workflows — see `github-actions.md`; rook CI does NOT run
+  actionlint.
+
 ## The refutation pass
 
-For each candidate finding, attempt to REFUTE it — do not attempt to confirm
-it. Re-read the code assuming the author was right and you misread. In
-fan-out reviews (large diffs, pre-pr panels) this is an independent agent per finding
-(or per small group of related findings) that receives the finding and the
-code, not the reviewer's reasoning. Inline (small diffs), it is a distinct
-second pass over each candidate; state in the report that verification was
-inline.
+For each candidate the pre-filter left, attempt to REFUTE it — do not attempt
+to confirm it. Re-read the code assuming the author was right and you
+misread. In fan-out reviews (large diffs, pre-pr panels) this is an
+independent agent per finding (or per small group of related findings) that
+receives the finding and the code, not the reviewer's reasoning. Inline
+(small diffs), it is a distinct second pass over each candidate; state in the
+report that verification was inline.
 
 The verifier answers:
 
@@ -50,22 +90,11 @@ what QUESTIONs are exempt from, and the load-bearing enforcement claim that
 never reshapes and never drops are all architecture.md's "Verification
 rubric (design findings)" — none of it is restated here.
 
-architecture.md's caps are enforced at report/ID assembly,
-the only stage that sees the whole target (verification may shard
-across agents).
+## Judgment exclusions — applied to the refutation pass's verdicts
 
-## False-positive exclusions
+Do not report, regardless of confidence. Each needs a read the pre-filter has
+not done, which is why these apply to verdicts and never to candidates:
 
-Do not report, regardless of confidence:
-
-- **Pre-existing issues** on lines the change did not modify — unless the
-  change makes them worse or copies them into new code. If serious, mention
-  once in the summary body, not as a finding.
-- **Anything the repo's linters/CI already catch.** rook CI runs errcheck,
-  govet, gosec, ineffassign, staticcheck, unused, gofmt+gofumpt
-  (`.golangci.yaml`), `make test`, codegen/crds-gen cleanliness checks, DCO,
-  and commitlint. Exception: workflows — see `github-actions.md`; rook CI
-  does NOT run actionlint.
 - **Deliberate suppressions.** `.golangci.yaml` disables specific checks
   (e.g. the aws-sdk-go-v1 deprecation text is suppressed because v1 is
   banned outright; some staticcheck QF rules are off). Respect them.
@@ -107,25 +136,28 @@ mechanical refactor is not.
 
 ## Rook precedents (judgment calls, settled)
 
-- `undefined: admin.Account` (or similar go-ceph symbols) from an ad-hoc
-  `go build/vet/test` is the missing `ceph_preview` build tag, not broken
-  code. The tag is global (`Makefile` `TAGS`, `.golangci.yaml` build-tags).
-- **Never flag "missing inline t.Run gates."** House rule: test bodies do not
-  use `if !t.Run(...) { t.FailNow() }`; cascade noise from dependent siblings
-  is accepted. DO flag the inverse — an inline run-result gate appearing in a
-  test body (only `require*`-prefixed check helpers may encapsulate it).
+- **An `undefined:` go-ceph symbol is not automatically the build tag.**
+  Attributing it there is the reflex to resist: check the symbol is actually
+  gated first. Whether the tag currently gates anything rook uses is
+  rook-conventions `references/building-and-testing.md` "The build tag", and
+  what an ad-hoc run proves either way is `ceph-object.md`.
+- **"Missing inline t.Run gates" is settled: never a finding.** The house
+  rule and its one carve-out are `testing.md`'s "House rule — no inline
+  gates"; what is verification's is the disposition — a candidate proposing
+  gates dies here whatever its confidence, while the inverse candidate that
+  file directs the reviewer to flag is not excluded.
 - assert-vs-require deviations where both behave identically (sole/last check
   in its own subtest) are style nits, never blockers.
-- `_test.go` under `tests/framework/` compiles in lint but never runs in CI —
-  do not credit it as test coverage.
+- `tests/framework/` unit tests are never coverage — why they do not run is
+  rook-conventions `references/building-and-testing.md`, which names the CI
+  scope that excludes them. A "tested" claim resting on them fails here.
 - Whether a change owes a `PendingReleaseNotes.md` entry is `docs-sync.md`'s
   Direction 1 row, not a per-review judgment — do not re-derive it.
 - Editing a godoc comment under `pkg/apis` requires regenerating CRDs — the
   comments are emitted verbatim into CRD `description` fields.
-- Generated files are never hand-edited: `zz_generated.deepcopy.go`, the
-  whole `pkg/client/**` clientset/listers/informers tree (`make codegen`),
-  `deploy/examples/crds.yaml`, `deploy/charts/rook-ceph/templates/resources.yaml`,
-  `Documentation/CRDs/specification.md`, the helm-docs chart pages.
+- Which files are generated, and what a hand-edit to one costs, is
+  `docs-sync.md`'s — the pre-filter above routes on that enumeration and
+  nothing here re-derives it.
 - Consuming the return value of a `wait4.Assert*` helper is a real bug
   (assert-flavored helpers return zero values on failure); discarding it is
   fine.

@@ -16,5 +16,8 @@ You implement one well-scoped engineering subtask. Hard rules:
   over grep when a server covers the file; load it with ToolSearch
   (`select:LSP`) first.
 
-Report back exactly: what you changed (files), what you ran (commands and
-their results), and any issues or deviations encountered.
+Report back exactly: your worktree's path when you were spawned with
+`isolation: worktree` — the orchestrator's verification gate and push have no
+other address for the tree holding your work — what you changed (files), what
+you ran (commands and their results), and any issues or deviations
+encountered.
