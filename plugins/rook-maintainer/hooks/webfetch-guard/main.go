@@ -12,8 +12,10 @@
 // would break ordinary web research everywhere if it applied unconditionally.
 // It therefore applies only inside the plugin's injection-exposed subagents,
 // identified by `agent_type` — the contexts where an adversary picks the URLs.
-// ROOK_WEBFETCH_GUARD=on extends it to the main session for an inline review;
-// =off disables it entirely.
+// The generic agent those fall back to is named too generically for that test
+// alone, so it is in scope where `cwd` says it is standing in for a review: a
+// rook checkout. ROOK_WEBFETCH_GUARD=on extends the rule to the main session
+// for an inline review; =off disables it entirely.
 //
 // Split doctrine on failure, unlike the pr-gate this is modeled on:
 //
@@ -37,6 +39,7 @@ import (
 type hookInput struct {
 	ToolName  string `json:"tool_name"`
 	AgentType string `json:"agent_type"`
+	Cwd       string `json:"cwd"`
 	ToolInput struct {
 		URL string `json:"url"`
 	} `json:"tool_input"`
@@ -80,7 +83,7 @@ func run() int {
 	// whole design here, not a refinement of it. Default to the agents that
 	// actually read attacker-authored content; `on` extends the same rule to
 	// the main session for a maintainer reviewing inline.
-	if mode != "on" && !shouldGuard(in.AgentType, guardedAgents) {
+	if mode != "on" && !shouldGuard(in.AgentType, hookCwd(in.Cwd), guardedAgents) {
 		return 0
 	}
 
@@ -92,6 +95,19 @@ func run() int {
 		return 2
 	}
 	return 0
+}
+
+// hookCwd falls back to the hook process's own directory when the payload
+// carries no cwd, since the harness starts hooks in the session's directory.
+func hookCwd(payload string) string {
+	if payload != "" {
+		return payload
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	return wd
 }
 
 func main() {

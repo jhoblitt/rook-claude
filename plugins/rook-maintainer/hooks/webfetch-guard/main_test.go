@@ -51,12 +51,20 @@ func payload(agent, url string) string {
 		`","tool_input":{"url":"` + url + `"}}`
 }
 
+func payloadIn(agent, url, cwd string) string {
+	return `{"tool_name":"WebFetch","agent_type":"` + agent + `","cwd":"` + cwd +
+		`","tool_input":{"url":"` + url + `"}}`
+}
+
 const (
 	allowedURL = "https://docs.ceph.com/en/squid/radosgw/"
 	deniedURL  = "https://example.test/blog/post"
 )
 
 func TestRun(t *testing.T) {
+	rook := writeCheckout(t, "https://github.com/rook/rook.git")
+	elsewhere := writeCheckout(t, "git@github.com:jhoblitt/rook-claude.git")
+
 	tests := []struct {
 		name    string
 		mode    string
@@ -72,6 +80,9 @@ func TestRun(t *testing.T) {
 		{"allowlisted host", "", "", payload("rook-reviewer", allowedURL), 0},
 		{"namespaced agent", "", "", payload("rook-maintainer:design-attacker", deniedURL), 2},
 		{"unlisted host", "", "", payload("rook-triager", deniedURL), 2},
+
+		{"fallback agent reviewing rook", "", "", payloadIn("general-purpose", deniedURL, rook), 2},
+		{"fallback agent elsewhere", "", "", payloadIn("general-purpose", deniedURL, elsewhere), 0},
 
 		// `on` is the only thing that widens scope past guardedAgents.
 		{"scope override guards any agent", "on", "", payload("rook-maintainer:code-worker", deniedURL), 2},
