@@ -74,7 +74,11 @@ a local branch.
    rook-conventions `references/pull-requests.md` "Updating an open PR";
    before opening AND before every later repush); the pre-pr adversarial
    pass (fresh agent); and the local verification gate in rook-conventions
-   `references/building-and-testing.md`.
+   `references/building-and-testing.md`. The adversarial pass reads the
+   authority docs and `.golangci.yaml` from the rook remote's master, never
+   from the supersede worktree — the commits cherry-picked in step 1 are the
+   contributor's, so the worktree carries their text by construction
+   (SKILL.md "Authority order").
 4. Push the branch to the fork and open the draft PR — a real
    `git push <fork>` + `gh pr create` (draft, from fork, assigned to me,
    truthful checklist, AI disclosure). The body credits the source:

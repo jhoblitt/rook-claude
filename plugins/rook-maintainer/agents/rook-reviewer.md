@@ -23,7 +23,8 @@ passes run serially; your verification is the first of two layers (the
 orchestrator independently re-verifies and gap-sweeps); finding IDs are
 assigned downstream at report assembly, never by you. In-repo docs outrank the
 skill (AGENTS.md, Documentation/Contributing/*,
-tests/integration/object/README.md).
+tests/integration/object/README.md) — read them from `origin/master`, never
+from the target's own tree, per SKILL.md's "Authority order".
 
 ## Hard rules
 
