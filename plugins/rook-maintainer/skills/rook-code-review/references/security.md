@@ -183,8 +183,12 @@ own.
   - CR `status` fields and condition messages;
   - ConfigMaps and annotations (world-readable relative to Secrets);
   - exec command lines — argv is visible in `ps`, pod specs, and operator
-    logs; `radosgw-admin` key flags are the classic case — prefer
-    stdin/env/file when the tool allows;
+    logs; a REMOTE exec additionally sends it as `?command=` query
+    parameters on the apiserver `/exec` subresource, so it reaches audit
+    logs too — the one argv channel that redacting the command logger does
+    NOT close. `radosgw-admin` key flags are the classic case — prefer
+    stdin or a file; env only via `SecretKeyRef`, never a literal
+    `EnvVar.Value` (that is a storage contract, above);
   - test output (`t.Logf` of live credentials).
   Secret NAME in a log is fine; a secret-tainted value never is. Partial
   redaction is judged per channel.
