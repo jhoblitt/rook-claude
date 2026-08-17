@@ -127,16 +127,17 @@ open so a missing toolchain cannot brick WebFetch, and says so on the
 transcript when it does, so an unadjudicated fetch is never a silent one;
 every verdict the guard itself reaches fails closed.
 
-It applies **only inside `rook-reviewer`, `rook-triager` and
-`design-attacker`** — the three agents that both carry WebFetch and read
-attacker-authored PR content. Your own fetches, every other agent's, and
-every other repo's are untouched, because a seven-host allowlist sized for
-rook doc review has no business filtering ordinary web research. Set
-`ROOK_WEBFETCH_GUARD=on` in the environment Claude Code starts in to extend
-it to the main session while reviewing inline — a hook inherits the process
-environment, so a running session cannot turn the guard on for its own
-fetches. `=off` disables it, and `ROOK_WEBFETCH_ALLOW=host1,host2` widens
-the list.
+It applies **inside `rook-reviewer`, `rook-triager` and `design-attacker`**
+— the three agents that both carry WebFetch and read attacker-authored PR
+content — and inside a `general-purpose` agent, their documented stand-in,
+whenever its working directory is a rook checkout. Your own fetches, every
+other agent's, and every other repo's are untouched, because a seven-host
+allowlist sized for rook doc review has no business filtering ordinary web
+research. Set `ROOK_WEBFETCH_GUARD=on` in the environment Claude Code starts
+in to extend it to the main session while reviewing inline — a hook inherits
+the process environment, so a running session cannot turn the guard on for
+its own fetches. `=off` disables it, and `ROOK_WEBFETCH_ALLOW=host1,host2`
+widens the list.
 
 Hooks are not repo-scoped: they run in every repo you use Claude Code in, so
 both are written to no-op everywhere they don't apply.

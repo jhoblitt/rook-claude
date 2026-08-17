@@ -130,11 +130,18 @@ messages, examples, workflows:
   its own fetches mid-run. Unguarded, that pass does not fetch at all —
   dispatch it to a guarded agent type (`rook-reviewer`, the fan-out path
   SKILL.md already uses) or return the load-bearing citation unverified. The
-  hook binds three exact agent NAMES, so a `general-purpose` agent standing in
-  for one of them is unguarded too — and unlike the inline case it also loses
-  the narrow tool roster the agent file declares. A fallback brief therefore
-  bans WebFetch outright: return a load-bearing citation unverified rather
-  than fetch it unconfined.
+  hook binds three exact agent NAMES, plus the `general-purpose` fallback
+  whenever it runs inside a rook checkout (the payload's working directory
+  resolves to a `github.com/rook/*` remote), so a stand-in reviewing rook is
+  adjudicated like the agent it replaces while fetches in unrelated repos are
+  left alone. What the stand-in never gains is the narrow tool roster the
+  agent file declares, which is why a fallback brief carries that file's
+  contract inline. That brief still bans WebFetch outright, everywhere: the
+  stand-in keeps a roster the agent file would have narrowed, and a rule an
+  agent enforces on itself is one an injected diff can argue it out of. The
+  hook backs the ban inside a rook checkout; outside one the brief is the
+  only thing holding. Either way, return a load-bearing citation unverified
+  rather than fetch it unconfined.
 - **Stability**: GitHub links to specific lines/files pin a SHA or tag, not
   `master`; docs.ceph.com links pin a release path (`/en/squid/`) when the
   claim is version-specific; strip tracking params.
