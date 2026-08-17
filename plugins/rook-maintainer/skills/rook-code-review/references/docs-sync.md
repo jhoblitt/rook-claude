@@ -124,8 +124,12 @@ messages, examples, workflows:
   per rook-conventions, and never justifies a second fetch. Inside the review
   and triage agents the `webfetch-guard` PreToolUse hook enforces this list, so
   a denied fetch there is the control working, not an obstacle to route around.
-  A session running the pass inline is not guarded and owes the list the same
-  obedience unprompted (`ROOK_WEBFETCH_GUARD=on` extends the hook to it). The
+  A session running the pass inline is guarded only when the harness was
+  started with `ROOK_WEBFETCH_GUARD=on`: the hook reads its environment from
+  the Claude Code process, so an inline pass cannot switch the guard on for
+  its own fetches mid-run. Unguarded, that pass does not fetch at all —
+  dispatch it to a guarded agent type (`rook-reviewer`, the fan-out path
+  SKILL.md already uses) or return the load-bearing citation unverified. The
   hook binds three exact agent NAMES, so a `general-purpose` agent standing in
   for one of them is unguarded too — and unlike the inline case it also loses
   the narrow tool roster the agent file declares. A fallback brief therefore

@@ -132,8 +132,10 @@ It applies **only inside `rook-reviewer`, `rook-triager` and
 attacker-authored PR content. Your own fetches, every other agent's, and
 every other repo's are untouched, because a seven-host allowlist sized for
 rook doc review has no business filtering ordinary web research. Set
-`ROOK_WEBFETCH_GUARD=on` to extend it to the main session while reviewing
-inline, `=off` to disable it, and `ROOK_WEBFETCH_ALLOW=host1,host2` to widen
+`ROOK_WEBFETCH_GUARD=on` in the environment Claude Code starts in to extend
+it to the main session while reviewing inline — a hook inherits the process
+environment, so a running session cannot turn the guard on for its own
+fetches. `=off` disables it, and `ROOK_WEBFETCH_ALLOW=host1,host2` widens
 the list.
 
 Hooks are not repo-scoped: they run in every repo you use Claude Code in, so
