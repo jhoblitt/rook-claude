@@ -192,7 +192,7 @@ func check(tag string, c map[string]any, files Files) string {
 	if !truthy(pathValue) {
 		return tag + ": missing `path`"
 	}
-	path := pyStr(pathValue)
+	path := pyRepr(pathValue)
 
 	line, ok := asInt(c["line"])
 	if !ok {
@@ -226,12 +226,12 @@ func check(tag string, c map[string]any, files Files) string {
 	if startLine != nil {
 		if s, ok := startSide.(string); !ok || s != side {
 			return fmt.Sprintf("%s %s:%d: `start_side` (%s) must equal `side` (%s)",
-				tag, path, line, pyStr(startSide), side)
+				tag, path, line, pyRepr(startSide), side)
 		}
 		start, ok := asInt(startLine)
 		if !ok || start > line {
 			return fmt.Sprintf("%s %s:%d: `start_line` (%s) must be an integer <= `line`",
-				tag, path, line, pyStr(startLine))
+				tag, path, line, pyRepr(startLine))
 		}
 		if !sides.Has(side, start) {
 			return fmt.Sprintf("%s %s:%d %s: start line is outside the diff", tag, path, start, side)
