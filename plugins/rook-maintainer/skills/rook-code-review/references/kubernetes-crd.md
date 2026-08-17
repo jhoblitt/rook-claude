@@ -6,10 +6,9 @@ changes under `pkg/operator`. Upstream canon: Kubernetes api-conventions
 
 ## pkg/apis — API changes
 
-**Standing freeze**: `pkg/apis` and the generated `pkg/client` are off-limits
-for removal/rename sweeps even when symbols look unused in-repo. Flag ANY
-removal or exported-symbol change there that the user did not explicitly
-direct.
+**Standing freeze**: flag ANY removal or exported-symbol change under
+`pkg/apis` or the generated `pkg/client` that the user did not explicitly
+direct — the freeze itself is rook-conventions "Rook API stability".
 
 **Serialized compatibility** (blockers — existing CRs must keep working):
 

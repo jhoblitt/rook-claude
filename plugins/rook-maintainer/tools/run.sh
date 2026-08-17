@@ -3,11 +3,9 @@
 #
 #   run.sh <tool> [args...]
 #
-# Unlike hooks/webfetch-guard.sh this fails LOUD. A hook that cannot build
-# must get out of the way; a tool a skill was told to run must never look
-# like it ran and found nothing — a silent no-op here would read as "no dead
-# links", "no invalid actions", "empty dashboard", which is worse than an
-# error. Every failure path prints to stderr and exits non-zero.
+# The fail-loud contract is skills/rook-conventions/references/plugin-tools.md.
+# Unlike hooks/webfetch-guard.sh, which must get out of the way when it cannot
+# build, every failure path here prints to stderr and exits non-zero.
 #
 # Correctness under parallel invocations comes from the per-PID temp plus
 # atomic mv; flock, where present, only dedupes the work.

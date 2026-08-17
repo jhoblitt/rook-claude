@@ -25,7 +25,7 @@
 | [#18600](https://github.com/rook/rook/pull/18600) | draft | dependabot\[bot\] | chore(deps): bump x from 1.2 to 1.3 (see [#13001](https://github.com/rook/rook/issues/13001)) |
 | [#18700](https://github.com/rook/rook/pull/18700) | do-not-merge | someone | WIP: \<b>test\</b> \& 'quotes' for [#18999](https://github.com/rook/rook/issues/18999), not rc18999 or 18999x |
 
-## Reviewer ledger (per-person per-sweep cap: 3)
+## Reviewer ledger (per-person per-RUN cap: 3)
 
 | reviewer | proposed | cap | status |
 | --- | --- | --- | --- |

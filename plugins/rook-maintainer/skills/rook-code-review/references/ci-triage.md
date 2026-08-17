@@ -22,8 +22,9 @@ classified REAL.
    evidence. REAL failures feed findings; KNOWN-FLAKE/INFRA are noted, never
    "fixed", and never justify REQUEST CHANGES by themselves.
 4. Green-but-suspicious: `make test`/lint green does NOT cover
-   `tests/framework/` unit tests (never run in CI) or workflow lint
-   (actionlint not run) — do not cite green CI as evidence for those areas.
+   `tests/framework/` unit tests (rook-conventions
+   `references/building-and-testing.md`) or workflow lint (actionlint not
+   run) — do not cite green CI as evidence for those areas.
 
 ## Known flake classes
 

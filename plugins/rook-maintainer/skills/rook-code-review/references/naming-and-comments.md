@@ -96,9 +96,9 @@ real "why" with narration, keep the why, cut the rest.
 
 ## Commit messages — audit each commit individually
 
-A PR is reviewed commit by commit, never only as a squashed diff. For EVERY
-commit in the series (`git log --format='%H %s' <base>..<head>`, then
-`git show <sha>` per commit):
+A PR is reviewed commit by commit, never only as a squashed diff. One
+`git log -p <base>..<head>` carries the series, `commit <sha>`-delimited
+(`--stat` instead where only the file set matters); for EVERY commit in it:
 
 - **Message ↔ diff sync**: the subject and body must describe what THAT
   commit actually changes — no more, no less. Over-claiming (narrating

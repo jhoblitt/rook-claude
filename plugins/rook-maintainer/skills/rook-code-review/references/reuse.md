@@ -92,7 +92,7 @@ Do not report, regardless of confidence:
   Only duplicated BEHAVIOR is reportable.
 - **Repetition that is the format**: `deploy/examples/**`, chart values,
   test table rows, fixtures. Literal repetition there aids readability.
-- **Generated files** (verification.md enumerates them) and vendored code.
+- **Generated files** (docs-sync.md "The generated set") and vendored code.
 - **Pre-existing duplication** the diff merely sits beside —
   verification.md's pre-existing exclusion governs.
 - **Abstractions that do not exist yet.** "Extract a shared helper" where no

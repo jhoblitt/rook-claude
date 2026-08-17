@@ -6,10 +6,19 @@ rook's `make` targets build with `-tags ceph_preview` (Makefile
 `TAGS ?= ceph_preview`; CI sets `GOFLAGS=-tags=ceph_preview`). Ad-hoc
 `go build`/`vet`/`test` does NOT inherit it — export
 `GOFLAGS=-tags=ceph_preview` for the session, and prefer the `make` targets.
-The tag is currently dormant (rook compiles clean without it) but do NOT
-strip it, and never trust a green ad-hoc build as proof it is unnecessary —
-re-check which go-ceph files carry `//go:build ceph_preview` before
-concluding anything.
+The tag is currently dormant but do NOT strip it, and never trust a green
+ad-hoc build as proof it is unnecessary — re-check which go-ceph files carry
+`//go:build ceph_preview` before concluding anything. Dormant as of go-ceph
+v0.40.0 because rook imports only `go-ceph/rgw/admin` and nothing under it
+carries the tag: the three files that do are in `cephfs/admin`, `rbd` and
+`rados`. So on that version the tag gates no symbol rook uses, and an
+`undefined:` from an untagged ad-hoc run is not explained by it.
+
+Analysis tools take the tag for the same reason builds do — `deadcode`,
+`staticcheck` and `go vet` all accept `-tags=ceph_preview` — so that what
+they judge is what CI gates. Pass it even while the tag is dormant: dormancy
+is a property of the pinned go-ceph, not a guarantee, and a version bump can
+put a symbol rook uses behind the tag with no rook change at all.
 
 ## The local verification gate
 
@@ -53,10 +62,8 @@ is canon for that, and it covers comments here too.
 ## Writing rook tests
 
 Don't gate sibling subtests on each other with
-`if !t.Run(name, fn) { t.FailNow() }` in a test body — failure scope becomes
-too hard to reason about. Write scenario steps as a flat sequence of `t.Run`
-calls with `require` inside each for closure-local gating. The only
-sanctioned run-result pattern is a check helper that asserts per item and
-aborts the caller, named with a `require` prefix (model: `requireRgwUserKeys`
-in `tests/integration/object/user/keys/keys.go`). Accept the cascade noise
-from dependent siblings.
+`if !t.Run(name, fn) { t.FailNow() }` — the rule, its one carve-out and the
+model helper are rook-code-review `references/testing.md` "House rule — no
+inline gates". When authoring, that means writing scenario steps as a flat
+sequence of `t.Run` calls with `require` inside each for closure-local
+gating.

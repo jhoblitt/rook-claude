@@ -30,7 +30,6 @@ scratchpad directory.
   the file (check the package doc comment isn't the only one — it may live
   on that file; if so, preserve it elsewhere).
 
-The build tag is load-bearing for every invocation above: omitting
-`-tags=ceph_preview` can abort analysis with `undefined:` errors or silently
-judge a different build — see rook-conventions
-`references/building-and-testing.md`.
+The build tag is load-bearing for every invocation above: rook-conventions
+`references/building-and-testing.md` "The build tag" says why analysis tools
+take it, and settles what an untagged `undefined:` does and does not prove.

@@ -28,13 +28,23 @@ orchestrator — JSON only, no prose around it.
 - The local checkout is READ-ONLY (`git show`/`git log` only; never
   checkout, build, or modify). Run every `gh` command with
   `dangerouslyDisableSandbox: true`.
-- Labels: ISSUES only — propose additions from the live label list the
-  orchestrator provides (≤5, under-label, none on incomplete bugs). PRs:
-  NEVER propose labels; report the labels currently present.
+- Labels: ISSUES only
+  (`${CLAUDE_PLUGIN_ROOT}/skills/rook-triage/SKILL.md` ground
+  rules) — propose, never apply, and
+  only from the live label list the orchestrator provides; the proposal
+  rules are `${CLAUDE_PLUGIN_ROOT}/skills/rook-triage/references/label-map.md`
+  "Rules".
 - Read the skill references the orchestrator names (label-map, routing,
   cross-linking, issue-triage/pr-triage) before judging.
 - The orchestrator provides the sweep's `snapshot.json` (live per-item
-  metadata: title, labels, assignees, reviews, CI rollup, updatedAt).
+  metadata: title, labels, assignees, reviews, CI rollup, updatedAt) and,
+  on a PR corpus, `checklist.jsonl` — one row per audited PR, keyed by
+  `number` (shape:
+  `${CLAUDE_PLUGIN_ROOT}/skills/rook-triage/references/pr-triage.md`). Take
+  the template-conformance signal from its `verdict`; never re-derive it by
+  reading the body. A PR with NO row is one the pass deliberately left out (a
+  skip class) — not a gap: `unaudited` is an explicit verdict, on its own row,
+  meaning the audit could not run.
   CONSUME it — never re-fetch what it already contains; spend `gh`
   calls only on depth it lacks (thread content, dup searches,
   blame/history). Copy `signals.ci` numbers (passing/total/failed) from
@@ -90,7 +100,8 @@ Issue items:
 Field notes, because several are load-bearing in ways the names do not show:
 
 - `labels_proposed` is ISSUES ONLY. Emit `[]` on a PR — triage never labels
-  PRs (SKILL.md ground rules), and the generators drop a PR's proposals
+  PRs (`${CLAUDE_PLUGIN_ROOT}/skills/rook-triage/SKILL.md` ground rules),
+  and the generators drop a PR's proposals
   rather than render them.
 - `reviewers_proposed` / `routing` carry bare logins; a PR entry may append
   a parenthetical note (`"sp98 (adjudicator, not requested)"`) which the

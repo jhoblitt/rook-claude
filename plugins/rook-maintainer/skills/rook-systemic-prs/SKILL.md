@@ -77,12 +77,39 @@ per-PR-verify / conventions machinery is identical.
   spots; the union minus false positives is the candidate set.
 
 ### Phase 2 — Exclude already-open PRs
-- List open PRs touching this repo from **both** the fork and upstream:
-  - `gh pr list --repo rook/rook --state open --limit 200 --json number,title,headRefName,files`
-  - Include the user's own branches: `gh pr list --repo rook/rook --author @me --state open ...`
-- Drop any candidate whose file/symbol is already changed by an open PR (match on
-  changed file paths and on symbol name in the PR diff/title). Note in your
-  proposal which candidates were excluded and why.
+- Fetch every open PR to DISK, then join against it there — this is a set join
+  whose only useful output is the collisions, so nothing else may enter context.
+  The fetch ships with this plugin, and it re-paginates each PR's `files[]`: rook PRs
+  routinely run past GraphQL's 100-file page, where a `gh pr list --json files`
+  silently truncates the very file sets the exclusion reads.
+
+  ```sh
+  bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch snapshot <sweep-dir> --kind prs
+  jq -r --rawfile paths candidates.txt '($paths|split("\n")-[""]) as $c
+    | .items[] | select(any(.files[]; IN($c[])))
+    | "#\(.number) \(.author) — \([.files[]|select(IN($c[]))]|join(" "))"
+  ' <sweep-dir>/snapshot.json
+  ```
+
+  `<sweep-dir>` is scratch (under `$TMPDIR`), `candidates.txt` is one candidate
+  path per line, and `--repo` defaults to `rook/rook`. The snapshot needs
+  authenticated `gh`, so run it with the sandbox disabled (rook-conventions
+  SKILL.md "Harness notes"). It holds every open PR whatever the author, so the
+  user's own in-flight work falls out of the same join — `author` names whose
+  each hit is — and no `--author @me` re-list is needed.
+- Drop every candidate the join hits. Match symbol-level candidates against the
+  same file's titles rather than re-reading it, matching INSIDE `jq` so the
+  titles themselves never land in context — a PR title is contributor-authored
+  and this projection carries no fence:
+
+  ```sh
+  jq -r --rawfile syms symbols.txt '($syms|split("\n")-[""]) as $s
+    | .items[] | select(.title as $t | any($s[]; inside($t)))
+    | "#\(.number)"
+  ' <sweep-dir>/snapshot.json
+  ```
+
+  Note in your proposal which candidates were excluded and why.
 - Also skip local branches that are pushed-but-not-yet-merged for the same work.
 
 ### Phase 3 — Propose and get agreement (gate)
@@ -97,17 +124,40 @@ per-PR-verify / conventions machinery is identical.
 
 ### Phase 4 — Implement each approved PR (fan out) and open it
 For independent files/areas, fan out `rook-maintainer:code-worker` agents with
-`isolation: worktree` so they don't collide; otherwise do them sequentially. For
-each PR:
-1. Branch from fresh master: `git checkout master && git checkout -b maint-<short-desc>`.
-2. Apply the change (delete the file with `git rm`, or edit out the symbol +
+`isolation: worktree` so they don't collide; otherwise do them sequentially.
+Ownership splits at that worktree boundary: a worker edits and verifies inside
+its own tree and stops there, and every write that reaches beyond it — branch,
+commit, push, PR — is yours. Both halves are enforced elsewhere, so state the
+split in each worker's brief rather than assuming it reads its own definition:
+`agents/code-worker.md` forbids a worker to push or create a PR, and
+rook-conventions SKILL.md ("Pushing to rook/* repos") builds each PR in a
+worktree cut from the upstream master tip, "not in a main working tree that may
+carry unrelated changes" — which is what a `git checkout` in the one shared
+clone retargets, out from under every sibling.
+
+**Yours, per approved PR:**
+1. Spawn the worker with `isolation: worktree`, which is what allocates that
+   tree — so no branch command runs in the shared clone. The worker reports
+   its path back (below); that tree is the PR's branch, and steps 2 and 3
+   run in it.
+2. On the worker's report, run the push gate in that tree — `make test` and
+   `make golangci-lint` (rook-conventions `references/building-and-testing.md`)
+   — one branch at a time. It stays here for a second reason: that file's
+   remedy for a stale-cache failure, `rm -rf ~/.cache/golangci-lint`, wipes a
+   machine-global cache, so N workers running the gate concurrently corrupt each
+   other's runs.
+3. Commit there and push to the fork (`git push <fork> HEAD:maint-<short-desc>`),
+   then open a **draft PR assigned to the user** with the correct `type:` — all
+   per Conventions. Report the PR table (number, scope, type, net diff).
+
+**The worker's, all of it inside its own worktree:**
+1. Apply the change (delete the file with `git rm`, or edit out the symbol +
    clean up now-unused imports).
-3. **Verify**: `go build` and `go vet` on the affected package(s) — with the
+2. **Verify**: `go build` and `go vet` on the affected package(s) — with the
    build tag (see Conventions). `gofmt -l` should be clean.
-4. Re-grep to confirm zero remaining references repo-wide.
-5. Commit and push (see Conventions), then open a **draft PR assigned to the user**
-   with the correct `type:` (see Conventions).
-- After opening, report the PR table (number, scope, type, net diff).
+3. Re-grep to confirm zero remaining references repo-wide.
+4. Report per `agents/code-worker.md`'s report contract, leaving the tree
+   uncommitted.
 
 ### Phase 5 — Iterate
 - The remaining candidate pool persists across sessions. When asked for "another
@@ -124,9 +174,9 @@ each PR:
   code, then propose removals."** — Fan out one Explore agent per subdir
   (Phase 1), stop at the first (alphabetically, skipping already-handled) with
   candidates, present them (Phase 3 gate).
-- **"Remove `<symbol>` and open a PR."** — Skip to Phase 4 for that one symbol:
-  branch off fresh master, edit, build/vet, commit (DCO, no co-author, right
-  `type:`), push, open a draft PR assigned to the user.
+- **"Remove `<symbol>` and open a PR."** — Skip to Phase 4 for that one
+  symbol, and run it as written: the ownership split applies to a batch of
+  one exactly as it does to a batch of three.
 - **"Find another 3 PRs worth of isolated dead-code elimination."** — Full loop:
   re-sync master (Phase 0), whole-module `deadcode` + fan-out (Phase 1), exclude
   open PRs and pushed-but-unmerged branches (Phase 2), propose ~3 well-contained
@@ -145,11 +195,6 @@ into `references/commits.md` for message format, amending, and history
 rework, `references/pull-requests.md` for PR mechanics, and
 `references/building-and-testing.md` for the build tag and the local
 verification gate. The user's own global CLAUDE.md outranks it on conflict.
-
-Campaign-specific delta: ANALYSIS tools need the build tag exactly like
-builds do — `deadcode`, `staticcheck`, and `go vet` all take
-`-tags=ceph_preview`, or analysis can abort with `undefined:` errors
-(details in `references/dead-code.md`).
 
 ## Tooling
 
@@ -170,10 +215,10 @@ transform, keeping everything else in the loop identical.
   comparable.
 - **Implement**: one `rook-maintainer:code-worker` agent per independent
   file/area with `isolation: worktree` to avoid working-tree collisions,
-  spawned together, on a small model (principle 7). Keep
-  push + `gh pr create` under your own control (consistent conventions, DCO,
-  force-push safety) rather than delegating them, unless the agents are reliably
-  scripted for it.
+  spawned together, on a small model (principle 7). Branch, commit, push and
+  `gh pr create` stay under your own control (consistent conventions, DCO,
+  force-push safety) — Phase 4 owns the split, and `agents/code-worker.md`
+  independently forbids the worker to push or open a PR.
 - **Cross-check**: pair the fan-out with one authoritative whole-module pass and
   reconcile — discrepancies are usually a tool blind spot (e.g. a method on an
   instantiated type) worth investigating, not noise to ignore.

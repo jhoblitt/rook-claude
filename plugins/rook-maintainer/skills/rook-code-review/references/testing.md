@@ -28,8 +28,7 @@ conventions — if this file and that README disagree, the README wins).
   `if !t.Run(...) { t.FailNow() }` in test bodies, even for sequential
   scenario steps that later siblings assume — it makes failure scope too hard
   to reason about. Cascade noise from dependent siblings after a failed step
-  is accepted. Do NOT flag "missing gates"; DO flag an inline run-result gate
-  appearing in a test body.
+  is accepted. DO flag an inline run-result gate appearing in a test body.
 - **Check-all-then-abort helpers** are the one sanctioned use of the
   run-result pattern, encapsulated: assert per item inside a `t.Run`, gate on
   its result, name the helper with a `require` prefix (model:

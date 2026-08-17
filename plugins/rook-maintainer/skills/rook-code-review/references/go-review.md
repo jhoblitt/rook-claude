@@ -133,7 +133,8 @@ with NO test changes (testing.md only routes when tests are touched).
 - Integration coverage is expected only where the behavior is observable
   solely in-cluster (reconcile loops, CRD lifecycle, RGW/S3 end-to-end,
   upgrade paths); pure logic wants unit tests. `_test.go` under
-  `tests/framework/` never runs in CI — it is not coverage.
+  `tests/framework/` is not coverage — rook-conventions
+  `references/building-and-testing.md` has the CI scope that excludes it.
 
 ## Structure and API judgment
 

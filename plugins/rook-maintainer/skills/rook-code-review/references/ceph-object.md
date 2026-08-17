@@ -17,11 +17,11 @@ import of `github.com/ceph/go-ceph` or `github.com/aws/aws-sdk-go-v2`.
   the TLS/debug transport comes from the established helpers
   (`BuildTransportTLS`, the debug HTTP dump wrapper). New ad-hoc admin
   clients duplicate connection/TLS logic — finding.
-- **`ceph_preview` is a global build tag**, not per-file: `Makefile`
-  `TAGS ?= ceph_preview` and `.golangci.yaml` `build-tags`. An ad-hoc
-  `go build/vet/test` failing with `undefined: admin.Account` means the tag
-  is missing from the command, not that the code is broken. Never suggest
-  removing the tag from build plumbing based on a green ad-hoc build.
+- **Build and analysis commands here carry `ceph_preview`**: run them with
+  the tag. Your own ad-hoc run's outcome is never itself a finding against
+  the PR — it reports your command, not their code. Nor is an `undefined:`
+  dismissible as the missing tag: what the tag currently gates is
+  rook-conventions `references/building-and-testing.md` "The build tag".
 - **When semantics are in doubt, read the pinned source**:
   `$(go env GOMODCACHE)/github.com/ceph/go-ceph@<version-from-go.mod>/rgw/admin/`
   is the exact code rook builds against — check what a call really sends and

@@ -455,7 +455,7 @@ func TestMarkdownEscapesReporterText(t *testing.T) {
 func TestMarkdownMentionLedger(t *testing.T) {
 	doc := renderMarkdown(t, sweepDir)
 	for _, want := range []string{
-		"## Mention ledger (per-person per-sweep cap: 3)",
+		"## Mention ledger (per-person per-RUN cap: 3)",
 		"| mentioned | proposed | cap | status |",
 		"| BlaineEXE | 1 | 3 | — |",
 		"| travisn | 1 | 3 | — |",

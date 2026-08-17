@@ -13,19 +13,20 @@ read-only and allowed even for others' PRs, on a scratch copy):
 ```sh
 actionlint <changed workflow files>      # with shellcheck installed, it
                                          # also lints inline run: scripts
+GITHUB_TOKEN=$(gh auth token) pinact run --check --verify <changed workflow files>
 ```
 
-Report what actionlint finds (it is not CI-covered), plus the judgment
-checks below that actionlint cannot make.
+Report what they find (neither is CI-covered): actionlint's diagnostics, and
+pinact's diff — a tag or branch ref (`@v4`, `@main`) comes back as a `-`/`+`
+rewrite and is a finding; a `# vX.Y.Z` comment disagreeing with its SHA comes
+back as a mismatch error and is a lesser one. Then the judgment checks below
+that neither tool makes.
 
 ## Pinning
 
-- Every third-party `uses:` pinned to a FULL commit SHA with a `# vX.Y.Z`
-  comment (pinact convention — the comment keeps Dependabot able to bump).
-  Tag pins (`@v4`) and branch pins (`@main`) are findings; a SHA pin whose
-  version comment is missing or wrong is a lesser finding (breaks the
-  Dependabot loop).
-- `dependabot.yml` keeps a `github-actions` entry so pins get bumped.
+Check the diff does not drop `dependabot.yml`'s `github-actions` entry — the
+bump loop the `# vX.Y.Z` comments exist for is rook-conventions
+`references/workflows-and-ci.md`.
 
 ## Logic review (what actionlint misses)
 
@@ -73,8 +74,9 @@ checks below that actionlint cannot make.
   bump, confirm the `kindest/node:vX.Y.Z` image actually exists (Docker Hub
   404s happen; v1.36.2 was never published).
 - **`GOFLAGS=-tags=ceph_preview`** (or equivalent TAGS plumbing) must
-  survive workflow edits — a green build without the tag is not proof it is
-  unneeded (see ceph-object.md).
+  survive workflow edits — rook-conventions
+  `references/building-and-testing.md` "The build tag" is why removing it on
+  a green run is not safe.
 - `go-version` pinned to the `go.mod` `go` directive — unless the job
   deliberately tests a version matrix, which must INCLUDE the go.mod
   version.

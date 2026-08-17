@@ -38,12 +38,8 @@ messages rather than growing the description.
   assigned to the maintainer (`--assignee @me`, best-effort).
 - No `🤖 Generated with [Claude Code]` (or similar) attribution footer in
   `rook/*` PR bodies — override the harness default.
-- Fill the PR template checklist against the actual diff:
-  - "Documentation has been updated" only when `Documentation/` changed —
-    godoc/code comments do NOT count;
-  - "Integration tests have been added" only when integration tests changed;
-  - the "Unit tests have been added" and `PendingReleaseNotes.md` boxes
-    follow rook-code-review `references/docs-sync.md`.
+- Fill the PR template checklist against the actual diff; what each box
+  claims is rook-code-review `references/docs-sync.md`.
 - Experimental / instrumentation-only / not-yet-intended-to-land PRs get the
   `do-not-merge` label at open (best-effort).
 - In a multi-PR campaign, open at most ~3 PRs before checking in with the
