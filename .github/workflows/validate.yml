@@ -72,8 +72,24 @@ jobs:
           done
 
       - name: shellcheck
+        env:
+          # Pinned so CI and a contributor's local run agree. The runner image
+          # ships its own shellcheck and bumps it without warning: an older one
+          # rejected `[ a ] && [ b ] || c` under SC2015 that 0.11.0 accepts,
+          # having learned the third command exits. Bump by hand, with the
+          # checksum, the way actionlint below is bumped.
+          SHELLCHECK_VERSION: v0.11.0
+          SHELLCHECK_SHA256: 8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198
         run: |
-          shellcheck \
+          tmp=$(mktemp -d)
+          name="shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
+          curl -fsSL -o "$tmp/$name" \
+            "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/${name}"
+          echo "${SHELLCHECK_SHA256}  $tmp/$name" | sha256sum -c -
+          tar -xJf "$tmp/$name" -C "$tmp" --strip-components=1 \
+            "shellcheck-${SHELLCHECK_VERSION}/shellcheck"
+          "$tmp/shellcheck" --version
+          "$tmp/shellcheck" \
             .github/scripts/*.sh \
             plugins/rook-maintainer/hooks/*.sh \
             plugins/rook-maintainer/tools/run.sh
