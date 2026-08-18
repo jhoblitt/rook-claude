@@ -1,6 +1,7 @@
 ---
 name: rook-code-review
 description: Use when reviewing, auditing, or sanity-checking rook (github.com/rook/*) code, tests, docs, or workflows — a working tree, branch, commit range, or PR; when checking a branch before opening a PR; when reviewing, critiquing, or stress-testing a rook design proposal, design doc, enhancement doc, or design/** change before it becomes code; when bulk-reviewing open rook PRs or evaluating a contributor's PRs for validity or security; for assert-vs-require audits; when drafting rook review comments.
+disallowed-tools: Edit
 ---
 
 # Rook code review
@@ -12,6 +13,11 @@ never change code unless the user explicitly asks for fixes, and never post
 anything to GitHub unless the user explicitly asked for that post, with
 each comment approved in-session. When a post is authorized, follow
 `references/posting.md`.
+
+`Edit` is denied in frontmatter: nothing here modifies a file in place, and
+the reviewed diff is in context arguing for itself. `Write` is retained for
+one purpose only — proposal mode's state dir under `~/.cache` (Modes) —
+and never lands inside the checkout under review.
 
 ## Modes
 
