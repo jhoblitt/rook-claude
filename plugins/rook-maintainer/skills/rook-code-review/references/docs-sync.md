@@ -124,13 +124,24 @@ messages, examples, workflows:
   per rook-conventions, and never justifies a second fetch. Inside the review
   and triage agents the `webfetch-guard` PreToolUse hook enforces this list, so
   a denied fetch there is the control working, not an obstacle to route around.
-  A session running the pass inline is not guarded and owes the list the same
-  obedience unprompted (`ROOK_WEBFETCH_GUARD=on` extends the hook to it). The
-  hook binds three exact agent NAMES, so a `general-purpose` agent standing in
-  for one of them is unguarded too — and unlike the inline case it also loses
-  the narrow tool roster the agent file declares. A fallback brief therefore
-  bans WebFetch outright: return a load-bearing citation unverified rather
-  than fetch it unconfined.
+  A session running the pass inline is guarded only when the harness was
+  started with `ROOK_WEBFETCH_GUARD=on`: the hook reads its environment from
+  the Claude Code process, so an inline pass cannot switch the guard on for
+  its own fetches mid-run. Unguarded, that pass does not fetch at all —
+  dispatch it to a guarded agent type (`rook-reviewer`, the fan-out path
+  SKILL.md already uses) or return the load-bearing citation unverified. The
+  hook binds three exact agent NAMES, plus the `general-purpose` fallback
+  whenever it runs inside a rook checkout (the payload's working directory
+  resolves to a `github.com/rook/*` remote), so a stand-in reviewing rook is
+  adjudicated like the agent it replaces while fetches in unrelated repos are
+  left alone. What the stand-in never gains is the narrow tool roster the
+  agent file declares, which is why a fallback brief carries that file's
+  contract inline. That brief still bans WebFetch outright, everywhere: the
+  stand-in keeps a roster the agent file would have narrowed, and a rule an
+  agent enforces on itself is one an injected diff can argue it out of. The
+  hook backs the ban inside a rook checkout; outside one the brief is the
+  only thing holding. Either way, return a load-bearing citation unverified
+  rather than fetch it unconfined.
 - **Stability**: GitHub links to specific lines/files pin a SHA or tag, not
   `master`; docs.ceph.com links pin a release path (`/en/squid/`) when the
   claim is version-specific; strip tracking params.
@@ -183,6 +194,6 @@ one even glossed "n/a"/"not needed" (non-applicability is encoded by leaving
 the box UNCHECKED, never by checking it with an "n/a" note). Flag both
 directions: box checked without the change, and needed-but-unchecked box.
 
-When adopting a PR in place (`takeover.md`), the replacement body must use the
+When adopting a PR in place (`rook-pr-takeover`), the replacement body must use the
 verbatim template checklist with only the boxes toggled — do not append
 rationale to items; put any explanation in the description prose.

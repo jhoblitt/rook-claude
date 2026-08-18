@@ -2,8 +2,12 @@ package main
 
 import (
 	"net/url"
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 // allowedHosts is the trusted-source list from
@@ -23,24 +27,39 @@ var allowedHosts = []string{
 
 // guardedAgents are the plugin's injection-exposed subagents: the three that
 // carry WebFetch AND ingest attacker-authored PR bodies, issue text and diffs.
-// Nothing else is guarded, because nothing else has an adversary choosing its
-// URLs — a maintainer researching a Kubernetes blog post in the main session
-// is not under attack, and breaking that fetch would be pure cost.
+// Only these and the fallback below are guarded, because nothing else has an
+// adversary choosing its URLs — a maintainer researching a Kubernetes blog post
+// in the main session is not under attack, and breaking that fetch would be
+// pure cost.
 var guardedAgents = []string{
 	"rook-reviewer",
 	"rook-triager",
 	"design-attacker",
 }
 
+// fallbackAgent is what a typed agent degrades to when it is unavailable. It
+// reads the same attacker-authored diffs with a wider tool roster, so a prose
+// brief telling it to refuse its own WebFetch is a rule enforced by the thing
+// being injected. Its name is generic, though, and denying every fetch it makes
+// anywhere would break ordinary research — so it is in scope only where it
+// stands in for a review, which is inside a rook checkout.
+const fallbackAgent = "general-purpose"
+
+// rookRemote matches a remote URL naming a repository under the rook org, in
+// either the https or the scp-like form. The character before the host is what
+// keeps evilgithub.com out.
+var rookRemote = regexp.MustCompile(`(?i)(?:^|[@/])github\.com[:/]rook/`)
+
 type decision struct {
 	deny   bool
 	reason string
 }
 
-// shouldGuard reports whether a call from agentType is in scope. The plugin
-// namespace is stripped first: agents arrive as "rook-maintainer:rook-reviewer"
-// when namespaced and bare when not, and both name the same agent.
-func shouldGuard(agentType string, agents []string) bool {
+// shouldGuard reports whether a call from agentType in cwd is in scope. The
+// plugin namespace is stripped first: agents arrive as
+// "rook-maintainer:rook-reviewer" when namespaced and bare when not, and both
+// name the same agent.
+func shouldGuard(agentType, cwd string, agents []string) bool {
 	name := agentType
 	if _, after, found := strings.Cut(agentType, ":"); found {
 		name = after
@@ -53,7 +72,118 @@ func shouldGuard(agentType string, agents []string) bool {
 			return true
 		}
 	}
+	return name == fallbackAgent && inRookCheckout(cwd)
+}
+
+// inRookCheckout reports whether dir sits in a clone of a rook repository.
+//
+// Direction on failure: knowing a repository is NOT rook's takes evidence, so
+// only evidence answers no — a config that says so, or no repository at all.
+// Anything that leaves the question open (no directory to look at, a checkout
+// whose config cannot be read) answers yes, because the cost of the two
+// mistakes is not symmetric: an over-guarded fetch prints a message naming
+// ROOK_WEBFETCH_ALLOW and ROOK_WEBFETCH_GUARD, while an under-guarded one has
+// already pulled attacker-chosen content into review context.
+func inRookCheckout(dir string) bool {
+	if dir == "" {
+		return true
+	}
+	config, inRepo := gitConfigPath(dir)
+	if !inRepo {
+		return false
+	}
+	urls, err := remoteURLs(config)
+	if err != nil {
+		return true
+	}
+	for _, u := range urls {
+		if rookRemote.MatchString(u) {
+			return true
+		}
+	}
 	return false
+}
+
+// gitConfigPath walks up from dir to the config of the repository owning it,
+// reporting whether dir is in a repository at all. A linked worktree's .git is
+// a file naming its git dir, and that git dir's commondir points at the config
+// the whole clone shares — the plugin's own convention puts review work in
+// worktrees, so resolving both is the common case, not the exotic one. An
+// unreadable .git file yields an empty path, which reads as the error that
+// inRookCheckout answers yes to.
+func gitConfigPath(dir string) (string, bool) {
+	for {
+		git := filepath.Join(dir, ".git")
+		if info, err := os.Stat(git); err == nil {
+			if !info.IsDir() {
+				if git = gitDirFromFile(git); git == "" {
+					return "", true
+				}
+			}
+			return filepath.Join(commonDir(git), "config"), true
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			return "", false
+		}
+		dir = parent
+	}
+}
+
+func gitDirFromFile(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	target := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(string(data)), "gitdir:"))
+	if target == "" {
+		return ""
+	}
+	if !filepath.IsAbs(target) {
+		target = filepath.Join(filepath.Dir(path), target)
+	}
+	return target
+}
+
+func commonDir(gitDir string) string {
+	data, err := os.ReadFile(filepath.Join(gitDir, "commondir"))
+	if err != nil {
+		return gitDir
+	}
+	common := strings.TrimSpace(string(data))
+	if common == "" {
+		return gitDir
+	}
+	if !filepath.IsAbs(common) {
+		common = filepath.Join(gitDir, common)
+	}
+	return common
+}
+
+// remoteURLs reads the url of every remote in a git config. Section-aware on
+// purpose: a url outside a [remote] section is not a remote, and a substring
+// search over the whole file would take an include path or a branch setting
+// for one.
+func remoteURLs(config string) ([]string, error) {
+	data, err := os.ReadFile(config)
+	if err != nil {
+		return nil, err
+	}
+	var urls []string
+	remote := false
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "[") {
+			remote = strings.HasPrefix(strings.ToLower(line), "[remote")
+			continue
+		}
+		key, value, found := strings.Cut(line, "=")
+		if !remote || !found || strings.TrimSpace(strings.ToLower(key)) != "url" {
+			continue
+		}
+		urls = append(urls, strings.TrimSpace(value))
+	}
+	return urls, nil
 }
 
 // hasHiddenRunes reports control, format, private-use and surrogate
@@ -152,7 +282,7 @@ func hostLabel(host string) string {
 // The URL came from the diff, so the deny reason is the one place this hook
 // echoes untrusted input.
 func sanitizeForMessage(s string) string {
-	const limit = 120
+	const maxBytes = 120
 	var b strings.Builder
 	for _, r := range s {
 		if unicode.Is(unicode.Cf, r) || unicode.Is(unicode.Cc, r) ||
@@ -161,9 +291,20 @@ func sanitizeForMessage(s string) string {
 		}
 		b.WriteRune(r)
 	}
-	out := b.String()
-	if len(out) > limit {
-		return out[:limit] + "..."
+	return truncate(b.String(), maxBytes)
+}
+
+// truncate bounds s to limit BYTES, backing the cut off to the nearest rune
+// boundary. A cap that lands inside a multi-byte sequence would otherwise emit
+// half of one into the deny message.
+func truncate(s string, limit int) string {
+	if len(s) <= limit {
+		return s
 	}
-	return out
+	for n := limit; n > 0; n-- {
+		if utf8.ValidString(s[:n]) {
+			return s[:n] + "..."
+		}
+	}
+	return "..."
 }

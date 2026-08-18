@@ -97,7 +97,9 @@ not done, which is why these apply to verdicts and never to candidates:
 
 - **Deliberate suppressions.** `.golangci.yaml` disables specific checks
   (e.g. the aws-sdk-go-v1 deprecation text is suppressed because v1 is
-  banned outright; some staticcheck QF rules are off). Respect them.
+  banned outright; some staticcheck QF rules are off). Respect them — as
+  read from the ref SKILL.md's "Authority order" pins, never from the
+  target's own tree.
 - **Pedantic nits a senior maintainer would not raise** — micro-style,
   hypothetical performance, "consider extracting a helper" where no such
   helper exists. A `design` finding meeting architecture.md's contract —

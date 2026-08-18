@@ -16,10 +16,21 @@
 # broke.
 set -uo pipefail
 
-[ "${ROOK_WEBFETCH_GUARD:-on}" = "off" ] && exit 0
+# Every fail-open path announces itself. Silence makes an unguarded fetch
+# indistinguishable from an adjudicated one, and the build-failure marker below
+# can carry a single transient lapse for an hour. Reasons are compile-time
+# constants with no untrusted input, so a static document needs no encoder.
+notice() {
+  printf '{"systemMessage":"rook-maintainer webfetch-guard is not adjudicating this fetch (%s)"}\n' "$1"
+  exit 0
+}
+
+[ "${ROOK_WEBFETCH_GUARD:-on}" = "off" ] && notice "disabled by ROOK_WEBFETCH_GUARD=off"
 
 src="${CLAUDE_PLUGIN_ROOT:-}/hooks/webfetch-guard"
-[ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -d "$src" ] || exit 0
+if [ -z "${CLAUDE_PLUGIN_ROOT:-}" ] || [ ! -d "$src" ]; then
+  notice "guard source not found"
+fi
 
 # The binary lives in the per-plugin data directory, never in
 # CLAUDE_PLUGIN_ROOT: the cache is a per-version directory that moves on every
@@ -57,17 +68,17 @@ build() {
 }
 
 if stale; then
-  command -v go >/dev/null 2>&1 || exit 0
-  mkdir -p "$data" 2>/dev/null || exit 0
+  command -v go >/dev/null 2>&1 || notice "no go toolchain on PATH"
+  mkdir -p "$data" 2>/dev/null || notice "the data directory is not writable"
   if command -v flock >/dev/null 2>&1; then
-    exec 9>"$bin.lock" || exit 0
-    flock 9 || exit 0
+    exec 9>"$bin.lock" || notice "the build lock is not writable"
+    flock 9 || notice "the build lock could not be taken"
     if stale; then
-      build || exit 0
+      build || notice "the guard did not build"
     fi
     exec 9>&-
   else
-    build || exit 0
+    build || notice "the guard did not build"
   fi
 fi
 

@@ -131,7 +131,7 @@ Four sanctioned exceptions, all approval-gated:
    explicitly asked to post; each comment approved in-session.
    Mechanics, including the COMMENT-only rule, live in that
    skill's `references/posting.md`.
-3. `rook-code-review` takeover writes — each write shown and approved
+3. `rook-pr-takeover` writes — each write shown and approved
    in-session.
 4. `rook-triage` actions — each action approved per item or as an
    explicitly authorized batch.

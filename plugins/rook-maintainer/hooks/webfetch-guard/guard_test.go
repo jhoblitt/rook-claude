@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 // Hostile codepoints appear only as \u escapes here, never as literal bytes:
@@ -188,28 +190,132 @@ func TestParseReferenceAllowlist(t *testing.T) {
 	}
 }
 
+// writeCheckout builds a checkout whose origin is remote, or one with no
+// repository at all when remote is empty.
+func writeCheckout(t *testing.T, remote string) string {
+	t.Helper()
+	dir := t.TempDir()
+	if remote == "" {
+		return dir
+	}
+	if err := os.MkdirAll(filepath.Join(dir, ".git"), 0o700); err != nil {
+		t.Fatalf("cannot create the checkout: %v", err)
+	}
+	config := "[core]\n\tbare = false\n[remote \"origin\"]\n\turl = " + remote +
+		"\n\tfetch = +refs/heads/*:refs/remotes/origin/*\n"
+	if err := os.WriteFile(filepath.Join(dir, ".git", "config"), []byte(config), 0o600); err != nil {
+		t.Fatalf("cannot write the checkout config: %v", err)
+	}
+	return dir
+}
+
 func TestShouldGuard(t *testing.T) {
+	rook := writeCheckout(t, "https://github.com/rook/rook.git")
+	elsewhere := writeCheckout(t, "git@github.com:jhoblitt/rook-claude.git")
+
 	tests := []struct {
 		agentType string
+		cwd       string
 		want      bool
 	}{
-		{"rook-reviewer", true},
-		{"rook-triager", true},
-		{"design-attacker", true},
-		{"rook-maintainer:rook-reviewer", true},
-		{"rook-maintainer:design-attacker", true},
+		{"rook-reviewer", rook, true},
+		{"rook-triager", elsewhere, true},
+		{"design-attacker", "", true},
+		{"rook-maintainer:rook-reviewer", elsewhere, true},
+		{"rook-maintainer:design-attacker", rook, true},
 
-		{"", false},
-		{"Explore", false},
-		{"general-purpose", false},
-		{"rook-maintainer:code-worker", false},
-		{"some-plugin:rook-reviewer-lookalike", false},
-		{"rook-maintainer:", false},
+		{"general-purpose", rook, true},
+		{"rook-maintainer:general-purpose", rook, true},
+		{"general-purpose", elsewhere, false},
+
+		{"", rook, false},
+		{"Explore", rook, false},
+		{"rook-maintainer:code-worker", rook, false},
+		{"some-plugin:rook-reviewer-lookalike", rook, false},
+		{"rook-maintainer:", rook, false},
 	}
 	for _, tc := range tests {
-		if got := shouldGuard(tc.agentType, guardedAgents); got != tc.want {
-			t.Errorf("shouldGuard(%q) = %v, want %v", tc.agentType, got, tc.want)
+		if got := shouldGuard(tc.agentType, tc.cwd, guardedAgents); got != tc.want {
+			t.Errorf("shouldGuard(%q, %q) = %v, want %v", tc.agentType, tc.cwd, got, tc.want)
 		}
+	}
+}
+
+func TestInRookCheckout(t *testing.T) {
+	rook := writeCheckout(t, "https://github.com/rook/kubectl-rook-ceph")
+	tests := []struct {
+		name string
+		dir  string
+		want bool
+	}{
+		{"https remote", rook, true},
+		{"nested directory", filepath.Join(rook, "a", "b"), true},
+		{"scp-like remote", writeCheckout(t, "git@github.com:rook/rook.git"), true},
+		{"ssh remote", writeCheckout(t, "ssh://git@github.com/rook/rook.git"), true},
+		{"another org", writeCheckout(t, "https://github.com/jhoblitt/rook-claude.git"), false},
+		{"lookalike host", writeCheckout(t, "https://evilgithub.com/rook/rook.git"), false},
+		{"lookalike org", writeCheckout(t, "https://github.com/rook-ceph-evil/rook.git"), false},
+		{"no repository", writeCheckout(t, ""), false},
+		{"unknown directory", "", true},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := inRookCheckout(tc.dir); got != tc.want {
+				t.Errorf("inRookCheckout(%q) = %v, want %v", tc.dir, got, tc.want)
+			}
+		})
+	}
+}
+
+// A url outside a [remote] section is not a remote: an include path or a
+// branch setting naming the rook repo must not read as a rook checkout.
+func TestInRookCheckoutIgnoresNonRemoteSections(t *testing.T) {
+	dir := writeCheckout(t, "https://github.com/jhoblitt/rook-claude.git")
+	config := filepath.Join(dir, ".git", "config")
+	data, err := os.ReadFile(config)
+	if err != nil {
+		t.Fatalf("cannot read the checkout config: %v", err)
+	}
+	extended := string(data) + "[include]\n\tpath = /home/x/github.com/rook/rook/gitconfig\n"
+	if err := os.WriteFile(config, []byte(extended), 0o600); err != nil {
+		t.Fatalf("cannot extend the checkout config: %v", err)
+	}
+	if inRookCheckout(dir) {
+		t.Fatal("a url outside a [remote] section counted as a remote")
+	}
+}
+
+// A checkout whose config cannot be read leaves the question open, and the
+// open question answers yes.
+func TestInRookCheckoutFailsSafe(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, ".git", "config"), 0o700); err != nil {
+		t.Fatalf("cannot stage an unreadable config: %v", err)
+	}
+	if !inRookCheckout(dir) {
+		t.Fatal("an unreadable config answered no")
+	}
+}
+
+// The plugin's own convention puts review work in a linked worktree, whose
+// .git is a file and whose config belongs to the clone it came from.
+func TestInRookCheckoutResolvesLinkedWorktree(t *testing.T) {
+	clone := writeCheckout(t, "https://github.com/rook/rook.git")
+	gitDir := filepath.Join(clone, ".git", "worktrees", "review")
+	if err := os.MkdirAll(gitDir, 0o700); err != nil {
+		t.Fatalf("cannot stage the worktree git dir: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(gitDir, "commondir"), []byte("../..\n"), 0o600); err != nil {
+		t.Fatalf("cannot write commondir: %v", err)
+	}
+
+	worktree := t.TempDir()
+	if err := os.WriteFile(filepath.Join(worktree, ".git"),
+		[]byte("gitdir: "+gitDir+"\n"), 0o600); err != nil {
+		t.Fatalf("cannot write the worktree .git file: %v", err)
+	}
+	if !inRookCheckout(worktree) {
+		t.Fatal("a linked worktree of a rook clone read as unguarded")
 	}
 }
 
@@ -251,6 +357,21 @@ func TestSanitizeForMessage(t *testing.T) {
 	}
 	if got := sanitizeForMessage(string(long)); len(got) > 130 {
 		t.Errorf("sanitize did not bound length: %d", len(got))
+	}
+}
+
+// The cap counts bytes, so a host of multi-byte runes puts the cut inside a
+// sequence: 118 ASCII bytes then three-byte runes lands it one byte in.
+func TestSanitizeForMessageCutsOnARuneBoundary(t *testing.T) {
+	got := sanitizeForMessage(strings.Repeat("a", 118) + strings.Repeat("€", 10))
+	if !utf8.ValidString(got) {
+		t.Errorf("truncation split a rune: %q", got)
+	}
+	if !strings.HasSuffix(got, "...") {
+		t.Errorf("truncation dropped its marker: %q", got)
+	}
+	if len(got) > 123 {
+		t.Errorf("truncation did not bound length: %d", len(got))
 	}
 }
 

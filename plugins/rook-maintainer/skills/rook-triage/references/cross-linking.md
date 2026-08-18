@@ -39,6 +39,6 @@ PR→fixed-issue.
 
 Mechanics: a single `#N` mention in a comment creates GitHub's backlink on
 both sides — comment on ONE side, never both. `Fixes #N` lines are
-suggested to the author by comment; only a takeover (rook-code-review)
+suggested to the author by comment; only a takeover (`rook-pr-takeover`)
 adds one directly. Every fixed-by-merged or dup close goes through the
 phase-2 refutation pass like all closes.
