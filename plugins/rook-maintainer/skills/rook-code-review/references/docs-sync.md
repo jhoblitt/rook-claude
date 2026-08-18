@@ -194,6 +194,6 @@ one even glossed "n/a"/"not needed" (non-applicability is encoded by leaving
 the box UNCHECKED, never by checking it with an "n/a" note). Flag both
 directions: box checked without the change, and needed-but-unchecked box.
 
-When adopting a PR in place (`takeover.md`), the replacement body must use the
+When adopting a PR in place (`rook-pr-takeover`), the replacement body must use the
 verbatim template checklist with only the boxes toggled — do not append
 rationale to items; put any explanation in the description prose.

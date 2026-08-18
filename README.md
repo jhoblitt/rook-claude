@@ -53,7 +53,8 @@ Skills (invoked automatically by task context, or explicitly as
 
 | Skill | What it does |
 |---|---|
-| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; adversarial design review of proposals and design docs with per-decision verdicts; PR takeover/supersede flows. |
+| `rook-code-review` | Maintainer-grade review of a diff, branch, or PR; adversarial pre-PR gate; adversarial design review of proposals and design docs with per-decision verdicts. Reports; never adopts. |
+| `rook-pr-takeover` | Adopt an abandoned or unresponsive PR worth landing: fix its title and description in place, or supersede it with a replacement carrying the commits and close the original. |
 | `rook-triage` | Metadata-depth triage of issues and PRs: classify, label, dedupe, cross-link, route to reviewers. Advise-first; every GitHub write is human-approved per item. |
 | `rook-systemic-prs` | Drive a sweeping change (dead code, lint cleanups, migrations) as many small, independently reviewable PRs with aggressive subagent fan-out. |
 | `rook-conventions` | The house rules the other skills assume: DCO/commitlint mechanics, fork-only pushes, draft PRs, backport labeling, CRD regeneration, CI watching and burn-in policy. |
@@ -153,9 +154,13 @@ both are written to no-op everywhere they don't apply.
 - "check this branch before I open a PR"
 - "evaluate anxkhn's open PRs — triage them, then review each routed one"
 - "audit the assert vs require usage in this diff"
-- "take over PR 12345 — fix its description in place or supersede it"
 - "adversarially review this design proposal: ~/drafts/rgw-pools.md"
 - "design review of design PR 12345"
+
+`rook-pr-takeover`:
+
+- "take over PR 12345 — fix its description in place or supersede it"
+- "adopt this PR; the author stopped responding"
 
 `rook-triage`:
 

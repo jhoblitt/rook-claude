@@ -1,6 +1,6 @@
 ---
 name: rook-code-review
-description: Use when reviewing, auditing, or sanity-checking rook (github.com/rook/*) code, tests, docs, or workflows — a working tree, branch, commit range, or PR; when checking a branch before opening a PR; when reviewing, critiquing, or stress-testing a rook design proposal, design doc, enhancement doc, or design/** change before it becomes code; when bulk-reviewing open rook PRs or evaluating a contributor's PRs for validity or security; for assert-vs-require audits; when drafting rook review comments; or when taking over / adopting / superseding an abandoned or AI-authored PR.
+description: Use when reviewing, auditing, or sanity-checking rook (github.com/rook/*) code, tests, docs, or workflows — a working tree, branch, commit range, or PR; when checking a branch before opening a PR; when reviewing, critiquing, or stress-testing a rook design proposal, design doc, enhancement doc, or design/** change before it becomes code; when bulk-reviewing open rook PRs or evaluating a contributor's PRs for validity or security; for assert-vs-require audits; when drafting rook review comments.
 ---
 
 # Rook code review
@@ -19,7 +19,6 @@ each comment approved in-session. When a post is authorized, follow
 |---|---|---|
 | **diff** (default) | "review this change / branch / PR N" | One target: working tree, current branch vs `origin/master` (`git diff origin/master...HEAD`), an explicit range, or a PR (`gh pr diff N`). Reports; posts only on an explicit request, per `references/posting.md`. |
 | **pre-pr** | "check this before I open a PR", adversarial review of own work | The review spine PLUS an adversarial attack pass, run in a context-isolated agent. Read `references/adversarial.md`. |
-| **takeover** | "take over / adopt / supersede PR N" | Maintainer assumes responsibility for an otherwise-worthwhile PR (abandoned, unresponsive, or AI-burst author): fix its title/description in place, or supersede it with a new PR carrying the commits. Read `references/takeover.md`. |
 | **proposal** | "review this proposal / design doc / design PR N" | Adversarial design review of a document before it is code: decision enumeration, claim verification, hostile-perspective fan-out, per-decision report. Read `references/proposal.md`. |
 
 Backlog *triage* — labeling, routing, dedupe, needs-info, cross-linking —
@@ -30,6 +29,12 @@ is its own diff-mode target here — parallel `rook-reviewer` agents at the
 user's option. Before any fan-out, show the routed list and its cost —
 one full reviewer spine per PR, plus the orchestrating session's
 verification layer — and get explicit confirmation.
+
+*Taking over* a PR — adopting it in place, or superseding it with a
+replacement that carries the commits — is the `rook-pr-takeover` skill's
+job. This skill reports; it does not adopt. A review may flag
+`takeover_candidate`, and the maintainer's "take over #N" switches skills.
+The superseding branch comes back here as an ordinary pre-pr target.
 
 A target that adds or edits a `design/**` doc is a proposal-mode target:
 run `references/proposal.md` on the doc and the diff passes on any code —
@@ -218,7 +223,6 @@ triggers → multiple references.
 | `design/**` (design docs, in any diff) | `references/architecture.md` — the orchestrating session also runs proposal mode on the doc (see Modes) |
 | PR CI status consulted | `references/ci-triage.md` |
 | pre-pr mode | `references/adversarial.md` |
-| takeover mode | `references/takeover.md` |
 | proposal mode | `references/proposal.md` + `references/architecture.md` |
 | reading review threads, or posting a review (any mode) | `references/posting.md` |
 | any added symbol, step, template, or procedure (pass j) | `references/reuse.md` |

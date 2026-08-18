@@ -286,5 +286,5 @@ subcommands do need `gh`.
 
 This skill sorts; `rook-code-review` judges. Each PR in the
 route-to-deep-review subset gets its own `rook-code-review` review.
-Takeover candidates are flagged here, executed there. The moment a request
+Takeover candidates are flagged here and executed in `rook-pr-takeover`. The moment a request
 becomes "is this fix correct?", switch skills.
