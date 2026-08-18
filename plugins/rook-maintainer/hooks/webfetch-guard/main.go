@@ -25,7 +25,7 @@
 //   - The URL itself is attacker-chosen, so every verdict on it fails CLOSED.
 //     An allowlist that errors open is not an allowlist.
 //
-// Liveness checking does not belong here at all: scripts/check_links.py
+// Liveness checking does not belong here at all: the check-links tool
 // returns a status code and no content, so it needs no allowlist and no
 // approval.
 package main
@@ -52,7 +52,7 @@ const denyTemplate = `rook-maintainer webfetch-guard: BLOCKED.
 Page content may enter review context only from the hosts
 references/docs-sync.md allowlists. Instead of retrying this fetch:
 
-  - Liveness only? Use ${CLAUDE_PLUGIN_ROOT}/scripts/check_links.py — it
+  - Liveness only? Use ${CLAUDE_PLUGIN_ROOT}/tools/run.sh check-links — it
     returns a status code, no content, and costs no approval.
   - Load-bearing citation? Do NOT fetch it. File a finding: the change
     rests a technical claim on an unverifiable third-party source.
