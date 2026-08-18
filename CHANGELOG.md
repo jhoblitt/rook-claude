@@ -1,3 +1,49 @@
+## [0.18.0](https://github.com/jhoblitt/rook-claude/compare/v0.17.0...v0.18.0) (2026-08-18)
+
+### Features
+
+* **rook-maintainer:** guard the fallback agent inside a rook checkout ([5193e15](https://github.com/jhoblitt/rook-claude/commit/5193e15aa089063f3be522a2041acf1343d1c599)), closes [#55](https://github.com/jhoblitt/rook-claude/issues/55)
+
+### Bug Fixes
+
+* **rook-code-review:** deny the review spine its in-place writer ([4154fa7](https://github.com/jhoblitt/rook-claude/commit/4154fa71c5545d38b70d03d1e3bfe88b520db2fc)), closes [#60](https://github.com/jhoblitt/rook-claude/issues/60)
+* **rook-code-review:** fence the untrusted spans the inline spine reads ([10bc0ce](https://github.com/jhoblitt/rook-claude/commit/10bc0ce0b5bc9e6bb52fa325166c1f6dfeaf0a78)), closes [#59](https://github.com/jhoblitt/rook-claude/issues/59)
+* **rook-code-review:** pin authority docs on every path that reads them ([d077514](https://github.com/jhoblitt/rook-claude/commit/d07751470b4af239b824017d5fb70dca41ff3676)), closes [#56](https://github.com/jhoblitt/rook-claude/issues/56)
+* **rook-code-review:** stop the inline accuracy pass fetching unguarded ([1b3aa89](https://github.com/jhoblitt/rook-claude/commit/1b3aa8959f7e1d2b8cc2e62e9420988eca3e5466)), closes [#54](https://github.com/jhoblitt/rook-claude/issues/54)
+* **rook-maintainer:** cut a truncated string on a rune boundary ([0f78891](https://github.com/jhoblitt/rook-claude/commit/0f78891e6bc20debf70e03a3d032c8d119785545))
+* **rook-maintainer:** escape the path validate-anchors prints ([a3d5813](https://github.com/jhoblitt/rook-claude/commit/a3d58139138247246ea4784d2c0b92694ed00d6f)), closes [#58](https://github.com/jhoblitt/rook-claude/issues/58)
+* **rook-maintainer:** fence the ref names the rebase notice injects ([9ef79ea](https://github.com/jhoblitt/rook-claude/commit/9ef79ea94429aba1e748ce53df088c41150939ab)), closes [#57](https://github.com/jhoblitt/rook-claude/issues/57)
+* **rook-maintainer:** point the deny message at a tool that exists ([41f789b](https://github.com/jhoblitt/rook-claude/commit/41f789b8eafd92acfa7c3fb44da3ffc0c1dc2cba))
+* **rook-maintainer:** surface a fetch the guard did not adjudicate ([7aed828](https://github.com/jhoblitt/rook-claude/commit/7aed828f5f8506f5e1dbc8b1545c57fe8e882034)), closes [#54](https://github.com/jhoblitt/rook-claude/issues/54)
+* **rook-maintainer:** verify the cached tool binary before exec ([49db402](https://github.com/jhoblitt/rook-claude/commit/49db402d5f92220ec7ee5e80c1a9e89c72978b8a)), closes [#53](https://github.com/jhoblitt/rook-claude/issues/53)
+* **rook-maintainer:** warn when the default branch is behind ([1b43e8d](https://github.com/jhoblitt/rook-claude/commit/1b43e8dfc3ba9a451f53c9501c59e36ab865a697))
+
+### Refactoring
+
+* **rook-maintainer:** give PR takeover its own skill ([47c379d](https://github.com/jhoblitt/rook-claude/commit/47c379dbdd92c1bab2ffa87dade015f4797b7554)), closes [#60](https://github.com/jhoblitt/rook-claude/issues/60)
+
+### Documentation
+
+* **rook-code-review:** describe the fallback guard's checkout scope ([ec9e014](https://github.com/jhoblitt/rook-claude/commit/ec9e014ef9b97b908596125daebdbff707114276)), closes [#55](https://github.com/jhoblitt/rook-claude/issues/55)
+* **rook-code-review:** name the apiserver audit log as an argv channel ([03467ba](https://github.com/jhoblitt/rook-claude/commit/03467ba1be251737d16947519cc8945ab1a1b6c5)), closes [#69](https://github.com/jhoblitt/rook-claude/issues/69)
+* **rook-maintainer:** diagram every procedure skill and keep it current ([17fb345](https://github.com/jhoblitt/rook-claude/commit/17fb34560b56d418da3836f33b6deed1ffe22a19))
+
+
+## What's Changed
+* fix(rook-maintainer): close the open audit findings by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/70
+
+### Resolved issues
+
+* [#53](https://github.com/jhoblitt/rook-claude/issues/53) rook-code-review: tools/run.sh execs a cached binary with no integrity check
+* [#54](https://github.com/jhoblitt/rook-claude/issues/54) rook-code-review: WebFetch guard does not bind on the inline path, and fails open silently
+* [#55](https://github.com/jhoblitt/rook-claude/issues/55) rook-code-review: the general-purpose fallback escapes both the agent roster and the WebFetch guard
+* [#56](https://github.com/jhoblitt/rook-claude/issues/56) rook-code-review: authority-order documents are read from the contributor's checkout
+* [#57](https://github.com/jhoblitt/rook-claude/issues/57) rook-maintainer: rebase-notice.sh interpolates ref names raw into every prompt
+* [#58](https://github.com/jhoblitt/rook-claude/issues/58) validate-anchors: path is interpolated unescaped, bypassing the package's own quote()
+* [#59](https://github.com/jhoblitt/rook-claude/issues/59) rook-code-review: the treat-as-data rule ships without a delimiter
+* [#60](https://github.com/jhoblitt/rook-claude/issues/60) rook-code-review: the skill declares no allowed-tools and inherits the session roster
+* [#69](https://github.com/jhoblitt/rook-claude/issues/69) security.md: argv bullet omits the apiserver audit-log channel and can bless a literal env value
+
 ## [0.17.0](https://github.com/jhoblitt/rook-claude/compare/v0.16.0...v0.17.0) (2026-08-17)
 
 ### Features
