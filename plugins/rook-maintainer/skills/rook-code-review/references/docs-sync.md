@@ -6,7 +6,7 @@ are mechanical — check them, don't guess.
 
 ## The generated set
 
-Six paths are machine-written, and this is the plugin's statement of which:
+Seven paths are machine-written, and this is the plugin's statement of which:
 
 - `zz_generated.deepcopy.go` and `pkg/client/**` — `make codegen`
 - `deploy/examples/crds.yaml`,

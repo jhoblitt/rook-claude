@@ -256,33 +256,66 @@ func TestAreasFor(t *testing.T) {
 // A zero-match PR that falls through every zeroGroups predicate lands in the
 // ungrouped/misc flag, whose question asks whether the taxonomy needs a fix —
 // the wrong question for a class the classifier excludes on purpose.
+//
+// Every group is asked, as bucketFlags asks them: a PR in two classes is
+// reported under both, and stopping at the first match would hide the second.
 func TestZeroGroupsClaimEveryDeliberateClass(t *testing.T) {
 	tests := []struct {
 		paths []string
-		want  string
+		want  []string
 	}{
 		{
 			[]string{"deploy/charts/rook-ceph/templates/resources.yaml", "Documentation/CRDs/specification.md"},
-			"generated artifacts (deliberately unbucketed)",
+			[]string{"generated artifacts (deliberately unbucketed)"},
 		},
-		{[]string{"deploy/examples/cluster.yaml"}, "deploy/examples generic manifests (deliberately unbucketed)"},
-		{[]string{"README.md"}, "repo meta files (deliberately unbucketed)"},
-		{[]string{"somefile.txt"}, ""},
+		{[]string{"deploy/examples/cluster.yaml"}, []string{"deploy/examples generic manifests (deliberately unbucketed)"}},
+		{[]string{"README.md"}, []string{"repo meta files (deliberately unbucketed)"}},
+		{
+			[]string{"README.md", "deploy/examples/cluster.yaml"},
+			[]string{
+				"deploy/examples generic manifests (deliberately unbucketed)",
+				"repo meta files (deliberately unbucketed)",
+			},
+		},
+		{[]string{"somefile.txt"}, nil},
 	}
 	for _, tc := range tests {
-		got := ""
+		var got []string
 		for _, g := range zeroGroups {
 			if g.pred(tc.paths) {
-				got = g.label
-				break
+				got = append(got, g.label)
 			}
 		}
-		if got != tc.want {
-			t.Errorf("zeroGroup for %v = %q, want %q", tc.paths, got, tc.want)
+		if strings.Join(got, " | ") != strings.Join(tc.want, " | ") {
+			t.Errorf("zeroGroups for %v = %q, want %q", tc.paths, got, tc.want)
 		}
 		if areas := AreasForPaths(tc.paths); len(areas) != 0 {
 			t.Errorf("AreasForPaths(%v) = %v, want no areas", tc.paths, areas)
 		}
+	}
+}
+
+// The predicates are only half the path: a class no PR ever reaches has its
+// flag written but never emitted. A regeneration touching nothing but a
+// generated artifact is the ordinary shape of this one.
+func TestBucketFlagsReportsTheGeneratedArtifactsClass(t *testing.T) {
+	res, err := Analyze(prsFrom(t, `{"number":1,"title":"crds: regenerate","mergedAt":"2026-07-01T00:00:00Z",
+		"author":{"login":"alice"},"files":{"nodes":[
+			{"path":"deploy/charts/rook-ceph/templates/resources.yaml"},
+			{"path":"Documentation/CRDs/specification.md"}]},
+		"reviews":{"nodes":[]}}`),
+		&State{StopReason: new("reached the window cutoff")},
+		Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow),
+			Roster: Lowered(ParseRoster("alice"))})
+	if err != nil {
+		t.Fatal(err)
+	}
+	items := flagsOfType(t, res, "bucket-ambiguity")
+	if len(items) != 1 || !strings.Contains(items[0], "generated artifacts (deliberately unbucketed)") {
+		t.Fatalf("bucket-ambiguity flags = %v, want only the generated artifacts class", items)
+	}
+	if !strings.Contains(items[0], "1 PRs") {
+		t.Errorf("flag item = %q, want the PR counted", items[0])
 	}
 }
 

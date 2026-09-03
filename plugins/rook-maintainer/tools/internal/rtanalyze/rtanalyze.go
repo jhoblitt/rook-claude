@@ -713,7 +713,7 @@ func (t *tally) bucketFlags() []Flag {
 	if nums := sortedNumbers(apis); len(nums) > 0 {
 		flags = append(flags, Flag{
 			Type:     "bucket-ambiguity",
-			Item:     fmt.Sprintf("%d PRs match >=6 areas — pkg/apis/** type changes fanning across operator code, hand-written docs and tests", len(nums)),
+			Item:     fmt.Sprintf("%d PRs match >=6 areas — pkg/apis/** type changes fanning across operator code, charts, hand-written docs and tests", len(nums)),
 			Evidence: "PR numbers: " + pyReprInts(nums),
 			Question: "Likely the legitimate blast radius of an API change, not a classifier bug — confirm these should still count toward each touched area's reviewer stats.",
 		})
