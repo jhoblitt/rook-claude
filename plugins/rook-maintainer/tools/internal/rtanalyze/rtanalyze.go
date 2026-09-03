@@ -188,7 +188,8 @@ func AreasFor(p string) map[string]bool {
 		out["csi"] = true
 	}
 	if strings.HasPrefix(p, "pkg/operator/ceph/pool/") || strings.Contains(p, "rbdmirror") ||
-		strings.Contains(p, "/rbd") {
+		(strings.Contains(p, "/rbd") &&
+			!hasAnyPrefix(p, "pkg/operator/ceph/csi/", "deploy/examples/csi/")) {
 		out["block"] = true
 	}
 	if strings.HasPrefix(p, "deploy/charts/") {
@@ -214,7 +215,9 @@ func AreasFor(p string) map[string]bool {
 	if strings.Contains(p, "nvmeof") {
 		out["nvmeof"] = true
 	}
-	if strings.Contains(p, "external") {
+	// pkg/client/ is client-go codegen, whose externalversions package has
+	// nothing to do with an external Ceph cluster.
+	if strings.Contains(p, "external") && !strings.HasPrefix(p, "pkg/client/") {
 		out["ceph-external"] = true
 	}
 	if hasAnyPrefix(p, "pkg/operator/discover/", "pkg/daemon/discover/") {
