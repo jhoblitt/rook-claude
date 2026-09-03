@@ -1,3 +1,36 @@
+## [0.20.0](https://github.com/jhoblitt/rook-claude/compare/v0.19.2...v0.20.0) (2026-09-03)
+
+### Features
+
+* **rook-conventions:** check backported workflows against the branch ([bf7e596](https://github.com/jhoblitt/rook-claude/commit/bf7e5964d2422759fbdde951484c75c87155b49a)), closes [rook/rook#18232](https://github.com/rook/rook/issues/18232) [rook/rook#18312](https://github.com/rook/rook/issues/18312) [#89](https://github.com/jhoblitt/rook-claude/issues/89)
+* **rook-conventions:** derive backport set from Ceph version support ([55ca7b7](https://github.com/jhoblitt/rook-claude/commit/55ca7b78c72970f66b11788b65a3c84ef770623b)), closes [rook/rook#18242](https://github.com/rook/rook/issues/18242) [#78](https://github.com/jhoblitt/rook-claude/issues/78)
+* **rook-conventions:** keep a blessed PR's backport labels current ([a4aa870](https://github.com/jhoblitt/rook-claude/commit/a4aa870617e96a62c6a77910a8878c26f152c9f9)), closes [rook/rook#18242](https://github.com/rook/rook/issues/18242) [#79](https://github.com/jhoblitt/rook-claude/issues/79)
+* **rook-conventions:** verify non-owner technical claims before acting ([69a47f3](https://github.com/jhoblitt/rook-claude/commit/69a47f3c0f57e7924edf183d903ab0b50a51963e)), closes [rook/rook#18242](https://github.com/rook/rook/issues/18242) [#76](https://github.com/jhoblitt/rook-claude/issues/76)
+
+### Bug Fixes
+
+* **rook-conventions:** keep PR title current, and on additive pushes ([a1c06e4](https://github.com/jhoblitt/rook-claude/commit/a1c06e4f0ec2eb59fa822166f977f801eceb321f)), closes [rook/rook#18218](https://github.com/rook/rook/issues/18218) [#72](https://github.com/jhoblitt/rook-claude/issues/72)
+* **rook-conventions:** route reviewer selection via rook-triage's KB ([d4cda26](https://github.com/jhoblitt/rook-claude/commit/d4cda265abd6649b61ac62cee41f7e77f7fc8f0f)), closes [rook/rook#18242](https://github.com/rook/rook/issues/18242) [#75](https://github.com/jhoblitt/rook-claude/issues/75)
+* **rook-conventions:** say how a status-check name is composed ([8baac80](https://github.com/jhoblitt/rook-claude/commit/8baac80b8de30a3967a8602465af80c30b1bf286)), closes [rook/rook#18232](https://github.com/rook/rook/issues/18232) [#74](https://github.com/jhoblitt/rook-claude/issues/74)
+
+### Refactoring
+
+* **rook-conventions:** split label application out of backporting.md ([2ec7202](https://github.com/jhoblitt/rook-claude/commit/2ec720243f8b18f536eab5a0e1fe50f7555d0ae2))
+
+
+## What's Changed
+* feat(rook-conventions): close seven house-rule gaps from recent rook PRs by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/93
+
+### Resolved issues
+
+* [#72](https://github.com/jhoblitt/rook-claude/issues/72) rook-conventions: PR-update rule covers the description but not the title
+* [#74](https://github.com/jhoblitt/rook-claude/issues/74) rook-conventions: workflows-and-ci.md never says how a status-check name is composed
+* [#75](https://github.com/jhoblitt/rook-claude/issues/75) Reviewer selection must use the rook-triage routing KB, not ad-hoc CODE-OWNERS
+* [#76](https://github.com/jhoblitt/rook-claude/issues/76) Treat PR-comment analysis/direction/implementation skeptically when the author isn't in CODE-OWNERS
+* [#78](https://github.com/jhoblitt/rook-claude/issues/78) Backport eligibility for version-specific fixes should use a version-support × affected-range matrix, re-evaluated on range changes
+* [#79](https://github.com/jhoblitt/rook-claude/issues/79) Once a PR is blessed for backporting (CODE-OWNER or existing label), keep backport labels in sync as the PR changes
+* [#89](https://github.com/jhoblitt/rook-claude/issues/89) rook-conventions: backporting.md guards docs against master-only refs but not workflows
+
 ## [0.19.2](https://github.com/jhoblitt/rook-claude/compare/v0.19.1...v0.19.2) (2026-09-03)
 
 ### Bug Fixes
