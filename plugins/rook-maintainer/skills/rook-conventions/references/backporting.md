@@ -53,6 +53,8 @@ Prefer `--force-with-lease`, and re-fetch the live mergify branch head before
 rebasing so you replay what the PR currently shows.
 
 Two defects survive a clean-looking cherry-pick, and no linter catches either.
+Both checks below read `origin/release-X.Y`, so `git fetch origin` first, as
+under "Applying the label".
 
 Content can outrun the branch's tooling: a backported doc that names a make
 target or a script existing only on master is valid markdown, passes every
@@ -65,6 +67,36 @@ git diff origin/release-X.Y...HEAD |
 ```
 
 A non-zero exit means the text documents something this branch does not have:
-adapt it to the branch rather than dropping it. And a file the source PR only
-MODIFIED that appears as a NEW file in the backport means the commit creating
-it never landed here — drop that commit instead of carrying a dead file.
+adapt it to the branch rather than dropping it.
+
+Workflows outrun it the same way, outside `validate-refs`' scope
+(rook-code-review `references/docs-sync.md`, its validate-refs bullet): a
+backported step can call a `tests/scripts/github-action-helper.sh`
+function, a Makefile target, or a script that exists only on master — valid
+YAML, `actionlint` passes, and the job fails at runtime. The loop below
+covers helper functions; check a Makefile target or script a `run:` block
+names by hand against the branch:
+
+```sh
+helper=$(git show "origin/release-X.Y:tests/scripts/github-action-helper.sh")
+git diff origin/release-X.Y...HEAD -- .github/ | grep '^+' |
+  grep -oE 'github-action-helper\.sh [A-Za-z0-9_-]+' | sort -u |
+  while read -r _ fn; do
+    printf '%s\n' "$helper" | grep -q "^function ${fn}()" ||
+      echo "MISSING on release-X.Y: ${fn}"
+  done
+```
+
+Version lists and action pins are the other half: a workflow file the
+backport creates fresh carries master's Ceph and Kubernetes version lists
+and master's action pins. Reconcile each against what the release branch
+already tests and pins rather than taking master's. Backporting
+rook/rook#18232 to `release-1.20` (rook/rook#18312) carried all three —
+`restart_multisite_rgws`, which the branch does not define; `v21` and
+`umbrella` Ceph coverage the branch deliberately does not run; and
+`actions/checkout` bumped past the branch's pin — and only the first
+surfaced as a cherry-pick conflict.
+
+And a file the source PR only MODIFIED that appears as a NEW file in the
+backport means the commit creating it never landed here — drop that commit
+instead of carrying a dead file.
