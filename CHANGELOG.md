@@ -1,3 +1,26 @@
+## [0.21.0](https://github.com/jhoblitt/rook-claude/compare/v0.20.1...v0.21.0) (2026-09-03)
+
+### Features
+
+* **rook-code-review:** add cross-cluster coupling to the race surface ([e2239ae](https://github.com/jhoblitt/rook-claude/commit/e2239aecc09e163b10ce136be69fad4bc5ebf9c9)), closes [#103](https://github.com/jhoblitt/rook-claude/issues/103)
+
+### Bug Fixes
+
+* **rook-code-review:** reduce drifted renderings to their one home ([83d367c](https://github.com/jhoblitt/rook-claude/commit/83d367c375a4936e30291c583c4212f4d4073f80)), closes [#105](https://github.com/jhoblitt/rook-claude/issues/105)
+* **rook-maintainer:** pin the Bash grant and derive the routed set ([186122c](https://github.com/jhoblitt/rook-claude/commit/186122c1fc9703b0e8eb7070188e7cada36c02f3)), closes [#106](https://github.com/jhoblitt/rook-claude/issues/106)
+
+
+## What's Changed
+* test(rook-maintainer): pin the four rules that moved in v0.19–v0.20 by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/110
+* fix(rook-code-review): cross-cluster coupling, one-home renderings, derived routed set by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/111
+
+### Resolved issues
+
+* [#103](https://github.com/jhoblitt/rook-claude/issues/103) rook-code-review: the gate's failure-surface list never names cross-cluster coupling
+* [#104](https://github.com/jhoblitt/rook-claude/issues/104) evals: pin the four review rules that moved or landed in v0.19–v0.20
+* [#105](https://github.com/jhoblitt/rook-claude/issues/105) rook-code-review: drift leftovers the gate noted outside the #90/#93 diffs
+* [#106](https://github.com/jhoblitt/rook-claude/issues/106) rook-reviewer: pin the Bash-grant rationale and derive the expected routed set
+
 ## [0.20.1](https://github.com/jhoblitt/rook-claude/compare/v0.20.0...v0.20.1) (2026-09-03)
 
 ### Bug Fixes
