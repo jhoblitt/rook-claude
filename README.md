@@ -187,7 +187,7 @@ flowchart TD
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
         B1["rt-fetch → rt-analyze · rt-commits: merged-PR and<br/>commit signals, shipped Go tools end to end"] --> B2[["parallel miners: CODE-OWNERS · issue participation ·<br/>live label list — they flag ambiguity, never resolve it"]]
-        B2 --> B3["one resolver agent, then a deterministic assembler<br/>that refuses to write a failing kb.json"]
+        B2 --> B3["one resolver agent, then a deterministic assembler:<br/>validate-kb gates the identities, and a failing kb.json is not written"]
     end
 
     B3 -.->|"routing evidence for phase 1"| R1

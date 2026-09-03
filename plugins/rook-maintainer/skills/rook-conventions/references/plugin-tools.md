@@ -14,6 +14,11 @@ The launcher fails loud — a non-zero exit is a real failure, never an empty
 result, since a silent no-op would read as "no dead links", "no invalid
 actions", "empty dashboard".
 
+`CLAUDE_PLUGIN_DATA` selects the binary cache when its basename is this
+plugin's — a bare `<plugin>` or `<plugin>-<marketplace>` — and
+`${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude` does otherwise; a value naming
+another plugin is ignored.
+
 A tool's package doc must name its spec and its callers, so changing either
 obliges the other: adding a caller in a skill is half the change. Older docs
 predate the rule and meet it unevenly — a missing `Spec:` or `Callers:` line

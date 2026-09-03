@@ -22,7 +22,7 @@ approval-gated layer on top. Stopping at the report is a complete run.
 | **issues** | "triage the issues", "issue N" | Issue backlog (or one issue): kind, completeness, dup/cross-link, labels, routing. Read `references/issue-triage.md`. |
 | **prs** | "triage the PRs", "pr N" | PR backlog (or one PR): cheap sort — CI/mergeability/template/trust, dup/cross-link, current-label report (ground rules "Labels: issues only"), reviewer routing, route-to-deep-review. Read `references/pr-triage.md`. |
 | **both** | "triage the backlog" | Both corpora in one run, one sweep dir each (State below). Default when unscoped — confirm at phase 0. |
-| **kb refresh** | "refresh the triage kb" | Rebuild the routing knowledge base. Read `references/routing.md`. |
+| **kb refresh** | "refresh the triage kb" | Rebuild the routing knowledge base. Read `references/kb-refresh.md`. |
 
 Filters compose with any mode: labels, author, updated-since, explicit
 numbers, count cap.
@@ -48,8 +48,9 @@ numbers, count cap.
   failure.
 - **Writes are gated.** Every GitHub write is shown and approved in-session
   — per item, or an explicitly authorized batch (rook-conventions carve-out).
-  The local checkout is read-only; every `gh` call runs with
-  `dangerouslyDisableSandbox: true`.
+  The local checkout is read-only — the one write is the orchestrator's
+  `origin/master` refresh before any fan-out, `rook-code-review`'s rule —
+  and every `gh` call runs with `dangerouslyDisableSandbox: true`.
 - **Escalations never auto-post.** security / data-loss / regression flags
   go to the user first; pinging the lead maintainer is a user decision.
 - **Cap fan-out width** — rook-conventions "Harness notes" is canon.
@@ -159,7 +160,8 @@ settle anything.
 | issues in scope | `references/issue-triage.md` |
 | PRs in scope | `references/pr-triage.md` |
 | any dup / cross-link work | `references/cross-linking.md` |
-| any routing/pinging; kb refresh | `references/routing.md` |
+| any routing/pinging | `references/routing.md` |
+| kb refresh | `references/kb-refresh.md` |
 | proposing any label | `references/label-map.md` |
 | feature requests | `references/out-of-scope.md` |
 | writing the report/dashboard (phase 3) | `references/reporting.md` |
@@ -238,20 +240,19 @@ this skill runs:
   sweep (`references/pr-triage.md`). Spec: rook-code-review
   `references/docs-sync.md`.
 
-- `rt-fetch` — kb-refresh fetch of merged PRs (files+reviews JSONL +
-  provenance/truncation state). Spec: `references/routing.md`.
+- `rt-fetch` — kb-refresh fetch of merged PRs. kb refresh only; spec and
+  invocation: `references/kb-refresh.md`.
 - `rt-analyze` — kb-refresh analysis: buckets the JSONL into the v3
-  area taxonomy and emits the `{data, flags}` miner contract
-  (offline; needs `--code-owners` or `--roster`; `--now` pins recency
-  weighting for reproducible re-runs). Spec: `references/routing.md`.
-  Its `areas` subcommand classifies a changed-path set against that same
+  area taxonomy and emits the `{data, flags}` miner contract. That mode is
+  kb refresh only; spec and invocation: `references/kb-refresh.md`. Its
+  `areas` subcommand classifies a changed-path set against that same
   taxonomy — the deterministic layer phase 1 reads and the spec
   `references/label-map.md`'s table states.
 - `rt-commits` — kb-refresh commit signal: recency-weighted author counts
-  per area from `git log`, supplying the `commits` and `last_active`
-  columns of the `maintainers` schema (offline; `--repo` mines a checkout,
-  `--log` a captured dump, `--now` pins the weighting). Spec:
-  `references/routing.md`.
+  per area from `git log`. kb refresh only; spec and invocation:
+  `references/kb-refresh.md`.
+- `validate-kb` — the kb refresh's pre-write gate on routing identities.
+  kb refresh only; spec and invocation: `references/kb-refresh.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
@@ -275,11 +276,11 @@ this skill runs:
   recheck). Spec: phase 5 above.
 
 All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
-`rt-commits`, the two generators, `validate-actions`, and
-`sweep-prefetch pool-summary`, which are offline — `validate-actions`
-judges the label snapshot it is handed rather than fetching its own,
-`rt-commits` reads a local checkout with `git log`, and `pool-summary`
-reduces files the sweep dir already holds. `sweep-prefetch`'s other two
+`rt-commits`, `validate-kb`, the three `gen-*` tools, `validate-actions`,
+and `sweep-prefetch pool-summary`, which are offline — `validate-actions`
+and `validate-kb` judge the files they are handed rather than fetching
+their own, `rt-commits` reads a local checkout with `git log`, and
+`pool-summary` reduces files the sweep dir already holds. `sweep-prefetch`'s other two
 subcommands do need `gh`.
 
 ## Relationship to rook-code-review

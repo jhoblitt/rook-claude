@@ -131,6 +131,22 @@ func loginAt(s string, start int) (string, int) {
 	return "", start
 }
 
+// ValidLogin reports whether s is a login under the grammar above. It is the
+// one place that grammar is spelled out: rt-commits captures logins from
+// contributor-controlled commit addresses and validate-kb gates the kb refresh,
+// and a second spelling of "what a login looks like" is how the two drift.
+func ValidLogin(s string) bool {
+	if s == "" || len(s) > MaxLoginLen || !isLoginStart(s[0]) {
+		return false
+	}
+	for i := 1; i < len(s); i++ {
+		if !isLoginChar(s[i]) {
+			return false
+		}
+	}
+	return true
+}
+
 func isLoginStart(c byte) bool {
 	return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'
 }

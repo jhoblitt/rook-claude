@@ -1,6 +1,6 @@
 // Package rtcommits mines per-area commit authorship for the rook-triage kb
 // refresh — the "git log per area path-set (24 months, recency-weighted author
-// counts)" signal of skills/rook-triage/references/routing.md.
+// counts)" signal of skills/rook-triage/references/kb-refresh.md.
 //
 // It is the commit-side sibling of rtfetch/rtanalyze and shares their decisions
 // by CALLING them, not by restating them: the 25-area taxonomy is
@@ -8,7 +8,7 @@
 // same 1.0/0.5/0.25 boundaries, the window is rtfetch.WindowCutoff, and the bot
 // rule is rtanalyze.IsBot. The one deliberate local delta is botIdentity, which
 // narrows that rule for the login-less identities only git log produces. It
-// fills the `commits` and `last_active` columns of routing.md's `maintainers`
+// fills the `commits` and `last_active` columns of kb-refresh.md's `maintainers`
 // schema; `tier` comes from CODE-OWNERS and `reviews` from rt-analyze, and
 // nothing here invents either.
 //
@@ -31,7 +31,7 @@
 //
 // Nothing here touches the network, and nothing writes to the mined checkout.
 // Changing the weighting, the exclusions or the schema changes what the kb
-// refresh records; routing.md is that change's spec.
+// refresh records; kb-refresh.md is that change's spec.
 package rtcommits
 
 import (
@@ -45,6 +45,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/mentions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtfetch"
 )
@@ -74,6 +75,7 @@ type Commit struct {
 type Source struct {
 	Mode string // "repo" or "log"
 	Path string
+	Ref  string // --repo only: the revision mined, resolved to Head
 	Head string
 }
 
@@ -103,6 +105,7 @@ type Provenance struct {
 	Tool              string  `json:"tool"`
 	Source            string  `json:"source"`
 	Path              string  `json:"path"`
+	Ref               string  `json:"ref,omitempty"`
 	Head              string  `json:"head,omitempty"`
 	GitLog            string  `json:"git_log"`
 	Now               string  `json:"now"`
@@ -185,8 +188,9 @@ func Mine(commits []Commit, opts Options) (*Result, error) {
 		Tool:            "rt-commits",
 		Source:          opts.Source.Mode,
 		Path:            opts.Source.Path,
+		Ref:             opts.Source.Ref,
 		Head:            opts.Source.Head,
-		GitLog:          GitLogCommand(),
+		GitLog:          GitLogCommand(opts.Source.Ref),
 		Now:             isoformat(opts.Now),
 		Months:          opts.Months,
 		WindowDays:      days,
@@ -406,9 +410,15 @@ func primaryName(names map[string]int, emails map[string]string) string {
 	return best
 }
 
+// loginFrom reads a login out of a noreply address. The address is whatever the
+// contributor put in git's author field, so the capture is untrusted input and
+// only the login grammar decides: `12+alice](https://evil.com)@users.noreply.
+// github.com` matches the address shape and is not a login. What fails is an
+// unresolved identity — login null, counted in identities_without_login — which
+// is the state the miner already knows how to resolve.
 func loginFrom(emails map[string]string) string {
 	for _, e := range sortedValues(emails) {
-		if m := noreply.FindStringSubmatch(strings.ToLower(e)); m != nil {
+		if m := noreply.FindStringSubmatch(strings.ToLower(e)); m != nil && mentions.ValidLogin(m[1]) {
 			return m[1]
 		}
 	}
@@ -519,7 +529,10 @@ func (a *areaAcc) authors() []Author {
 func summarize(doc Doc) []string {
 	p := doc.Provenance
 	head := ""
-	if p.Head != "" {
+	switch {
+	case p.Ref != "" && p.Head != "":
+		head = " @ " + p.Ref + " " + shortSHA(p.Head)
+	case p.Head != "":
 		head = " @ " + shortSHA(p.Head)
 	}
 	out := []string{

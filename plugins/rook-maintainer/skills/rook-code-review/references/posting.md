@@ -65,7 +65,7 @@ Both truncate silently, which is the trap to guard: `gh api` without
 `--paginate` stops at GitHub's 30-per-page default, and
 `reviewThreads(first: N)` stops at N. Request `pageInfo.hasNextPage` and
 flag it rather than assume the page was the whole set — the same
-`truncation` class `rook-triage`'s `references/routing.md` defines. Both
+`truncation` class `rook-triage`'s `references/kb-refresh.md` defines. Both
 list oldest-first, so a truncated read drops the NEWEST threads.
 
 `isResolved` is not a proxy for addressed: a thread answered in code

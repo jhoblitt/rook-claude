@@ -1,5 +1,5 @@
 // rt-fetch: merged PRs with their files and reviews, for the rook-triage KB
-// refresh (rook-triage/references/routing.md).
+// refresh (rook-triage/references/kb-refresh.md).
 //
 //	run.sh rt-fetch --out-dir DIR [--months 24] [--cap 4000] [--repo rook/rook]
 //	                [--page-size 50] [--max-pages 400]

@@ -1,15 +1,38 @@
 package rtcommits
 
 import (
+	"os"
+	"os/exec"
 	"strings"
 	"testing"
 )
 
+const baseCommand = "git -c core.quotePath=false log --no-merges -M " +
+	"--format=commit%x09%H%x09%aN%x09%aE%x09%aI --name-status --end-of-options"
+
 func TestGitLogCommandIsWhatTheDocsPromise(t *testing.T) {
-	want := "git -c core.quotePath=false log --no-merges -M " +
-		"--format=commit%x09%H%x09%aN%x09%aE%x09%aI --name-status"
-	if got := GitLogCommand(); got != want {
-		t.Errorf("GitLogCommand() = %q\nwant %q\n(the docs, the fixture and the --log contract are pinned to this)", got, want)
+	if got := GitLogCommand(""); got != baseCommand {
+		t.Errorf("GitLogCommand(\"\") = %q\nwant %q\n(the docs, the fixture and the --log contract are pinned to this)",
+			got, baseCommand)
+	}
+	want := baseCommand + " " + DefaultRef
+	if got := GitLogCommand(DefaultRef); got != want {
+		t.Errorf("GitLogCommand(%q) = %q\nwant %q", DefaultRef, got, want)
+	}
+}
+
+// The revision goes last and nowhere else: git log reads a leading one as a
+// path, and a mine of the wrong revision is indistinguishable from a right one.
+func TestGitLogArgsForAppendsTheRef(t *testing.T) {
+	got := gitLogArgsFor("v1.18.0")
+	if len(got) != len(gitLogArgs)+1 || got[len(got)-1] != "v1.18.0" {
+		t.Fatalf("gitLogArgsFor = %q, want the base args plus a trailing revision", got)
+	}
+	if last := gitLogArgs[len(gitLogArgs)-1]; last != "--end-of-options" {
+		t.Errorf("gitLogArgsFor mutated the shared base args: they now end in %q", last)
+	}
+	if got := gitLogArgsFor(""); len(got) != len(gitLogArgs) {
+		t.Errorf("gitLogArgsFor(\"\") = %q, want the ref-less base args", got)
 	}
 }
 
@@ -120,7 +143,78 @@ func TestUnquotePath(t *testing.T) {
 }
 
 func TestLogRejectsANonRepo(t *testing.T) {
-	if _, _, err := Log(t.Context(), t.TempDir()); err == nil {
+	if _, _, err := Log(t.Context(), t.TempDir(), DefaultRef); err == nil {
 		t.Fatal("Log accepted a directory that is not a git repository")
+	}
+}
+
+// staleClone is the shape the whole --ref flag exists for: a checkout whose
+// HEAD sits one commit behind the origin/master it was cloned from.
+func staleClone(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	env := append(os.Environ(),
+		"HOME="+t.TempDir(),
+		"GIT_CONFIG_GLOBAL=/dev/null",
+		"GIT_CONFIG_SYSTEM=/dev/null",
+		"GIT_TERMINAL_PROMPT=0",
+	)
+	git := func(args ...string) {
+		t.Helper()
+		cmd := exec.CommandContext(t.Context(), "git", args...)
+		cmd.Dir, cmd.Env = dir, env
+		if out, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("git %s: %v\n%s", strings.Join(args, " "), err, out)
+		}
+	}
+	git("init", "-q", "-b", "master", ".")
+	git("config", "user.email", "test@example.com")
+	git("config", "user.name", "Test")
+	write := func(name string) {
+		t.Helper()
+		if err := os.WriteFile(dir+"/"+name, []byte(name), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		git("add", name)
+	}
+	write("behind.go")
+	git("commit", "-q", "-m", "behind")
+	write("ahead.go")
+	git("commit", "-q", "-m", "ahead")
+	git("update-ref", "refs/remotes/origin/master", "HEAD")
+	git("reset", "-q", "--hard", "HEAD~1")
+	return dir
+}
+
+func TestLogMinesTheRefAndNotHEAD(t *testing.T) {
+	dir := staleClone(t)
+
+	commits, head, err := Log(t.Context(), dir, DefaultRef)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(commits) != 2 {
+		t.Fatalf("mining %s found %d commits, want both (HEAD alone has 1)", DefaultRef, len(commits))
+	}
+	if commits[0].SHA != head {
+		t.Errorf("head = %s, want the sha %s resolves to (%s)", head, DefaultRef, commits[0].SHA)
+	}
+
+	behind, _, err := Log(t.Context(), dir, "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(behind) != 1 {
+		t.Fatalf("mining HEAD found %d commits, want 1: the fixture is not stale", len(behind))
+	}
+}
+
+func TestLogRejectsAnUnresolvableRef(t *testing.T) {
+	_, _, err := Log(t.Context(), staleClone(t), "origin/no-such-branch")
+	if err == nil {
+		t.Fatal("Log accepted a ref the repo does not have")
+	}
+	if !strings.Contains(err.Error(), "--ref origin/no-such-branch") {
+		t.Errorf("error = %q, want it to name the unresolvable --ref", err)
 	}
 }

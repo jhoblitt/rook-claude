@@ -266,6 +266,45 @@ func TestCommitsMatchingNoAreaAreCountedNotDropped(t *testing.T) {
 	}
 }
 
+// A sha alone does not say which revision it came from, which is how a KB
+// asserting origin/master got written from a HEAD mine. Both the document and
+// the summary name the ref.
+func TestRepoProvenanceNamesTheRef(t *testing.T) {
+	const head = "0123456789abcdef0123456789abcdef01234567"
+	res, err := Mine(fixtureCommits(t), Options{
+		Now:    at(t, goldenNow),
+		Months: goldenMonths,
+		Source: Source{Mode: "repo", Path: "/checkouts/rook", Ref: DefaultRef, Head: head},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := res.Doc.Provenance
+	if p.Ref != DefaultRef {
+		t.Errorf("provenance ref = %q, want %q", p.Ref, DefaultRef)
+	}
+	if !strings.HasSuffix(p.GitLog, " "+DefaultRef) {
+		t.Errorf("git_log = %q, want it to end in the mined revision", p.GitLog)
+	}
+	want := "source: repo /checkouts/rook @ " + DefaultRef + " 0123456789ab"
+	if got := res.Summary[0]; got != want {
+		t.Errorf("summary line = %q, want %q", got, want)
+	}
+}
+
+// --log consumes a dump whose revision was chosen when it was captured, so
+// nothing here may assert one.
+func TestLogProvenanceAssertsNoRef(t *testing.T) {
+	res := mineFixture(t, goldenNow, goldenMonths)
+	p := res.Doc.Provenance
+	if p.Ref != "" || p.Head != "" {
+		t.Errorf("log-mode provenance claims ref=%q head=%q", p.Ref, p.Head)
+	}
+	if strings.HasSuffix(p.GitLog, DefaultRef) {
+		t.Errorf("git_log = %q, want the ref-less command", p.GitLog)
+	}
+}
+
 // An empty window is a legitimate answer — it says the window is empty, with
 // the provenance to prove the mine ran. An empty INPUT is not; see below.
 func TestEmptyWindowStillReportsProvenance(t *testing.T) {
@@ -374,6 +413,38 @@ func TestLastActiveIsTheLatestCommitWhateverTheOrder(t *testing.T) {
 	}
 	if res.Doc.Identities[0].LastActive != "2026-06" {
 		t.Errorf("identity last_active = %s, want 2026-06", res.Doc.Identities[0].LastActive)
+	}
+}
+
+// A commit author address is whatever the contributor typed, and its login
+// travels into the kb and from there into @-mentions and review requests. An
+// address that matches the noreply shape but carries something that is not a
+// login is an unresolved identity, never a login.
+func TestHostileNoreplyAddressYieldsNoLogin(t *testing.T) {
+	res, err := Mine([]Commit{{
+		SHA: "a1", Name: "Alice", Email: "12+alice](https://evil.com)@users.noreply.github.com",
+		When: at(t, "2026-08-01T00:00:00Z"), Paths: []string{"pkg/operator/ceph/object/rgw.go"},
+	}, {
+		SHA: "a2", Name: "Bob", Email: "34+bob@users.noreply.github.com",
+		When: at(t, "2026-08-01T00:00:00Z"), Paths: []string{"pkg/operator/ceph/object/rgw.go"},
+	}}, Options{Now: at(t, goldenNow), Months: goldenMonths, Source: Source{Mode: "log", Path: "inline"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range res.Doc.Identities {
+		switch id.Name {
+		case "Alice":
+			if id.Login != nil {
+				t.Errorf("Alice's login = %q, want null: the capture is not a login", *id.Login)
+			}
+		case "Bob":
+			if id.Login == nil || *id.Login != "bob" {
+				t.Errorf("Bob's login = %v, want bob still read from a well-formed address", id.Login)
+			}
+		}
+	}
+	if got := res.Doc.Provenance.IdentitiesNoLogin; got != 1 {
+		t.Errorf("identities_without_login = %d, want 1: the rejected capture is a gap to resolve", got)
 	}
 }
 
