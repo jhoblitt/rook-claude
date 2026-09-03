@@ -1,6 +1,6 @@
 ---
 name: rook-conventions
-description: Use when authoring or shepherding changes to rook (github.com/rook/*) repos — committing, pushing branches, opening or updating PRs, weighing review feedback, backporting, regenerating CRDs or generated code, writing tests or GitHub Actions workflows, watching or retrying CI, or before ANY gh write (comment, label, close, edit) to a rook issue or PR.
+description: Use when authoring or shepherding changes to rook (github.com/rook/*) repos — committing, pushing branches, opening or updating PRs, requesting reviewers, weighing review feedback, backporting, regenerating CRDs or generated code, writing tests or GitHub Actions workflows, watching or retrying CI, or before ANY gh write (comment, label, close, edit) to a rook issue or PR.
 ---
 
 # Rook house conventions
@@ -27,7 +27,7 @@ below this table apply to every trigger.
 | Doing this | Read |
 |---|---|
 | writing or fixing a commit message, amending, reworking a branch's history, or diagnosing a commitlint failure | `references/commits.md` |
-| opening or updating a PR, writing its description, filling its template checklist, writing the AI-assistance disclosure | `references/pull-requests.md` |
+| opening or updating a PR, writing its description, filling its template checklist, writing the AI-assistance disclosure, requesting reviewers | `references/pull-requests.md` |
 | deciding whether a change is backport-eligible, applying or maintaining its labels, or fixing a mergify backport PR | `references/backporting.md` |
 | weighing conflicting review feedback on a PR | `references/review-feedback.md` |
 | building, testing, or linting rook; regenerating CRDs or generated code; writing rook tests | `references/building-and-testing.md` |

@@ -42,6 +42,23 @@ messages rather than growing the description.
   claims is rook-code-review `references/docs-sync.md`.
 - Experimental / instrumentation-only / not-yet-intended-to-land PRs get the
   `do-not-merge` label at open (best-effort).
+- Reviewer selection — at open, or on a later bare "assign/request
+  reviewers" — is rook-triage's `references/routing.md`, "Selection (per
+  item)", fed its inputs directly: stamp `areas` with
+  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze areas --stdin` over
+  the changed paths, score against the KB's roster and those areas'
+  maintainers only —
+  `jq '{roster, areas: (.areas | {"<area>", ...} | map_values({maintainers}))}' ~/.cache/rook-triage/kb.json`
+  (quoted keys: nine area names carry hyphens; `recent_items` carries PR
+  titles selection never reads), not a read of the whole file — with
+  rook-triage's
+  `references/routing-overrides.md` winning, and apply step 4's bounds and
+  tiers. No sweep directory, no phase pipeline, no triager agent: one PR is
+  not a sweep, and a sweep skips drafts anyway. While a KB exists, never
+  pick from a `CODE-OWNERS` read or session recall: rook/rook#18242 was
+  routed that way and missed the area's higher-scored reviewer while its KB
+  pool sat unused. An absent or stale KB follows routing.md's "Freshness:"
+  paragraph, not this bullet.
 - In a multi-PR campaign, open at most ~3 PRs before checking in with the
   maintainer.
 

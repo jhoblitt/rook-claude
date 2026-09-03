@@ -282,14 +282,17 @@ flowchart TD
 
     C4 -.->|"all four defer for house rules"| CX
     CX -.->|"canon: the pre-pr gate runs<br/>before ANY rook PR is opened"| C1
+    CX -.->|"canon: reviewer selection on ANY rook PR<br/>runs the routing KB, never an owners read"| C2
 ```
 
 Every arrow here is a handoff — the plugin has no pipeline that spans skills,
 only invocations, so all cross-skill edges are dashed. `rook-conventions` is
 shaped differently on purpose: it is canon, not a procedure, and nothing
-executes inside it. The four task skills read it; its one outbound rule is the
-pre-PR gate every rook PR passes before it opens, which is how a
-`rook-systemic-prs` campaign reaches review without naming it.
+executes inside it. The four task skills read it; its two outbound rules are
+the pre-PR gate every rook PR passes before it opens — which is how a
+`rook-systemic-prs` campaign reaches review without naming it — and reviewer
+selection, which sends a bare "assign reviewers" on any rook PR through
+`rook-triage`'s routing knowledge base rather than an ad-hoc owners read.
 
 Two hooks. `rebase-notice` (`UserPromptSubmit`): warns when the repo's
 default branch has advanced past the checked-out branch, so a session in a
