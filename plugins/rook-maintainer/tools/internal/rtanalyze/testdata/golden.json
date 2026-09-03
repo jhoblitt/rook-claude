@@ -551,13 +551,13 @@
    "type": "bucket-ambiguity",
    "item": "4 PRs: no area rule matches \u2014 ungrouped/misc",
    "evidence": "PR numbers: [109, 110, 125, 126]; sample paths: {\"109\": [\"hack/foo.sh\", \"somefile.txt\"], \"110\": [\"OWNERS\", \"a1.txt\", \"a2.txt\", \"a3.txt\", \"a4.txt\", \"a5.txt\", \"a6.txt\", \"a7.txt\"], \"126\": [], \"125\": [\"misc/very/long/path/segment-0/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-1/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-2/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-3/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-4/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-5/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-6/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt\", \"misc/very/long/path/segment-7/xxxx",
-   "question": "Not in either deliberate unbucketed class \u2014 what area (if any) should each count toward, or is a taxonomy/classifier fix needed?"
+   "question": "Not in any deliberate unbucketed class \u2014 what area (if any) should each count toward, or is a taxonomy/classifier fix needed?"
   },
   {
    "type": "bucket-ambiguity",
-   "item": "1 PRs match >=6 areas \u2014 pkg/apis/** type changes fanning into regenerated CRD docs/charts",
+   "item": "1 PRs match >=6 areas \u2014 pkg/apis/** type changes fanning across operator code, hand-written docs and tests",
    "evidence": "PR numbers: [111]",
-   "question": "Likely legitimate codegen blast-radius, not a classifier bug \u2014 confirm these should still count toward each touched area's reviewer stats."
+   "question": "Likely the legitimate blast radius of an API change, not a classifier bug \u2014 confirm these should still count toward each touched area's reviewer stats."
   },
   {
    "type": "bucket-ambiguity",

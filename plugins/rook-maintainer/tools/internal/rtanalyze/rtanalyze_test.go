@@ -207,20 +207,30 @@ func TestAreasFor(t *testing.T) {
 		{"pkg/daemon/ceph/osd/volume.go", "ceph-osd"},
 		{"pkg/operator/ceph/pool/pool.go", "block"},
 		{"pkg/operator/ceph/controller/rbdmirror.go", "block"},
+		{"pkg/operator/ceph/csi/template/rbd/csi-rbdplugin.yaml", "csi"},
+		{"deploy/examples/csi/rbd/storageclass.yaml", ""},
 		{"deploy/charts/rook-ceph/values.yaml", "helm"},
+		{"deploy/charts/rook-ceph/templates/resources.yaml", ""},
 		{"Documentation/CRDs/cluster.md", "docs"},
+		{"Documentation/CRDs/specification.md", ""},
+		{"Documentation/Helm-Charts/operator-chart.md", ""},
+		{"Documentation/Helm-Charts/ceph-cluster-chart.md", ""},
 		{"design/ceph/object/multisite.md", "design"},
 		{".github/workflows/ci.yaml", "ci"},
 		{"tests/scripts/helper.sh", "ci"},
 		{"tests/integration/base.go", "test"},
 		{"pkg/apis/ceph.rook.io/v1/types.go", "crd"},
 		{"pkg/client/clientset/x.go", "crd"},
+		{"pkg/client/informers/externalversions/factory.go", "crd"},
 		{"pkg/operator/ceph/controller/network.go", "networking"},
 		{"pkg/operator/ceph/nvmeof/nvmeof.go", "nvmeof"},
 		{"pkg/operator/ceph/cluster/external.go", "ceph-external"},
+		{"deploy/examples/external/cluster-external.yaml", "ceph-external"},
 		{"pkg/operator/discover/discover.go", "discover"},
 		{"pkg/operator/ceph/reporting/reporting.go", "monitoring"},
 		{"go.mod", "build"},
+		{"pkg/apis/go.mod", "build"},
+		{"pkg/apis/go.sum", "build"},
 		{"images/ceph/Dockerfile", "build"},
 		{"build/makelib/common.mk", "build"},
 		{"Makefile", "build"},
@@ -234,6 +244,39 @@ func TestAreasFor(t *testing.T) {
 	for _, tc := range tests {
 		if got := strings.Join(sortedKeys(AreasFor(tc.path)), ","); got != tc.want {
 			t.Errorf("AreasFor(%q) = %q, want %q", tc.path, got, tc.want)
+		}
+	}
+}
+
+// A zero-match PR that falls through every zeroGroups predicate lands in the
+// ungrouped/misc flag, whose question asks whether the taxonomy needs a fix —
+// the wrong question for a class the classifier excludes on purpose.
+func TestZeroGroupsClaimEveryDeliberateClass(t *testing.T) {
+	tests := []struct {
+		paths []string
+		want  string
+	}{
+		{
+			[]string{"deploy/charts/rook-ceph/templates/resources.yaml", "Documentation/CRDs/specification.md"},
+			"generated artifacts (deliberately unbucketed)",
+		},
+		{[]string{"deploy/examples/cluster.yaml"}, "deploy/examples generic manifests (deliberately unbucketed)"},
+		{[]string{"README.md"}, "repo meta files (deliberately unbucketed)"},
+		{[]string{"somefile.txt"}, ""},
+	}
+	for _, tc := range tests {
+		got := ""
+		for _, g := range zeroGroups {
+			if g.pred(tc.paths) {
+				got = g.label
+				break
+			}
+		}
+		if got != tc.want {
+			t.Errorf("zeroGroup for %v = %q, want %q", tc.paths, got, tc.want)
+		}
+		if areas := AreasForPaths(tc.paths); len(areas) != 0 {
+			t.Errorf("AreasForPaths(%v) = %v, want no areas", tc.paths, areas)
 		}
 	}
 }

@@ -40,15 +40,15 @@ both.
 | `pkg/operator/ceph/file/**` | `filesystem` | `filesystem` (MDS-specific: `ceph-mds`) |
 | `pkg/operator/ceph/nfs/**` | `ceph-nfs` | `ceph-nfs` |
 | `pkg/operator/ceph/csi/**` | `csi` | `csi` |
-| pool/RBD paths | `block` | `block` |
+| pool/RBD paths (not `pkg/operator/ceph/csi/**`, which is `csi`, nor `deploy/examples/csi/**`, which is unbucketed) | `block` | `block` |
 | `deploy/charts/**` | `helm` | `helm` |
 | `Documentation/**` | `docs` | `docs` |
 | `.github/workflows/**`, `tests/scripts/**` | `ci` | `ci` |
 | `tests/**` | `test` | `test` |
-| `pkg/apis/**` | `crd` | `crd` (API-surface changes: also `api`) |
+| `pkg/apis/**` (its `go.mod`/`go.sum` are `build`), `pkg/client/**` | `crd` | `crd` (API-surface changes: also `api`) |
 | multus/network paths | `networking` | `multus` / `networking` |
 | nvmeof paths | `nvmeof` | `nvmeof` |
-| external-cluster paths | `ceph-external` | `ceph-external` |
+| external-cluster paths (not `pkg/client/**`, which is `crd`) | `ceph-external` | `ceph-external` |
 | dashboard paths | `ceph-dashboard` | `ceph-dashboard` |
 | monitoring/exporter paths | `monitoring` | `monitoring` / `ceph-exporter` |
 | `go.mod`/`go.sum`, `build/**`, `images/**`, `Makefile`/`*.mk`, lint configs | `build` | `build` |
@@ -60,9 +60,12 @@ Six rows above have an Area that is not its Label — the fallback row most of
 all, since it fires constantly. Reading a stamped `areas` value as a label
 proposal is wrong on those; translate through this table.
 
-Deliberately unbucketed (no area label): generic `deploy/examples/**` edits
-and repo-meta files (root markdown, `.mergify.yml`, templates, CODE-OWNERS —
-the set `repoMeta` in `internal/rtanalyze` enumerates).
+Deliberately unbucketed (no area label): generic `deploy/examples/**` edits,
+repo-meta files (root markdown, `.mergify.yml`, templates, CODE-OWNERS,
+`.docs/**` — the set `repoMeta` in `internal/rtanalyze` plus that prefix),
+and the generated artifacts the set `codegen` beside it enumerates
+(rook-code-review's `references/docs-sync.md` says what emits them) — the
+`deploy/charts/**` and `Documentation/**` rows above do not apply to them.
 
 A stamped `areas` therefore has three states, and they are not
 interchangeable: a list is the classification; `[]` means classified and
