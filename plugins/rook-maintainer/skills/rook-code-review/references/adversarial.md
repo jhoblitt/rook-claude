@@ -106,7 +106,9 @@ check the code survives it:
   — do new calls retry/timeout sanely, or wedge/hot-loop the reconcile?
 - **Staleness/races**: decisions computed from a read used after writes;
   concurrent reconciles of related CRs (store + user + bucket); watch events
-  arriving out of order. Attack rook's OWN concurrency — never
+  arriving out of order; per-cluster work funnelled through process-wide
+  state (architecture.md's "Clusters reconcile in parallel" owns what
+  counts and the grade). Attack rook's OWN concurrency — never
   hypothetical out-of-band admin mutation (verification.md's exclusion
   and its carve-outs).
 - **Cleanup stranding**: deletion paths with new dependents; finalizer
