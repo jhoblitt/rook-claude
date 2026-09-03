@@ -81,9 +81,10 @@ not yet merged on the target branch), the matching canon in this skill's
 references applies unchanged — note the absence in the report instead of
 citing the missing section as authority.
 
-For conflicting HUMAN feedback on a PR, weight by authority per
-rook-conventions `references/review-feedback.md` — the CODE-OWNERS ladder
-and its conflict-resolution rule are canon there, and apply unchanged to
+For HUMAN feedback on a PR, weight by authority per rook-conventions
+`references/review-feedback.md` — the CODE-OWNERS ladder, its
+conflict-resolution rule, and the verification a non-owner's technical
+claim needs before it is acted on are canon there, and apply unchanged to
 feedback already sitting on a PR under review.
 
 ## Ground rules (all modes)
@@ -263,11 +264,12 @@ in the `rook-reviewer` agent definition. The tools this skill uses:
   this pass entirely: it returns a status code and no page content, which is
   what makes diff-chosen hosts safe to probe. Spec:
   `references/docs-sync.md`.
-- `validate-refs` — every make target and repo-relative path the diff's added
-  lines name, resolved against the branch being reviewed. Mechanizes the
-  docs-sync rule that documented commands must exist; a `MISSING` verdict is a
-  `docs-sync` finding. Spec: `references/docs-sync.md` and
-  `rook-conventions/references/backporting.md`.
+- `validate-refs` — the make targets and repo-relative paths the diff's added
+  lines name, resolved against the branch being reviewed; what it reads and
+  does not is its spec, the validate-refs bullet in `references/docs-sync.md`.
+  Mechanizes the docs-sync rule that documented commands must exist; a
+  `MISSING` verdict is a `docs-sync` finding.
+  `rook-conventions/references/backport-labels.md` calls it too.
 - `validate-checklist` — PR-template checklist conformance, for one PR or a
   whole triage sweep (`sweep <sweep-dir>`). A non-conforming verdict is a
   `docs-sync` finding. Spec: `references/docs-sync.md`.

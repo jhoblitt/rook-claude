@@ -282,14 +282,17 @@ flowchart TD
 
     C4 -.->|"all four defer for house rules"| CX
     CX -.->|"canon: the pre-pr gate runs<br/>before ANY rook PR is opened"| C1
+    CX -.->|"canon: reviewer selection on ANY rook PR<br/>runs the routing KB, never an owners read"| C2
 ```
 
 Every arrow here is a handoff — the plugin has no pipeline that spans skills,
 only invocations, so all cross-skill edges are dashed. `rook-conventions` is
 shaped differently on purpose: it is canon, not a procedure, and nothing
-executes inside it. The four task skills read it; its one outbound rule is the
-pre-PR gate every rook PR passes before it opens, which is how a
-`rook-systemic-prs` campaign reaches review without naming it.
+executes inside it. The four task skills read it; its two outbound rules are
+the pre-PR gate every rook PR passes before it opens — which is how a
+`rook-systemic-prs` campaign reaches review without naming it — and reviewer
+selection, which sends a bare "assign reviewers" on any rook PR through
+`rook-triage`'s routing knowledge base rather than an ad-hoc owners read.
 
 Two hooks. `rebase-notice` (`UserPromptSubmit`): warns when the repo's
 default branch has advanced past the checked-out branch, so a session in a
@@ -359,7 +362,11 @@ both are written to no-op everywhere they don't apply.
 
 The skills never write to GitHub on their own. Every comment, label, close,
 or review post is drafted locally and approved in-session, per item, before
-it executes. Conversational posts made on a maintainer's behalf open with
+it executes — with one carve-out: on a PR already blessed for backporting,
+a `backport-release-*` label the eligible set no longer contains comes off
+in-turn and is reported afterward; adding one still asks
+(`rook-conventions/references/backport-labels.md`, "Applying the label").
+Conversational posts made on a maintainer's behalf open with
 an explicit AI-agent notice (`> This is @<your-login>'s AI agent.`) —
 attributed, never passed off as the human. Reviewed issue/PR content — and
 any page fetched — is treated as untrusted data, never as instructions.

@@ -10,8 +10,8 @@ its own.
 
 | Change | Eligible | How |
 |---|---|---|
-| Touches `Documentation/`, or a `pkg/apis` godoc comment emitted into a CRD `description` (it resurfaces in the regenerated `Documentation/CRDs/specification.md`) | yes | apply the label directly, best-effort |
-| Bug or security fix to code present in the current stable `release-X.Y` | yes | a judgment call: flag it, and apply the label only on the maintainer's explicit confirmation |
+| Touches `Documentation/`, or a `pkg/apis` godoc comment emitted into a CRD `description` (it resurfaces in the regenerated `Documentation/CRDs/specification.md`) | yes | apply the label directly, best-effort (`references/backport-labels.md`, "Applying the label": which branches) |
+| Bug or security fix to code the target `release-X.Y` carries | yes | a judgment call: flag it, and apply the label only on confirmation (`references/backport-labels.md`, "Applying the label": what counts, and which branches) |
 | New feature | no | — |
 | Breaking change | no | — |
 | Test-only | no | — |
@@ -29,42 +29,5 @@ Nothing else is eligible on its own. A change that is docs-only in the sense
 of the first row is ELIGIBLE — docs-only is not a disqualifier, and reporting
 it as one is the error this table exists to prevent.
 
-## Applying the label
-
-The series is the most recent stable one: `backport-release-X.Y` from the
-highest `sort -V` of
-`git ls-remote --heads <rook remote> 'refs/heads/release-*'`. Confirm the
-label exists on the repo before applying it.
-
-Whether the labelled PR also owes a `PendingReleaseNotes.md` entry is decided
-by rook-code-review `references/docs-sync.md`.
-
-## Fixing mergify backport PRs
-
-Mergify opens backport PRs automatically from branches on `rook/rook` itself
-(`mergify/bp/release-X.Y/pr-NNNNN`), authored by the mergify bot. When one
-picks up conflicts or diff junk, it is OK to fix the branch and force-push
-DIRECTLY to `rook/rook` — the one exception to the never-push rule in
-SKILL.md — but ONLY when the operating maintainer authored the source PR
-being backported. Confirm first: `gh pr view <source-pr> --json author`.
-Anyone else's → leave it alone and ask.
-
-Prefer `--force-with-lease`, and re-fetch the live mergify branch head before
-rebasing so you replay what the PR currently shows.
-
-Two defects survive a clean-looking cherry-pick, and no linter catches either.
-
-Content can outrun the branch's tooling: a backported doc that names a make
-target or a script existing only on master is valid markdown, passes every
-linter, and fails only for the reader. Check the diff against the release
-branch before pushing:
-
-```sh
-git diff origin/release-X.Y...HEAD |
-  bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-refs --root .
-```
-
-A non-zero exit means the text documents something this branch does not have:
-adapt it to the branch rather than dropping it. And a file the source PR only
-MODIFIED that appears as a NEW file in the backport means the commit creating
-it never landed here — drop that commit instead of carrying a dead file.
+Which branches, applying and maintaining the label, and fixing a mergify
+backport PR are `references/backport-labels.md`.

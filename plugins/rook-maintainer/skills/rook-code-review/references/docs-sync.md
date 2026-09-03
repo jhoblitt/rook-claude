@@ -76,7 +76,12 @@ tree — a doc that names real identifiers is checkable:
   current.
 - Commands, make targets, and referenced repo paths → the `validate-refs`
   tool, not a hand check: `git diff origin/master... | bash
-  "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-refs --root .`. `MISSING` is a
+  "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-refs --root .`. This is the
+  tool's spec: it reads only the diff's ADDED lines; every repo-relative
+  path they name is resolved, but a make target is read only from code — a
+  fenced block or a backtick span — so a target named in prose, in a
+  workflow `run:` block, or in a shell script is not read, and a shell
+  function name is not a path. `MISSING` is a
   `docs-sync` finding — the text names something this branch does not have,
   which is how a backport comes to document a master-only target.
   `UNRESOLVABLE` is not a finding; it reports what the static parse could not

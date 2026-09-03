@@ -20,6 +20,13 @@ name; a renamed/removed check can wedge mergify or let it merge unchecked.
 If the touched job isn't referenced there, no change is needed — say so,
 noting that you checked.
 
+A check name is `<job id> (<matrix values>)`, or
+`<caller job id> / <called job id> (<matrix values>)` when the job is a
+reusable-workflow call. Moving a job verbatim between workflow files changes
+nothing; converting it to a `workflow_call` renames every one of its checks
+— which is why rook/rook#18232 could fold seven workflows into one and move
+every canary job into a composite action with all 35 check names intact.
+
 ## CI Kubernetes versions
 
 Never downgrade a tested Kubernetes version to work around tooling (e.g.

@@ -1,5 +1,6 @@
-// validate-refs: every make target and repo-relative path a diff's added
-// lines point at, resolved against the branch being changed.
+// validate-refs: the make targets and repo-relative paths a diff's added
+// lines point at, resolved against the branch being changed. What it reads
+// and does not is stated once, in the spec below, not promised here.
 //
 //	git diff origin/release-1.20... | run.sh validate-refs --root .
 //	run.sh validate-refs --diff-file F [--root DIR] [--json]
@@ -18,7 +19,9 @@
 // tooling, which would report a missing container runtime as documentation
 // drift.
 //
-// Spec: skills/rook-conventions/references/backporting.md.
+// Spec: skills/rook-code-review/references/docs-sync.md, the validate-refs
+// bullet. Callers: skills/rook-code-review/SKILL.md,
+// skills/rook-conventions/references/backport-labels.md.
 package main
 
 import (
