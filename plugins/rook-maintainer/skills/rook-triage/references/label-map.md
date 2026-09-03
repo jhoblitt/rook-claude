@@ -27,10 +27,13 @@ item's `areas`, and
 `rt-analyze` / `rt-commits` bucket the KB by it. **Label** is rook's actual
 GitHub label, and only ever a proposal on an ISSUE. This table is that classifier's spec: a row
 whose Area is wrong is a bug in `AreasFor`, and changing one has to land in
-both. The Issue label column is parsed as well: `validate-actions --label-map`
-finds the table by that header and reads each cell's backtick spans as its
-labels, so renaming the header or writing a label unbackticked has to land in
-`internal/actions/labelmap.go` too.
+both. The `Area` and `Issue label` columns are machine-parsed as well:
+`validate-actions --label-map` reads the labels, `rt-issues` reads the pair to
+bucket issues by area. Each finds its columns by those headers and reads a
+cell's backtick spans, so renaming a header fails the parse and unbackticking a
+cell silently drops that row — an `Area` cell included, which costs `rt-issues`
+every label on that row. Either has to land in `internal/actions/labelmap.go`
+too.
 
 | Paths touched | Area | Issue label |
 |---|---|---|

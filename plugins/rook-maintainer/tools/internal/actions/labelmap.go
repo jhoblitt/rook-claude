@@ -3,10 +3,14 @@ package actions
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 )
 
-const labelColumn = "Issue label"
+const (
+	labelColumn = "Issue label"
+	areaColumn  = "Area"
+)
 
 var labelToken = regexp.MustCompile("`([^`]+)`")
 
@@ -40,8 +44,8 @@ func ParseLabelMap(md []byte) ([]string, error) {
 		if col >= len(cells) {
 			continue
 		}
-		for _, m := range labelToken.FindAllStringSubmatch(cells[col], -1) {
-			if label := strings.TrimSpace(m[1]); label != "" && !seen[label] {
+		for _, label := range backtickSpans(cells[col]) {
+			if !seen[label] {
 				seen[label] = true
 				mapped = append(mapped, label)
 			}
@@ -90,4 +94,61 @@ func DiffLabels(mapped, live []string) (missing, unmapped []string) {
 		}
 	}
 	return missing, unmapped
+}
+
+// ParseLabelAreas maps each label of the "Issue label" column to the areas
+// whose rows name it, in table order and deduplicated. It is ParseLabelMap's
+// other direction — same table, same backtick-span rule, read as the label →
+// area translation the table's own prose says a caller must make rather than
+// as a flat label list.
+//
+// A label may reach more than one area (`networking` and `multus` share a row,
+// but nothing stops a later row from naming an existing label), so the value
+// is a list; an Area cell naming several areas maps its row's labels to each.
+func ParseLabelAreas(md []byte) (map[string][]string, error) {
+	byLabel := map[string][]string{}
+	labelCol, areaCol := -1, -1
+	for _, line := range strings.Split(string(md), "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(line, "|") {
+			labelCol, areaCol = -1, -1
+			continue
+		}
+		cells := tableCells(line)
+		if labelCol < 0 || areaCol < 0 {
+			for i, c := range cells {
+				switch c {
+				case labelColumn:
+					labelCol = i
+				case areaColumn:
+					areaCol = i
+				}
+			}
+			continue
+		}
+		if labelCol >= len(cells) || areaCol >= len(cells) {
+			continue
+		}
+		for _, label := range backtickSpans(cells[labelCol]) {
+			for _, area := range backtickSpans(cells[areaCol]) {
+				if !slices.Contains(byLabel[label], area) {
+					byLabel[label] = append(byLabel[label], area)
+				}
+			}
+		}
+	}
+	if len(byLabel) == 0 {
+		return nil, fmt.Errorf("no table with both a %q and an %q column", labelColumn, areaColumn)
+	}
+	return byLabel, nil
+}
+
+func backtickSpans(cell string) []string {
+	var out []string
+	for _, m := range labelToken.FindAllStringSubmatch(cell, -1) {
+		if s := strings.TrimSpace(m[1]); s != "" {
+			out = append(out, s)
+		}
+	}
+	return out
 }

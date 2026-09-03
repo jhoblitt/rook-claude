@@ -75,3 +75,36 @@ func TestDiffLabels(t *testing.T) {
 		t.Errorf("unmapped = %v, want the repo labels the map does not name", unmapped)
 	}
 }
+
+// Same file, same fixture rule as ParseLabelMap above: the rows that translate
+// a label to an area are the ones rt-issues buckets by, so a restructured
+// table has to fail here rather than bucketing nothing.
+func TestParseLabelAreasReadsTheShippedTable(t *testing.T) {
+	md, err := os.ReadFile(labelMapFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	byLabel, err := ParseLabelAreas(md)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The last pair is the fallback row, where label and area differ.
+	for label, want := range map[string]string{
+		"csi": "csi", "ceph-mds": "filesystem", "multus": "networking",
+		"ceph-exporter": "monitoring", "api": "crd", "operator": "core",
+	} {
+		if got := strings.Join(byLabel[label], ","); got != want {
+			t.Errorf("%q maps to %q, want %q", label, got, want)
+		}
+	}
+	if _, ok := byLabel["core"]; ok {
+		t.Error("an area name was read as a label")
+	}
+}
+
+func TestParseLabelAreasRejectsATableMissingEitherColumn(t *testing.T) {
+	if _, err := ParseLabelAreas([]byte(
+		"| Paths touched | Issue label |\n|---|---|\n| `pkg/**` | `operator` |\n")); err == nil {
+		t.Error("accepted a table with no Area column; rt-issues would bucket nothing and pass")
+	}
+}

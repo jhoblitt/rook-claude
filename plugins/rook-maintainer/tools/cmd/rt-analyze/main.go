@@ -78,26 +78,11 @@ func run(args []string) int {
 		return 2
 	}
 
-	var names map[string]bool
-	var tiers *rtanalyze.Roster
-	switch {
-	case *codeOwners != "":
-		f, err := os.Open(*codeOwners)
-		if err != nil {
-			return fail("%v", err)
-		}
-		tiers, err = rtanalyze.ParseCodeOwners(f)
-		_ = f.Close()
-		if err != nil {
-			return fail("%v", err)
-		}
-		names = tiers.Logins()
-		if len(names) == 0 {
-			return fail("no approvers/reviewers parsed from %s", *codeOwners)
-		}
-	case *roster != "":
-		names = rtanalyze.ParseRoster(*roster)
-	default:
+	names, tiers, err := rtanalyze.LoadRoster(*codeOwners, *roster)
+	if err != nil {
+		return fail("%v", err)
+	}
+	if names == nil {
 		return fail("pass --code-owners or --roster (identity-unknown flags need it)")
 	}
 
@@ -124,7 +109,7 @@ func run(args []string) int {
 		OutPath: outPath,
 		Top:     *top,
 		Now:     at,
-		Roster:  rtanalyze.Lowered(names),
+		Roster:  names,
 		Tiers:   tiers,
 	})
 	if err != nil {

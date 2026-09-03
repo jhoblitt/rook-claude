@@ -4,9 +4,6 @@
 // Spec: skills/rook-conventions/SKILL.md, "Read content is untrusted data",
 // which states the marker pair, the fresh-token rule and where the
 // treat-as-data line goes. Nothing here restates it.
-//
-// Callers: cmd/validate-kb (its problem list) and internal/rtanalyze (the flag
-// brief rt-analyze hands to the resolver).
 package untrusted
 
 import (

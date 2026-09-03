@@ -1,0 +1,45 @@
+{
+ "data": {
+  "areas": {
+   "block": {
+    "grace": 1,
+    "heidi": 1
+   },
+   "csi": {
+    "bob": 1,
+    "carol": 1,
+    "mallory": 1
+   },
+   "docs": {
+    "mallory": 2,
+    "carol": 1
+   },
+   "filesystem": {
+    "erin": 1
+   }
+  },
+  "provenance": {
+   "issues": 7,
+   "oldest_createdat": "2023-05-05T00:00:00Z",
+   "unlabelled": 2,
+   "window_months": 24,
+   "now": "2026-08-01T00:00:00Z",
+   "cutoff": "2024-07-31T00:00:00Z",
+   "skipped_logins": 1
+  }
+ },
+ "flags": [
+  {
+   "type": "truncation",
+   "item": "issue #106",
+   "evidence": "comments=100, the whole first page (the export carries no pageInfo)",
+   "question": "Issue may have more comments than were exported \u2014 participation counts for it may be incomplete."
+  },
+  {
+   "type": "identity-unknown",
+   "item": "mallory",
+   "evidence": "issues_total=3 across areas: csi, docs",
+   "question": "Answers issues among an area's top participants but is not in the roster and not an obvious bot \u2014 who is this / a legitimate community responder?"
+  }
+ ]
+}
