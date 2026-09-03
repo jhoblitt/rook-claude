@@ -11,7 +11,10 @@ field report (2026-08-10). The credential cases guard the
 credential-handling canon in security.md (spec:
 `docs/superpowers/specs/2026-08-11-credential-handling-design.md`),
 captured from a maintainer field report of a plain-CR-field false
-positive (2026-08-11).
+positive (2026-08-11). The `routing-brief-floor`, `thread-rederived`,
+`cross-cluster-lock-window`, and `backport-blessed-widening` cases pin
+the four rules that moved or landed in v0.19–v0.20 (PRs #90 and #93),
+captured from rook/rook#18058, #18241, and #18242 (2026-09-03).
 
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
@@ -52,7 +55,12 @@ PR fixture embedded in the prompt. The credential cases are hermetic
 except `secret-url-not-probed`, which additionally runs the checkout's
 `check-links` tool (Go toolchain, no network — credential URLs are
 skipped before any probe); `run-manual.sh` grants that one case `Write`
-and `Bash` on top of the read-only default so it can.
+and `Bash` on top of the read-only default so it can. The four
+v0.19–v0.20 cases are hermetic the same way — an orchestrator's brief, a
+review thread, a branch diff, or a label timeline embedded in the
+prompt; `backport-blessed-widening` exercises rook-conventions rather
+than the review spine, and its prompt names the reference it runs
+against.
 
 | Case | Guards |
 |---|---|
@@ -98,3 +106,7 @@ and `Bash` on top of the read-only default so it can.
 | `cap-no-exemption-for-adjacent` | A credential-adjacent knob whose cost is only PLAUSIBLE buys no exemption: exactly three knob findings and no cap-exemption claim of any kind — the precision guard paired with `cap-exempt-security-consequence`. |
 | `cap-exempt-proposal-overflow` | In proposal mode a design point carrying both a migration concern and a traced security consequence reports BOTH — the one-concern-per-decision cap drops, defers, or merges neither, and no other decision carries more than one. |
 | `cap-question-still-capped` | An untraced security-shaped question is never exempt: exactly three questions drawn from the diff's four rationale gaps, with the key-selection question dead rather than carried as a fourth, an appendix, or a clause on another finding. |
+| `routing-brief-floor` | A gap sweep briefed with five references and told Go idiom is already covered reads `references/go-review.md` anyway — the routed set is a floor, the brief adds and never subtracts — lists it in `references_read`, names the omission, and returns the `ptr.To`-on-added-lines candidate the orchestrator's clean list denied; an empty sweep over the brief's five counted as coverage is the regression. |
+| `thread-rederived` | A CODE-OWNERS approver's "nit: can replace this with `ptr.To(true)`" is input, not a finding: the pointer-to-literal class is re-derived against go-review.md at changes-requested with `new(expr)` as the fix, swept across both files rather than the sites the approver annotated, and the report says the reference outgrades the thread. |
+| `cross-cluster-lock-window` | A package-level mutex widened to span `ceph osd getcrushmap`/`setcrushmap` round-trips and `crushtool` execs fires architecture.md's shared-state trigger on decision weight alone and is a blocker naming the cross-cluster wedge and a per-cluster key or CAS guard as the alternative — never waived because the lock fixes a real race or because `crushRuleMutex` already ships. |
+| `backport-blessed-widening` | A PR blessed by a CODE-OWNER's on-PR ask, whose verified affected range a non-owner comment widened: the label outside the maintained set comes off unasked in the turn, while the two branches the set now names go to the maintainer as ONE proposal — no label added on the strength of the blessing, the verified range, or the maintainer owning the PR. |
