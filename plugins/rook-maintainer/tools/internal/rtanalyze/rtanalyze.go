@@ -150,6 +150,8 @@ func baseName(p string) string {
 // change's spec.
 func AreasFor(p string) map[string]bool {
 	out := map[string]bool{}
+	base := baseName(p)
+	goManifest := base == "go.mod" || base == "go.sum"
 	if strings.Contains(strings.ToLower(p), "cosi") {
 		out["object-cosi"] = true
 	}
@@ -203,7 +205,7 @@ func AreasFor(p string) map[string]bool {
 	} else if strings.HasPrefix(p, "tests/") {
 		out["test"] = true
 	}
-	if hasAnyPrefix(p, "pkg/apis/", "pkg/client/") {
+	if hasAnyPrefix(p, "pkg/apis/", "pkg/client/") && !goManifest {
 		out["crd"] = true
 	}
 	if strings.Contains(p, "multus") || strings.HasPrefix(p, "pkg/operator/ceph/controller/network") {
@@ -222,8 +224,7 @@ func AreasFor(p string) map[string]bool {
 		strings.Contains(p, "monitoring") {
 		out["monitoring"] = true
 	}
-	base := baseName(p)
-	if p == "go.mod" || p == "go.sum" || p == "go.work" || p == "go.work.sum" ||
+	if goManifest || p == "go.work" || p == "go.work.sum" ||
 		hasAnyPrefix(p, "build/", "images/") ||
 		base == "Makefile" || strings.HasSuffix(base, ".mk") ||
 		hasAnyPrefix(base, ".golangci", ".commitlintrc", ".codespell") {

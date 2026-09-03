@@ -45,7 +45,7 @@ both.
 | `Documentation/**` | `docs` | `docs` |
 | `.github/workflows/**`, `tests/scripts/**` | `ci` | `ci` |
 | `tests/**` | `test` | `test` |
-| `pkg/apis/**` | `crd` | `crd` (API-surface changes: also `api`) |
+| `pkg/apis/**` (its `go.mod`/`go.sum` are `build`) | `crd` | `crd` (API-surface changes: also `api`) |
 | multus/network paths | `networking` | `multus` / `networking` |
 | nvmeof paths | `nvmeof` | `nvmeof` |
 | external-cluster paths | `ceph-external` | `ceph-external` |

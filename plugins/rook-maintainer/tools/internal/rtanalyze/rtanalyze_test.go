@@ -221,6 +221,8 @@ func TestAreasFor(t *testing.T) {
 		{"pkg/operator/discover/discover.go", "discover"},
 		{"pkg/operator/ceph/reporting/reporting.go", "monitoring"},
 		{"go.mod", "build"},
+		{"pkg/apis/go.mod", "build"},
+		{"pkg/apis/go.sum", "build"},
 		{"images/ceph/Dockerfile", "build"},
 		{"build/makelib/common.mk", "build"},
 		{"Makefile", "build"},
