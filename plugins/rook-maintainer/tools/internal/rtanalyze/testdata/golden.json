@@ -385,7 +385,7 @@
      },
      {
       "number": 117,
-      "title": "test: handle \"quoted\" and C:\\path\tand\nnewline"
+      "title": "test: handle \"quoted\" and C:\\pathandnewline"
      }
     ]
    },

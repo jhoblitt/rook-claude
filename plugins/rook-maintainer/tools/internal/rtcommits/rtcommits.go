@@ -45,6 +45,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/links"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/mentions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtfetch"
@@ -384,7 +385,7 @@ func (s *identitySet) roster() []Identity {
 	for _, p := range people {
 		out = append(out, Identity{
 			Login:      login(p.login),
-			Name:       p.name,
+			Name:       links.Sanitize(p.name),
 			Emails:     sortedValues(p.emails),
 			Commits:    p.commits,
 			LastActive: yearMonth(p.last),
@@ -517,7 +518,7 @@ func (a *areaAcc) authors() []Author {
 	for _, st := range ranked {
 		out = append(out, Author{
 			Login:           login(st.p.login),
-			Name:            st.p.name,
+			Name:            links.Sanitize(st.p.name),
 			Commits:         st.commits,
 			WeightedCommits: round2(st.weighted),
 			LastActive:      yearMonth(st.last),

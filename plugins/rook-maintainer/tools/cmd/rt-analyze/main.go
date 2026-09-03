@@ -3,14 +3,17 @@
 //
 //	run.sh rt-analyze --in-dir DIR
 //	    (--code-owners /path/to/CODE-OWNERS | --roster a,b,c)
-//	    [--out FILE] [--top 15] [--now ISO8601]
+//	    [--out FILE] [--brief FILE] [--top 15] [--now ISO8601]
 //	run.sh rt-analyze areas PATH [PATH...]
 //	run.sh rt-analyze areas --stdin
 //
 // Consumes rt-fetch's rt_prs.jsonl + rt_fetch_state.json from --in-dir and
 // writes the {data, flags} miner contract to --out (default
-// <in-dir>/rt_final.json). Purely offline. Pin --now to keep the recency
-// weighting — and therefore the reviewer ranking — reproducible across re-runs.
+// <in-dir>/rt_final.json). Purely offline. The run summary goes to stderr; the
+// flags reach the resolver as the fenced block --brief FILE writes, and a run
+// given no --brief emits none.
+// Pin --now to keep the recency weighting — and therefore the reviewer ranking
+// — reproducible across re-runs.
 //
 // The areas subcommand runs the same path-glob classifier for a caller that
 // holds changed paths rather than a fetch directory — rook-triage's
@@ -51,13 +54,15 @@ func run(args []string) int {
 	fs := flag.NewFlagSet("rt-analyze", flag.ContinueOnError)
 	inDir := fs.String("in-dir", "", "directory holding rt_prs.jsonl and rt_fetch_state.json")
 	out := fs.String("out", "", "output file (default <in-dir>/rt_final.json)")
+	brief := fs.String("brief", "", "write the resolver's fenced flag brief to FILE (default: no brief)")
 	codeOwners := fs.String("code-owners", "", "path to CODE-OWNERS, mined for the authority roster")
 	roster := fs.String("roster", "", "comma-separated logins (alternative to --code-owners)")
 	top := fs.Int("top", 15, "reviewers kept per area")
 	now := fs.String("now", "", "ISO timestamp for recency weighting (default: current time); pin it for reproducible re-runs")
 	fs.Usage = func() {
 		fmt.Fprint(os.Stderr, "usage: rt-analyze --in-dir DIR "+
-			"(--code-owners FILE | --roster a,b,c) [--out FILE] [--top N] [--now ISO]\n")
+			"(--code-owners FILE | --roster a,b,c) [--out FILE] [--brief FILE] "+
+			"[--top N] [--now ISO]\n")
 		fs.PrintDefaults()
 	}
 
@@ -126,6 +131,11 @@ func run(args []string) int {
 		return fail("%v", err)
 	}
 	fmt.Fprint(os.Stderr, strings.Join(result.Summary, "\n")+"\n")
+	if *brief != "" {
+		if err := os.WriteFile(*brief, []byte(rtanalyze.FlagBrief(result.Flags)), 0o666); err != nil {
+			return fail("%v", err)
+		}
+	}
 	return 0
 }
 
