@@ -35,6 +35,7 @@ func TestShapePRStampsAreas(t *testing.T) {
 		}, []string{"object", "object-multisite"}},
 		{"deliberately unbucketed paths", []string{
 			"deploy/examples/cluster.yaml", "README.md",
+			"Documentation/CRDs/specification.md",
 		}, []string{}},
 		{"no files at all", nil, []string{}},
 		{"duplicate hits collapse", []string{

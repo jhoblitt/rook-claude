@@ -7,9 +7,10 @@
 // and sends only survivors to a resolver agent.
 //
 // Area taxonomy = kb v3 (25 areas; rebucketed 2026-07-23: +build/design/
-// discover, core broadened). deploy/examples generic manifests and repo meta
-// files are DELIBERATELY unbucketed — they surface as bucket-ambiguity flags to
-// confirm the gap is still intentional, not silently dropped.
+// discover, core broadened). The classes the "Deliberately unbucketed"
+// paragraph of skills/rook-triage/references/label-map.md names match no
+// area — they surface as bucket-ambiguity flags to confirm the gap is still
+// intentional, not silently dropped.
 //
 // Data: per-area top reviewers (recency-weighted: 1.0 <=6mo, 0.5 <=12mo, 0.25
 // older; bots and self-reviews excluded; counted per review event) + 5 most
@@ -52,6 +53,19 @@ var repoMeta = map[string]bool{
 	"OWNERS.md": true, "SECURITY.md": true, "LICENSE": true,
 	".gitignore": true, ".github/PULL_REQUEST_TEMPLATE.md": true,
 	"mkdocs.yml": true, "CONTRIBUTING.md": true, "AGENTS.md": true,
+}
+
+// codegen is docs-sync.md's generated set minus the paths the table already
+// places — deploy/examples/crds.yaml, unbucketed by its prefix, and the
+// generated Go under pkg/apis/** and pkg/client/**, crd by their row. What
+// is left sits under a bucketed prefix, where the rule would read a
+// regeneration as the helm or docs change a human made, so a path added
+// there is added here.
+var codegen = map[string]bool{
+	"deploy/charts/rook-ceph/templates/resources.yaml": true,
+	"Documentation/CRDs/specification.md":              true,
+	"Documentation/Helm-Charts/operator-chart.md":      true,
+	"Documentation/Helm-Charts/ceph-cluster-chart.md":  true,
 }
 
 // summaryAreas are echoed to stderr as a smoke test of the run.
@@ -150,6 +164,9 @@ func baseName(p string) string {
 // change's spec.
 func AreasFor(p string) map[string]bool {
 	out := map[string]bool{}
+	if codegen[p] {
+		return out
+	}
 	base := baseName(p)
 	goManifest := base == "go.mod" || base == "go.sum"
 	if strings.Contains(strings.ToLower(p), "cosi") {
@@ -589,6 +606,14 @@ var zeroGroups = []struct {
 		}
 		return false
 	}},
+	{"generated artifacts (deliberately unbucketed)", func(paths []string) bool {
+		for _, p := range paths {
+			if codegen[p] {
+				return true
+			}
+		}
+		return false
+	}},
 }
 
 func (t *tally) bucketFlags() []Flag {
@@ -627,7 +652,7 @@ func (t *tally) bucketFlags() []Flag {
 			Type:     "bucket-ambiguity",
 			Item:     fmt.Sprintf("%d PRs: no area rule matches — ungrouped/misc", len(leftover)),
 			Evidence: fmt.Sprintf("PR numbers: %s; sample paths: %s", pyReprInts(leftover), t.samplePaths(leftoverSet)),
-			Question: "Not in either deliberate unbucketed class — what area (if any) should each count toward, or is a taxonomy/classifier fix needed?",
+			Question: "Not in any deliberate unbucketed class — what area (if any) should each count toward, or is a taxonomy/classifier fix needed?",
 		})
 	}
 
@@ -645,9 +670,9 @@ func (t *tally) bucketFlags() []Flag {
 	if nums := sortedNumbers(apis); len(nums) > 0 {
 		flags = append(flags, Flag{
 			Type:     "bucket-ambiguity",
-			Item:     fmt.Sprintf("%d PRs match >=6 areas — pkg/apis/** type changes fanning into regenerated CRD docs/charts", len(nums)),
+			Item:     fmt.Sprintf("%d PRs match >=6 areas — pkg/apis/** type changes fanning across operator code, hand-written docs and tests", len(nums)),
 			Evidence: "PR numbers: " + pyReprInts(nums),
-			Question: "Likely legitimate codegen blast-radius, not a classifier bug — confirm these should still count toward each touched area's reviewer stats.",
+			Question: "Likely the legitimate blast radius of an API change, not a classifier bug — confirm these should still count toward each touched area's reviewer stats.",
 		})
 	}
 	if nums := sortedNumbers(cross); len(nums) > 0 {

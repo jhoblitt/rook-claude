@@ -60,9 +60,12 @@ Six rows above have an Area that is not its Label — the fallback row most of
 all, since it fires constantly. Reading a stamped `areas` value as a label
 proposal is wrong on those; translate through this table.
 
-Deliberately unbucketed (no area label): generic `deploy/examples/**` edits
-and repo-meta files (root markdown, `.mergify.yml`, templates, CODE-OWNERS —
-the set `repoMeta` in `internal/rtanalyze` enumerates).
+Deliberately unbucketed (no area label): generic `deploy/examples/**` edits,
+repo-meta files (root markdown, `.mergify.yml`, templates, CODE-OWNERS,
+`.docs/**` — the set `repoMeta` in `internal/rtanalyze` plus that prefix),
+and the generated artifacts the set `codegen` beside it enumerates
+(rook-code-review's `references/docs-sync.md` says what emits them) — the
+`deploy/charts/**` and `Documentation/**` rows above do not apply to them.
 
 A stamped `areas` therefore has three states, and they are not
 interchangeable: a list is the classification; `[]` means classified and

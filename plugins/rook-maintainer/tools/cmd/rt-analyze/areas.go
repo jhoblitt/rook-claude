@@ -19,8 +19,9 @@ import (
 // per-path report: rook-triage routes an item, never a file.
 //
 // A path set that matches no area prints nothing and exits 0. That is the
-// taxonomy's answer, not a failure — deploy/examples manifests and repo meta
-// files are unbucketed on purpose (see internal/rtanalyze).
+// taxonomy's answer, not a failure — the "Deliberately unbucketed" paragraph
+// of skills/rook-triage/references/label-map.md names the classes that match
+// nothing on purpose.
 func runAreas(args []string, stdin io.Reader, stdout io.Writer) int {
 	fs := flag.NewFlagSet("rt-analyze areas", flag.ContinueOnError)
 	fromStdin := fs.Bool("stdin", false, "read the paths from stdin, one per line, instead of from PATH arguments")

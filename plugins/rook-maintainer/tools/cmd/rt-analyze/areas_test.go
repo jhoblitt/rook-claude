@@ -39,6 +39,9 @@ func TestAreasClassifiesThePathSetAsAWhole(t *testing.T) {
 		{"a path matching nothing is an empty answer, not an error", []string{
 			"deploy/examples/cluster.yaml",
 		}, ""},
+		{"a generated artifact is unbucketed under a bucketed prefix", []string{
+			"deploy/charts/rook-ceph/templates/resources.yaml",
+		}, ""},
 		{"unbucketed paths do not suppress the ones that match", []string{
 			"README.md", "deploy/charts/rook-ceph/values.yaml",
 		}, "helm\n"},
