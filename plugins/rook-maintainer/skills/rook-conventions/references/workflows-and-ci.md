@@ -8,7 +8,8 @@
 - Run `actionlint` (with `shellcheck` installed for inline `run:` scripts) on
   changed workflows and fix everything it reports.
 - Pin `go-version` to the module's `go.mod` directive unless the job
-  deliberately matrix-tests Go versions.
+  deliberately matrix-tests Go versions, in which case the matrix must
+  include the `go.mod` version.
 
 ## Workflow changes and `.mergify.yml`
 

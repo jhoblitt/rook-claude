@@ -11,15 +11,15 @@ load-bearing that is more than a release old.
 
 | Class | Signature | Notes |
 |---|---|---|
-| ceph bring-up wedge | canary/integration job dies in "wait for ceph to be ready" / mon quorum never forms | historic, load-sensitive |
-| mgr-ready on Ceph v20+ | canary waiting on mgr module / port 9283 readiness | UPSTREAM: ceph tracker 77967 (mgr/prometheus hang); rook #17906 tracks; not a rook regression |
-| canary OSD under-provision | canary "main" job: fewer OSDs than requested; raw-mode device list missed a disk | UPSTREAM: ceph `get_devices` udev-data bug on Ceph 20.2.x images (ceph PR 65921); rook #17734 merged a mitigation, #17882 (per-device fallback) still open — check the job's ceph image version |
-| upgrade suite step timeouts | TestCephUpgradeSuite intermittent step timeouts | long-standing; includes the PVC/CSI cold-start bind family (see smoke); post-merge master failures run from `integration-tests-on-release.yaml`, not the PR workflow |
-| smoke PVC cold-start bind | first PVC of a fresh cluster times out binding right after CSI comes up | rook #17732 family; correlate with diff before calling REAL |
+| ceph bring-up wedge | canary/integration job dies in "wait for ceph to be ready" / mon quorum never forms | historic, load-sensitive (as of 2026-07-26) |
+| mgr-ready on Ceph v20+ | canary waiting on mgr module / port 9283 readiness | UPSTREAM: ceph tracker 77967 (mgr/prometheus hang); rook #17906 tracks; not a rook regression (as of 2026-07-26) |
+| canary OSD under-provision | canary "main" job: fewer OSDs than requested; raw-mode device list missed a disk | UPSTREAM: ceph `get_devices` udev-data bug on Ceph 20.2.x images (ceph PR 65921); rook #17734 merged a mitigation, #17882 (per-device fallback) still open — check the job's ceph image version (as of 2026-07-26) |
+| upgrade suite step timeouts | TestCephUpgradeSuite intermittent step timeouts | long-standing; includes the PVC/CSI cold-start bind family (see smoke); post-merge master failures run from `integration-tests-on-release.yaml`, not the PR workflow (as of 2026-07-26) |
+| smoke PVC cold-start bind | first PVC of a fresh cluster times out binding right after CSI comes up | rook #17732 family; correlate with diff before calling REAL (as of 2026-07-26) |
 | helm suite rgw pod restarts | `TestCephHelmSuite` passes every subtest, then fails in `GetPodRestartsFromNamespace` (`tests/framework/utils/k8s_helper.go`) with `expected: 0, actual: 1`, logging "number of time pod `rook-ceph-rgw-*` has restarted is 1" | that helper tolerates no restart outside the `rook-ceph-mgr` exemption already coded there for rook issue 12646, so an rgw restart fails the suite after every functional check passed. Seen on four unrelated test-only PRs (rook 17895, 17897, 17928, 17936) across both helm versions in the matrix. Usually clears on retry but NOT always — one SHA failed it twice running, the second time with an rgw pod at RestartCount 2 — so on a repeat read the rgw logs rather than retrying again: the restart may be a real gateway-stability problem this assertion is surfacing (as of 2026-08-10) |
-| keystone suite | keystone auth setup/teardown timeouts | environment-heavy suite |
-| multus attachment | multus setup / network-attachment failures in canary | root-caused as a `kubectl wait` empty-selector race in `setup-multus.sh` — check whether the rollout-status/vendored-manifest fix has landed before classifying |
-| registry/network | image pull backoff, TLS handshake to registries, apt/pip mirror errors | INFRA |
+| keystone suite | keystone auth setup/teardown timeouts | environment-heavy suite (as of 2026-07-26) |
+| multus attachment | multus setup / network-attachment failures in canary | root-caused as a `kubectl wait` empty-selector race in `setup-multus.sh` — check whether the rollout-status/vendored-manifest fix has landed before classifying (as of 2026-07-26) |
+| registry/network | image pull backoff, TLS handshake to registries, apt/pip mirror errors | INFRA (as of 2026-07-26) |
 | GH Actions action-download | `Failed to download action '<host>/repos/<owner>/<repo>/tarball/<sha>'` + `Name or service not known (internal-api.service.iad.github.net:443)`; `Failed to download archive ... after 3 attempts` | INFRA — GitHub fetching its OWN action tarballs, before the job body: no image pulled, no repo code run, so `registry/network` does not match. Fails at `consider (pre-job) debugging`, `consider (post-job) debugging`, `Set up job`, or any step that dies inside "Prepare all required actions" — that last one carries a meaningful-looking name (seen as `setup cluster resources`), so the step name is not evidence: check whether the step got past action preparation. Discriminator: time-correlation plus peers — it hits every job started in the outage window, and open PRs on the same base are green or carry only their own known reds; a real regression is not confined to one push's time window. Clears on one rerun. Seen rook #17952, 7 jobs across 4 runs created in the same minute (as of 2026-08-25) |
 
 ## Recently resolved — a match here is REAL, not flake
@@ -29,7 +29,7 @@ fix was incomplete): classify REAL and cite the entry.
 
 | Class | Was | Resolution |
 |---|---|---|
-| rgw-multisite fresh-zone period-push 403 | fresh-zone multisite tests wedged on a 403 pushing the realm period | fixed by rook #17710 / #17711 / #17798 (merged ~2026-07); residual operator gap tracked in rook #17797 |
+| rgw-multisite fresh-zone period-push 403 | fresh-zone multisite tests wedged on a 403 pushing the realm period | fixed by rook #17710 / #17711 / #17798 (merged ~2026-07); residual operator gap tracked in rook #17797 (as of 2026-07-26) |
 
 ## Entry template
 

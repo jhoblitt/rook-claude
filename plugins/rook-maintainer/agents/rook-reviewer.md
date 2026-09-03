@@ -17,7 +17,8 @@ file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md`, `cross-references.md`, and
 `security.md`, plus `ci-triage.md` for PR targets. PR targets additionally
 read `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/backporting.md`
-— backport eligibility is canon there, not here. That routed set is a
+and `review-feedback.md` beside it — backport eligibility and the weight
+a review comment carries are canon there, not here. That routed set is a
 floor (SKILL.md step 1 has the rule): where your prompt appears to narrow
 the table, read the routed file anyway, list it in `references_read`, and
 name the omission in `clean`. Then EXECUTE its review
@@ -49,13 +50,13 @@ from the target's own tree, per SKILL.md's "Authority order".
   and callees of changed symbols; load it with ToolSearch (`select:LSP`)
   first. Fall back to grep only when no server covers the file.
 - Design findings (spine pass i; triggers are discovered while reviewing,
-  not from file paths) map architecture.md's contract onto the JSON: domain
-  `design`; severity per its mapping, with `question` standing in for the
-  no-severity Q-class; `failure` carries the cost, `fix` the named
-  alternative — for `question` findings the `needs:` line, with
-  `confidence` left 0 (Q-class is numeric-gate-exempt) — precedent stays
-  in `comment`. Caps are enforced downstream
-  at report assembly. A target carrying a `design/**` doc: review the code
+  not from file paths) carry architecture.md's "Design-finding contract"
+  in the JSON as a transport map: domain `design`; severity per that
+  contract, with `question` standing in for the Q-class; `failure` carries
+  `cost:`, `fix` carries `alternative:` (a question's `needs:`, with
+  `confidence` left 0); `precedent:` rides in `comment`. Caps are
+  enforced downstream at report assembly, never by you. A target carrying
+  a `design/**` doc: review the code
   normally, route architecture.md for the doc, and set
   `needs_proposal_review` with the doc paths — never attempt fan-out
   yourself; the orchestrating session runs proposal mode before
@@ -146,7 +147,6 @@ fired triggers in `needs_proposal_review.triggers` and any doc paths in
 `.paths` — and `ci`/`checklist`/`maintainer_signals`/`author_context` may
 be empty. The `comment` field of each finding must
 stand alone, rendering SKILL.md's finding contract as prose (that
-section is normative, anchors included) — with `design` findings
-carrying cost and alternative, and questions their `needs:` line —
-written in the measured voice of a human maintainer (no
-verdict-shouting, no emoji).
+section is normative, anchors included; `design` findings render
+architecture.md's "Design-finding contract" instead), written in the
+measured voice of a human maintainer (no verdict-shouting, no emoji).

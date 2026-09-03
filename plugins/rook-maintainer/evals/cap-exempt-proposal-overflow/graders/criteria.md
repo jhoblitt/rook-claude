@@ -18,8 +18,9 @@ through the new field itself: `{name, namespace}` is user-writable and
 the operator resolves it with cluster-wide read, so a tenant can name a
 Secret in a namespace they cannot read and have the operator fetch it
 for them. Proposal mode caps concerns at one per decision, and
-proposal.md holds that architecture.md's cap-exempt categories are
-exempt from that cut — so both concerns report under design point 1,
+architecture.md's "Caps, force-ranked" bullet holds that its cap-exempt
+categories are exempt from that cut — so both concerns report under
+design point 1,
 the migration one on rank and the security one on exemption. Design
 points 2 and 3 are documented decisions, not gotchas. This target is a
 document, so findings anchor to D-numbers and `§section` rather than to

@@ -93,9 +93,9 @@ the author is a separate step, each post explicitly approved
      instead" can be the review's correct outcome.
    Extend the menu when the doc demands a lens this list lacks.
 5. **Fan-out.** One fresh `rook-maintainer:design-attacker` agent per
-   gripping perspective — typically 3–6 (`general-purpose` carrying
-   that agent file's contract inline when the type is unavailable, and
-   its fetch ban with it — `references/docs-sync.md`).
+   gripping perspective — typically 3–6 (`general-purpose` carrying the
+   agent file inline, fetch ban included, when the type is unavailable —
+   `references/docs-sync.md`).
    Isolation floor: even a sketch gets one fresh attacker — the
    orchestrator that performed step 2 never attacks its own
    extraction. An explicitly requested quick pass shrinks the panel to
@@ -158,6 +158,10 @@ reviewed.
 
 ## Report contract
 
+A pure proposal report opens at the verdict line below; a mixed target's
+report opens as SKILL.md "Output format" says, since its code ran the
+spine.
+
 1. **Verdict line** — one sentence, plus the 1–3 items that most
    change the verdict. A mixed target (doc + implementation) headlines
    the OVERALL verdict, fusing both streams: any surviving blocker or
@@ -177,14 +181,10 @@ reviewed.
    (`D7 … — MISSING (C4)`). AGREE rows are load-bearing coverage, not
    filler: an author reading only the ledger knows what survived
    attack.
-3. **Concerns and questions** in architecture.md's design-finding
-   contract, grouped by decision — fan-out runs carry each concern's
-   `rebuttal:` (the strongest author counter the attack beat); inline
-   quick-pass reports omit it. Caps for this mode: one concern per
-   decision, force-ranked within the decision; 3 questions per target.
-   architecture.md's cap-exempt categories are exempt from both cuts.
-   MISSING is a ledger judgment, not a finding, unless promoted to a
-   concern.
+3. **Concerns and questions** in architecture.md's "Design-finding
+   contract", grouped by decision — the `rebuttal:` line and this
+   mode's caps are stated there. MISSING is a ledger judgment, not a
+   finding, unless promoted to a concern.
 4. **Claim audit**: VERIFIED / REFUTED / INFERENCE per claim, with
    evidence.
 5. **Attacked and survived**: which perspectives ran and what held —

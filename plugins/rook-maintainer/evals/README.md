@@ -16,6 +16,14 @@ positive (2026-08-11). The `routing-brief-floor`, `thread-rederived`,
 the four rules that moved or landed in v0.19–v0.20 (PRs #90 and #93),
 captured from rook/rook#18058, #18241, and #18242 (2026-09-03).
 
+The credential cases (`secret-*`, `credential-*`, `routing-*`,
+`same-site-fusion`) and the three diff-mode cap cases
+(`cap-exempt-security-consequence`, `cap-no-exemption-for-adjacent`,
+`cap-question-still-capped`) require the report opener rook-code-review
+`SKILL.md`'s Output format specifies — the routed references actually
+read — rather than a shape of their own; the remaining cases state their
+own report shape or none.
+
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
 (`evals/<case>/prompt.md` + `graders/criteria.md`) and are runnable the

@@ -9,8 +9,8 @@ partial fixes, or "will follow up". The output decides whether the PR opens.
 The authoring session cannot review its own assumptions — it will re-read
 the code through the reasoning that produced it. Dispatch a FRESH agent
 (rook-maintainer:rook-reviewer type when available, else general-purpose —
-a fallback brief carries that agent file's contract inline AND its fetch
-ban, `references/docs-sync.md`) whose prompt contains ONLY:
+a fallback brief carries the agent file inline, fetch ban included, per
+`references/docs-sync.md`) whose prompt contains ONLY:
 
 - the branch diff (`git diff origin/master...HEAD`) and the repo path
   (read-only),
@@ -106,7 +106,9 @@ check the code survives it:
   — do new calls retry/timeout sanely, or wedge/hot-loop the reconcile?
 - **Staleness/races**: decisions computed from a read used after writes;
   concurrent reconciles of related CRs (store + user + bucket); watch events
-  arriving out of order. Attack rook's OWN concurrency — never
+  arriving out of order; per-cluster work funnelled through process-wide
+  state (architecture.md's "Clusters reconcile in parallel" owns what
+  counts and the grade). Attack rook's OWN concurrency — never
   hypothetical out-of-band admin mutation (verification.md's exclusion
   and its carve-outs).
 - **Cleanup stranding**: deletion paths with new dependents; finalizer

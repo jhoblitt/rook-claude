@@ -682,8 +682,9 @@ Every eval is `plugins/rook-maintainer/evals/<case>/prompt.md` +
 (fixture diff embedded in the prompt; no rook checkout, no network, no
 subagents), in the exact voice of the existing `unset-field-unmanaged`
 case. Every prompt opens with the standard preamble and REQUIRES the
-report to open with the routed-reference list from spine step 1 — that is
-what lets negative-case graders verify `security.md` was loaded.
+report to open with the routed-reference list from spine step 1 (the
+opener `SKILL.md`'s Output format specifies) — that is what lets
+negative-case graders verify `security.md` was loaded.
 
 Standard prompt skeleton (fill the bracketed parts per eval; keep
 everything else verbatim):

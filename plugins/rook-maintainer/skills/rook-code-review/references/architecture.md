@@ -139,9 +139,9 @@ For each fired trigger, reconstruct the decision before judging it:
   The bar is "whenever practical": a short, genuinely global critical
   section for a process-wide singleton is fine; per-cluster work
   funnelled through global state is a finding. At design time it is a
-  `design` finding under this constraint, cost and alternative in place
-  of the failure scenario; on code it is changes-requested with the `bug`
-  tag, and a blocker when the hold window spans a call that can block on
+  `design` finding under this constraint (the contract below); on code it
+  is changes-requested with the `bug` tag, and a blocker when the hold
+  window spans a call that can block on
   another cluster's health (a mon round-trip, an exec against it), since
   one cluster's outage then wedges every cluster's reconcile behind the
   lock. Both shapes are on rook 18241 (OSD CRUSH topology normalization):
@@ -187,7 +187,8 @@ the `design` domain; this contract is its equivalent bar:
   target, enforced at report/ID assembly — the only stage that sees the
   whole set (verification may shard across agents). Rank by cost;
   the rest die unreported. Proposal mode swaps in its own cap: one
-  concern per decision, 3 questions per target (proposal.md). A mixed
+  concern per decision, force-ranked within it, and 3 questions per
+  target. A mixed
   doc+code target combines regimes, not budgets: the per-decision cap
   governs the doc's decisions, the 3-finding cap the code's design
   findings, and the target carries 3 questions total. The cap
