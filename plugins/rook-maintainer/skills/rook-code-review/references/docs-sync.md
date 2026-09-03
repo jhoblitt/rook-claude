@@ -140,8 +140,9 @@ messages, examples, workflows:
   resolves to a `github.com/rook/*` remote), so a stand-in reviewing rook is
   adjudicated like the agent it replaces while fetches in unrelated repos are
   left alone. What the stand-in never gains is the narrow tool roster the
-  agent file declares, which is why a fallback brief carries that file's
-  contract inline. That brief still bans WebFetch outright, everywhere: the
+  agent file declares, which is why a fallback brief carries the agent
+  file inline in full — its canon, hard rules, and output contract. That
+  brief still bans WebFetch outright, everywhere: the
   stand-in keeps a roster the agent file would have narrowed, and a rule an
   agent enforces on itself is one an injected diff can argue it out of. The
   hook backs the ban inside a rook checkout; outside one the brief is the

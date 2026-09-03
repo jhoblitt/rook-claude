@@ -13,6 +13,14 @@ credential-handling canon in security.md (spec:
 captured from a maintainer field report of a plain-CR-field false
 positive (2026-08-11).
 
+The credential cases (`secret-*`, `credential-*`, `routing-*`,
+`same-site-fusion`) and the three diff-mode cap cases
+(`cap-exempt-security-consequence`, `cap-no-exemption-for-adjacent`,
+`cap-question-still-capped`) require the report opener rook-code-review
+`SKILL.md`'s Output format specifies — the routed references actually
+read — rather than a shape of their own; the remaining cases state their
+own report shape or none.
+
 Status: `claude plugin eval` is in early access and currently a no-op on
 stock installs — these cases are authored to its documented layout
 (`evals/<case>/prompt.md` + `graders/criteria.md`) and are runnable the

@@ -9,8 +9,8 @@ partial fixes, or "will follow up". The output decides whether the PR opens.
 The authoring session cannot review its own assumptions — it will re-read
 the code through the reasoning that produced it. Dispatch a FRESH agent
 (rook-maintainer:rook-reviewer type when available, else general-purpose —
-a fallback brief carries that agent file's contract inline AND its fetch
-ban, `references/docs-sync.md`) whose prompt contains ONLY:
+a fallback brief carries the agent file inline, fetch ban included, per
+`references/docs-sync.md`) whose prompt contains ONLY:
 
 - the branch diff (`git diff origin/master...HEAD`) and the repo path
   (read-only),

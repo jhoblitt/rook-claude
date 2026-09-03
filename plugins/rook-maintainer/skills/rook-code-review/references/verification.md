@@ -105,9 +105,9 @@ not done, which is why these apply to verdicts and never to candidates:
   target's own tree.
 - **Pedantic nits a senior maintainer would not raise** — micro-style,
   hypothetical performance, "consider extracting a helper" where no such
-  helper exists. A `design` finding meeting architecture.md's contract —
-  named cost, named alternative, precedent — is not this class; that
-  contract is exactly what separates design judgment from taste. Neither is
+  helper exists. A `design` finding meeting architecture.md's
+  "Design-finding contract" is not this class; that contract is exactly
+  what separates design judgment from taste. Neither is
   a `duplication` finding naming an EXISTING symbol the diff re-implemented
   (reuse.md): proposing an abstraction is taste, pointing at the helper
   already in the tree is not. Nor is a `cross-ref` finding meeting

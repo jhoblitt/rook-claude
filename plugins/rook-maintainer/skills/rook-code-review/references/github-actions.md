@@ -60,25 +60,26 @@ bump loop the `# vX.Y.Z` comments exist for is rook-conventions
   (burn-in style matrices want `fail-fast: false`).
 - **Job names are status checks.** Which changes rename a check, and the
   `.mergify.yml` reconciliation they owe, is rook-conventions
-  `references/workflows-and-ci.md`, "Workflow changes and `.mergify.yml`".
-  In review an unreconciled pin is a finding. When clean, say "checked
-  `.mergify.yml`, no update needed" — absence of a mergify entry is itself
-  a check result (label-gated/nightly suites are typically absent).
+  `references/workflows-and-ci.md`, "Workflow changes and `.mergify.yml`",
+  as is how a clean check is reported. In review an unreconciled pin is a
+  finding; a job absent from `.mergify.yml` is not one (label-gated and
+  nightly suites are typically absent).
 
 ## Rook conventions
 
-- **Kubernetes versions in matrices are deliberate coverage.** Never accept
-  a version downgrade to dodge a tooling limitation (minikube/kind image
-  gaps) — fix the tooling (`--force`, bump kind/kindest). Before a version
-  bump, confirm the `kindest/node:vX.Y.Z` image actually exists (Docker Hub
-  404s happen; v1.36.2 was never published).
+- **Kubernetes versions in matrices are deliberate coverage.** What a
+  downgrade may not dodge, and what a new pin confirms first, is
+  rook-conventions `references/workflows-and-ci.md`, "CI Kubernetes
+  versions". In review, a downgrade is a finding, and so is a new pin
+  whose image nobody confirmed exists.
 - **`GOFLAGS=-tags=ceph_preview`** (or equivalent TAGS plumbing) must
   survive workflow edits — rook-conventions
   `references/building-and-testing.md` "The build tag" is why removing it on
   a green run is not safe.
-- `go-version` pinned to the `go.mod` `go` directive — unless the job
-  deliberately tests a version matrix, which must INCLUDE the go.mod
-  version.
+- **`go-version` tracks `go.mod`.** The pin and its matrix exception are
+  rook-conventions `references/workflows-and-ci.md`, "GitHub Actions
+  workflows". In review, a pin that drifts from `go.mod`, or a matrix
+  that omits its version, is a finding.
 - Label-gated and nightly-only suites (tmate `debug-ci`, `TestCephMgrSuite`)
   exist — a workflow change that silently promotes one into the PR-gating
   set (or demotes a gate) is a finding.

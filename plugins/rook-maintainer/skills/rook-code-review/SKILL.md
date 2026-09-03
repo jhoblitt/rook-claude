@@ -112,7 +112,7 @@ feedback already sitting on a PR under review.
   solely the no-subagent-environment fallback (`references/proposal.md`).
   Decision weight overrides line count: any decision-magnitude trigger
   (`references/architecture.md`) forces the design pass at any diff size.
-- **Cap fan-out width** — rook-conventions "Harness notes" is canon.
+- **Cap fan-out width** — rook-conventions `references/fan-out.md` is canon.
   Reviewers, verifiers, adjudicators, gap sweeps and attacker panels all
   draw from that one budget. A proposal run is a panel plus its claim
   audit, so it fills the budget by itself: run one at a time, never one per
@@ -186,8 +186,8 @@ re-verifies, gap-sweeps, and assigns IDs.
    - i. **Design read**: when any decision-magnitude trigger in
      `references/architecture.md` fires — reconstruct the decision
      (problem→shape, alternatives, consistency, evolution, standing
-     constraints) and judge it under that file's contract; design findings
-     carry cost and alternative instead of a failure scenario.
+     constraints) and judge it under that file's "Design-finding
+     contract".
    - j. **Reinvention check**: for each symbol, step, template, or
      procedure the diff ADDS, does the repo already provide it through a
      named reuse mechanism? Generate candidates mechanically, then
@@ -269,7 +269,6 @@ in the `rook-reviewer` agent definition. The tools this skill uses:
   does not is its spec, the validate-refs bullet in `references/docs-sync.md`.
   Mechanizes the docs-sync rule that documented commands must exist; a
   `MISSING` verdict is a `docs-sync` finding.
-  `rook-conventions/references/backport-labels.md` calls it too.
 - `validate-checklist` — PR-template checklist conformance, for one PR or a
   whole triage sweep (`sweep <sweep-dir>`). A non-conforming verdict is a
   `docs-sync` finding. Spec: `references/docs-sync.md`.
@@ -295,9 +294,8 @@ Domain tags accompany severity: `bug`, `lost-reporting`, `panic-not-fail`,
 `house-rule`, `naming`, `comment`, `docs-sync`, `api-compat`, `design`,
 `duplication`, `cross-ref`, `security`, `workflow`, `style`,
 `test-coverage`, `suspicious-content`.
-`design` findings follow `references/architecture.md`: cost and named
-alternative in place of a failure scenario, changes-requested by default,
-hard caps.
+`design` findings follow `references/architecture.md`'s "Design-finding
+contract" — shape, severity default, and caps alike.
 
 Verdicts:
 
@@ -334,9 +332,8 @@ packages, and an abbreviated anchor makes the reader disambiguate.
 This section is the normative statement of the finding contract;
 every other mention of it points here and never restates it.
 
-`design`-domain findings use `references/architecture.md`'s contract
-instead — `cost:` / `alternative:` / `precedent:`, confidence
-`CONFIRMED | PLAUSIBLE | QUESTION`.
+`design`-domain findings use `references/architecture.md`'s
+"Design-finding contract" instead.
 
 `cross-ref`-domain findings anchor at `PR-level`, or at a commit SHA when
 the reference lives in a commit message: they judge PR metadata rather than
@@ -381,14 +378,18 @@ test-coverage gap is `C5/test-coverage`, not a fourth namespace.
 
 ## Output format
 
+A report whose target ran the spine — a mixed doc+code target included —
+opens with the routed references actually read, the set step 1 routes
+and step 4's `references_read` reports, by name; then:
+
 1. **Verdict line** (per target) with one-sentence rationale, citing
    finding IDs ("one confirmed blocker (B1)").
 2. **Findings index**, when more than ~3 findings: one row per finding —
    ID, domain, `file:line`, one-line summary, confidence.
 3. **Findings** grouped blocker → changes-requested → nit → question, in
-   the contract above. No finding without a failure scenario — for `design`
-   findings, without a named cost and alternative; questions carry
-   `needs:` in place of the alternative (`references/architecture.md`).
+   the contract above. No finding without a failure scenario; `design`
+   findings meet `references/architecture.md`'s "Design-finding
+   contract" instead.
 4. **Audited and clean** — what was checked and found correct, briefly,
    and, per step 4, any routed reference the sweep did not exercise. An
    audit that only lists problems hides its own coverage.
