@@ -58,8 +58,12 @@ session or manual push may have force-updated the fork branch. Re-fetch and
 reset to it (confirm via `gh pr view <n> --json headRefOid` +
 `git ls-remote <fork> <branch>`) BEFORE rebasing.
 
-When a push substantively changes what the PR does, update the PR description
-in the same turn — don't leave it stale.
+When a push substantively changes what the PR does — adding a new fix or
+mechanism as much as removing one — update the PR title and description in
+the same turn; don't leave either stale. A title that names a change the
+push removed is the same staleness as an outdated description:
+rook/rook#18218 kept "and pin CI Ceph images" in its title across the push
+that dropped the pinning.
 
 ## rook AI guidelines
 
