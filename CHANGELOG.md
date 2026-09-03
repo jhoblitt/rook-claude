@@ -1,3 +1,21 @@
+## [0.19.1](https://github.com/jhoblitt/rook-claude/compare/v0.19.0...v0.19.1) (2026-09-03)
+
+### Bug Fixes
+
+* **rook-triage:** anchor the ceph-external and block substring rules ([b142f81](https://github.com/jhoblitt/rook-claude/commit/b142f81ae1c287e4adf254d1be8e6b2a4b3f053e)), closes [#81](https://github.com/jhoblitt/rook-claude/issues/81)
+* **rook-triage:** stamp nested go module manifests as build ([aa20123](https://github.com/jhoblitt/rook-claude/commit/aa201231badb087064d901299597998cd7838a2a)), closes [#82](https://github.com/jhoblitt/rook-claude/issues/82)
+* **rook-triage:** stop stamping generated artifacts as helm/docs ([d702ea0](https://github.com/jhoblitt/rook-claude/commit/d702ea033fadb4dffcd45ad2169ec36031bb6cf6)), closes [#80](https://github.com/jhoblitt/rook-claude/issues/80)
+
+
+## What's Changed
+* fix(rook-triage): anchor rt-analyze's area classifier to its spec by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/91
+
+### Resolved issues
+
+* [#80](https://github.com/jhoblitt/rook-claude/issues/80) rtanalyze: generated CRD artifacts stamp helm and docs, inflating reviewer authority
+* [#81](https://github.com/jhoblitt/rook-claude/issues/81) rtanalyze: strings.Contains over-stamps ceph-external (externalversions) and block (CSI rbd templates)
+* [#82](https://github.com/jhoblitt/rook-claude/issues/82) rtanalyze: pkg/apis/go.mod stamps crd instead of build (exact-equality path test)
+
 ## [0.19.0](https://github.com/jhoblitt/rook-claude/compare/v0.18.0...v0.19.0) (2026-09-03)
 
 ### Features
