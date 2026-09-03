@@ -1,3 +1,17 @@
+## [0.20.1](https://github.com/jhoblitt/rook-claude/compare/v0.20.0...v0.20.1) (2026-09-03)
+
+### Bug Fixes
+
+* **rook-conventions:** fill four canon gaps in fan-out and PR rules ([362f43d](https://github.com/jhoblitt/rook-claude/commit/362f43da0f17bf2414dd24740c97d6e8e3faa9e1)), closes [#107](https://github.com/jhoblitt/rook-claude/issues/107)
+
+
+## What's Changed
+* fix(rook-conventions): fill four canon gaps in fan-out and PR rules by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/109
+
+### Resolved issues
+
+* [#107](https://github.com/jhoblitt/rook-claude/issues/107) rook-conventions: four canon gaps the gate noted
+
 ## [0.20.0](https://github.com/jhoblitt/rook-claude/compare/v0.19.2...v0.20.0) (2026-09-03)
 
 ### Features
