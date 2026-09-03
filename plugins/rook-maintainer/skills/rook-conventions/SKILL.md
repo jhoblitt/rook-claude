@@ -29,7 +29,7 @@ below this table apply to every trigger.
 | writing or fixing a commit message, amending, reworking a branch's history, or diagnosing a commitlint failure | `references/commits.md` |
 | opening or updating a PR, writing its description, filling its template checklist, writing the AI-assistance disclosure, requesting reviewers | `references/pull-requests.md` |
 | deciding whether a change is backport-eligible, applying or maintaining its labels, or fixing a mergify backport PR | `references/backporting.md` |
-| weighing conflicting review feedback on a PR | `references/review-feedback.md` |
+| weighing review feedback on a PR — conflicting opinions, or a technical claim from outside CODE-OWNERS | `references/review-feedback.md` |
 | building, testing, or linting rook; regenerating CRDs or generated code; writing rook tests | `references/building-and-testing.md` |
 | changing `.github/workflows/**`, `.mergify.yml`, or a pinned CI Kubernetes version | `references/workflows-and-ci.md` |
 | watching CI after a push, retrying flakes, or burning in a flake fix | `references/watching-ci.md` |

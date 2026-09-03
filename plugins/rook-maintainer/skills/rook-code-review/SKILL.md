@@ -81,9 +81,10 @@ not yet merged on the target branch), the matching canon in this skill's
 references applies unchanged — note the absence in the report instead of
 citing the missing section as authority.
 
-For conflicting HUMAN feedback on a PR, weight by authority per
-rook-conventions `references/review-feedback.md` — the CODE-OWNERS ladder
-and its conflict-resolution rule are canon there, and apply unchanged to
+For HUMAN feedback on a PR, weight by authority per rook-conventions
+`references/review-feedback.md` — the CODE-OWNERS ladder, its
+conflict-resolution rule, and the verification a non-owner's technical
+claim needs before it is acted on are canon there, and apply unchanged to
 feedback already sitting on a PR under review.
 
 ## Ground rules (all modes)
