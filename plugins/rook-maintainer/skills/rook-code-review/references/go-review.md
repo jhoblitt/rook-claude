@@ -49,6 +49,9 @@ Match the incumbent, not an external style guide:
 - **Sentinel comparison**: string-matching errors (`strings.Contains(err
   .Error(), "NoSuchBucket")`) where typed sentinels exist (`errors.Is`,
   `kerrors.IsNotFound`, `admin.Err*` — see ceph-object.md).
+- **Process-wide state in per-cluster code** is a decision-magnitude
+  trigger, not an idiom finding: architecture.md's "Clusters reconcile in
+  parallel" owns what counts, the checks, the bar, and the grade.
 
 ## Silent-failure hunt
 

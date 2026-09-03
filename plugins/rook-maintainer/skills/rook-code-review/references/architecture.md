@@ -25,6 +25,9 @@ gate does not exempt — does any of:
 - adds a Go module dependency, a bundled binary, or a newly exec'd tool
 - adds a controller, watch, informer, long-lived goroutine, or
   reconcile entry point
+- adds or widens process-wide shared state under `pkg/operator/**` or
+  `pkg/daemon/**`, or grows a lock hold window — what counts is "Clusters
+  reconcile in parallel" below
 - changes a security boundary: CephX caps, RBAC, TLS, secret handling
   or placement, tenant isolation
 - implies state or layout migration on existing clusters: pool layout,
@@ -114,6 +117,44 @@ For each fired trigger, reconstruct the decision before judging it:
   siblings keep it O(1); list-everything patterns, per-reconcile scans
   of shared stores, and unbounded status/CRD growth are findings at
   design time, not just implementation time.
+- **Clusters reconcile in parallel.** Multiple CephClusters under one
+  operator reconcile concurrently — a requirement, not a preference. No
+  linter sees the coupling that defeats it, and
+  `ROOK_RECONCILE_CONCURRENT_CLUSTERS` (`pkg/operator/ceph/cluster/controller.go`,
+  the CephCluster controller's `MaxConcurrentReconciles`) only raises a
+  ceiling that shared state can quietly lower back to one. In
+  `pkg/daemon/**` and `pkg/operator/**`, hunt:
+  - package-level mutexes, latches, caches, or maps not keyed per cluster
+    or namespace when the guarded work is per-cluster;
+  - lock hold windows spanning a network call, an exec, or multi-step
+    orchestration — a lock held across a `crushtool` exec or a mon
+    round-trip serializes far more than its critical section needs;
+  - a correctness argument that reads "take the global lock" where a
+    per-cluster key plus an external CAS/epoch guard would preserve
+    parallelism;
+  - watch predicates or controller options fed by package-init state — a
+    predicate registered once for every cluster couples them all;
+  - anything else that quietly defeats `ROOK_RECONCILE_CONCURRENT_CLUSTERS`.
+
+  The bar is "whenever practical": a short, genuinely global critical
+  section for a process-wide singleton is fine; per-cluster work
+  funnelled through global state is a finding. At design time it is a
+  `design` finding under this constraint, cost and alternative in place
+  of the failure scenario; on code it is changes-requested with the `bug`
+  tag, and a blocker when the hold window spans a call that can block on
+  another cluster's health (a mon round-trip, an exec against it), since
+  one cluster's outage then wedges every cluster's reconcile behind the
+  lock. Both shapes are on rook 18241 (OSD CRUSH topology normalization):
+  `pkg/daemon/ceph/client/pool.go` declares `crushRuleMutex` as a
+  package-level `sync.RWMutex` shared by every CephCluster the operator
+  manages, and the design proposed holding its write lock across a
+  read/diff/apply window while promoting the rule-append path from
+  `RLock` to `Lock`, serializing pool reconciliation process-wide,
+  including for clusters that never enable the feature;
+  `pkg/operator/ceph/cluster/osd/osd.go` carries `topologyValidated`, a
+  package-level bool latched by whichever CephCluster validates first —
+  the shipped form of the class; precedent that it exists in-tree, never
+  that a new instance is excused.
 
 ## Design-finding contract
 
