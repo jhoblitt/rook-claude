@@ -25,16 +25,36 @@ import (
 // -M asks for rename detection regardless of the checkout's diff.renames, and
 // core.quotePath=false keeps non-ASCII paths literal; the parser still unquotes
 // the C-style form, since a dump may come from a git that quoted them.
+//
+// --end-of-options closes the arg list here rather than at the one call site
+// that appends a revision: it makes "everything after this is data" a property
+// of the args themselves, so a ref like --output=... is a ref git fails on and
+// never an option it honours.
 var gitLogArgs = []string{
 	"-c", "core.quotePath=false",
 	"log", "--no-merges", "-M",
 	"--format=commit%x09%H%x09%aN%x09%aE%x09%aI",
 	"--name-status",
+	"--end-of-options",
 }
 
-// GitLogCommand is the exact command line whose output --log consumes.
-func GitLogCommand() string {
-	return "git " + strings.Join(gitLogArgs, " ")
+// DefaultRef is the revision --repo mines. kb-refresh.md specifies the signal
+// as origin/master, and git log with no revision walks HEAD instead: on a clone
+// whose master trails its remote that silently drops the newest commits, the
+// ones the recency model weights 1.0.
+const DefaultRef = "origin/master"
+
+// GitLogCommand is the exact command line whose output --log consumes, mining
+// ref. An empty ref is the ref-less form, which walks HEAD.
+func GitLogCommand(ref string) string {
+	return "git " + strings.Join(gitLogArgsFor(ref), " ")
+}
+
+func gitLogArgsFor(ref string) []string {
+	if ref == "" {
+		return gitLogArgs
+	}
+	return append(append([]string{}, gitLogArgs...), ref)
 }
 
 const headerPrefix = "commit\t"
@@ -63,7 +83,7 @@ func ParseLog(r io.Reader) ([]Commit, error) {
 			out = append(out, c)
 		case len(out) == 0:
 			return nil, fmt.Errorf("line %d: %q precedes any commit header; expected the output of: %s",
-				line, text, GitLogCommand())
+				line, text, GitLogCommand(DefaultRef))
 		default:
 			paths, err := parseNameStatus(text)
 			if err != nil {
@@ -170,15 +190,19 @@ func unquotePath(p string) (string, error) {
 	return string(b), nil
 }
 
-// Log runs GitLogCommand in repo and parses it. GIT_OPTIONAL_LOCKS=0 keeps a
-// read-only mine from refreshing the index of a checkout it does not own — a
-// clone whose .git is not writable would otherwise fail here.
-func Log(ctx context.Context, repo string) ([]Commit, string, error) {
-	head, err := gitOutput(ctx, repo, "rev-parse", "HEAD")
+// Log runs GitLogCommand over ref in repo and parses it, returning the sha ref
+// resolved to. An unresolvable ref is an error rather than a fallback to HEAD:
+// a mine of the wrong revision reads exactly like a mine of the right one.
+// GIT_OPTIONAL_LOCKS=0 keeps a read-only mine from refreshing the index of a
+// checkout it does not own — a clone whose .git is not writable would otherwise
+// fail here.
+func Log(ctx context.Context, repo, ref string) ([]Commit, string, error) {
+	head, err := gitOutput(ctx, repo, "rev-parse", "--verify", "--end-of-options", ref+"^{commit}")
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("--ref %s does not resolve to a commit in %s "+
+			"(a clone that has never fetched has no origin/master; pass --ref with one it has): %w", ref, repo, err)
 	}
-	out, err := gitOutput(ctx, repo, gitLogArgs...)
+	out, err := gitOutput(ctx, repo, gitLogArgsFor(ref)...)
 	if err != nil {
 		return nil, "", err
 	}

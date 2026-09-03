@@ -48,8 +48,9 @@ numbers, count cap.
   failure.
 - **Writes are gated.** Every GitHub write is shown and approved in-session
   — per item, or an explicitly authorized batch (rook-conventions carve-out).
-  The local checkout is read-only; every `gh` call runs with
-  `dangerouslyDisableSandbox: true`.
+  The local checkout is read-only — the one write is the orchestrator's
+  `origin/master` refresh before any fan-out, `rook-code-review`'s rule —
+  and every `gh` call runs with `dangerouslyDisableSandbox: true`.
 - **Escalations never auto-post.** security / data-loss / regression flags
   go to the user first; pinging the lead maintainer is a user decision.
 - **Cap fan-out width** — rook-conventions "Harness notes" is canon.
@@ -248,9 +249,7 @@ this skill runs:
   taxonomy — the deterministic layer phase 1 reads and the spec
   `references/label-map.md`'s table states.
 - `rt-commits` — kb-refresh commit signal: recency-weighted author counts
-  per area from `git log`, supplying the `commits` and `last_active`
-  columns of the `maintainers` schema (offline; `--repo` mines a checkout,
-  `--log` a captured dump, `--now` pins the weighting). Spec:
+  per area from `git log`. kb refresh only; spec and invocation:
   `references/kb-refresh.md`.
 - `validate-kb` — the kb refresh's pre-write gate on routing identities.
   kb refresh only; spec and invocation: `references/kb-refresh.md`.

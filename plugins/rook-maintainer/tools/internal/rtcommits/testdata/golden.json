@@ -3,7 +3,7 @@
     "tool": "rt-commits",
     "source": "log",
     "path": "testdata/git-log.txt",
-    "git_log": "git -c core.quotePath=false log --no-merges -M --format=commit%x09%H%x09%aN%x09%aE%x09%aI --name-status",
+    "git_log": "git -c core.quotePath=false log --no-merges -M --format=commit%x09%H%x09%aN%x09%aE%x09%aI --name-status --end-of-options",
     "now": "2026-08-11T00:00:00Z",
     "months": 24,
     "window_days": 731,

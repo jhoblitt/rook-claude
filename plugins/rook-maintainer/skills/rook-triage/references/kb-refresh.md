@@ -7,9 +7,19 @@ parallel agents:
 - `CODE-OWNERS` — the authority roster (approvers/reviewers tiers; the
   file is flat/repo-wide, so per-area truth must be mined, not read).
 - `git log` per area path-set (24 months, recency-weighted author counts) —
-  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-commits --repo <rook-checkout> --months 24 --now <iso>`
-  (`--log FILE` reads a captured dump instead; `-h` prints the exact `git log`
-  that produces one). Run it rather than hand-rolling the walk, the same rule
+  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-commits --repo <rook-checkout> --months 24 --now <iso> --out <file>`
+  (`--out` keeps the summary on stdout and writes the document the assembler
+  consumes — the summary alone carries only the top three authors per area
+  and none of the `identities` the miner resolves; `--log FILE` reads a
+  captured dump instead; `-h` prints the exact `git log` that produces one).
+  It mines `origin/master` — the ref this signal is
+  defined on, and never the checkout's `HEAD`, which on a clone that trails
+  its remote drops the newest and most heavily weighted commits. `--ref`
+  overrides that, and a ref the checkout cannot resolve fails the run instead
+  of falling back. It never fetches, so `origin/master` is only as fresh as
+  the orchestrator's one refresh before the miners fan out — the read-only
+  checkout rule `rook-code-review` states. Run it rather than
+  hand-rolling the walk, the same rule
   the reviews signal below carries. It reuses that signal's 25-area path
   classifier and its recency weights, and excludes merge
   commits — git records no changed paths for a merge and its author is
