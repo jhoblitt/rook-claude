@@ -37,11 +37,17 @@ parallel agents:
   hits first — record the actual count and oldest date in kb.json
   provenance. This is the PRIMARY reviewer-routing signal.
   The fetch layer is
-  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-fetch --out-dir <dir> --months 24`
+  `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-fetch --out-dir <dir> --months 24 --deep-fetch`
   (validated on the 2026-07-23 refresh): a single-cursor walk of
   `repository.pullRequests` — no search-API 1000-cap — emitting
   `rt_prs.jsonl` + `rt_fetch_state.json` (provenance: counted, oldest, stop
-  reason, truncation flags for files>100/reviews>30). The analysis layer is
+  reason). The walk reads `files(first: 100)` and `reviews(first: 30)` per
+  PR and records each remaining `hasNextPage` under `truncations`;
+  `--deep-fetch` then paginates exactly those PRs to completion and moves
+  each entry to `deep_fetched`, so no truncation flag reaches a resolver.
+  `--deep-fetch-only --out-dir <dir>` is that pass alone, for an out-dir
+  walked without the flag or interrupted mid-way; `rt-analyze` re-runs on
+  it afterwards, since it derives its flags from the files. The analysis layer is
   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze --in-dir <dir> --code-owners <rook-checkout>/CODE-OWNERS --now <iso>`
   (`--roster a,b,c` stands in for the file; `--now` pins the recency
   weighting for reproducible re-runs):
@@ -60,10 +66,9 @@ parallel agents:
 Mining tiers — miner flags, senior resolves. The reviews miner runs on a
 small model (`model: "sonnet"`); it never resolves ambiguity, it flags it,
 returning `{data, flags: [{type, item, evidence, question}]}` with types:
-`bucket-ambiguity` · `truncation` (query `files(first: 100)` /
-`reviews(first: 30)` and flag any remaining `hasNextPage`) ·
-`identity-unknown` · `spec-boundary` · `coverage-gap` (vs the prior KB's
-signalful areas, provided in the brief). The orchestrator resolves trivial
+`bucket-ambiguity` · `truncation` (none survive the deep fetch the reviews
+signal above runs) · `identity-unknown` · `spec-boundary` · `coverage-gap`
+(vs the prior KB's signalful areas, provided in the brief). The orchestrator resolves trivial
 flags deterministically; surviving flags go to ONE resolver agent on the
 session model (re-query access; returns per-flag resolutions the assembler
 applies). The assembler validates deterministically regardless of tier —

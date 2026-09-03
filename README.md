@@ -186,7 +186,7 @@ flowchart TD
     R5 --> R6["post · record in sweep.json · report URLs"]
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
-        B1["rt-fetch → rt-analyze · rt-commits: merged-PR and<br/>commit signals, shipped Go tools end to end"] --> B2[["parallel miners: CODE-OWNERS · issue participation ·<br/>live label list — they flag ambiguity, never resolve it"]]
+        B1["rt-fetch --deep-fetch → rt-analyze · rt-commits: merged-PR and<br/>commit signals, shipped Go tools end to end"] --> B2[["parallel miners: CODE-OWNERS · issue participation ·<br/>live label list — they flag ambiguity, never resolve it"]]
         B2 --> B3["one resolver agent, then a deterministic assembler:<br/>validate-kb gates the identities, and a failing kb.json is not written"]
     end
 
