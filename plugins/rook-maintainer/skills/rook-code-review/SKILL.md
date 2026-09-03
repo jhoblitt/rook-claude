@@ -214,9 +214,15 @@ re-verifies, gap-sweeps, and assigns IDs.
    general-purpose stand-in returns the same field). Its candidates
    verify per step 3 like any others; an empty gap sweep is evidence
    for the coverage statement ONLY when its `references_read` covers
-   the target's routed references — otherwise the report names the
-   references not exercised. Small working-tree diffs may skip it, and
-   say so.
+   the target's routed references. At report assembly the orchestrator
+   derives that routed set itself — the routing table applied to the
+   changed paths from its own step-1 read, plus any decision-magnitude
+   trigger its step 1 or pass i fired, since `architecture.md` routes
+   on decision weight and no path lookup reaches it — and diffs it
+   against `references_read`: a mechanical table lookup checks a
+   free-text self-report, never the reverse. The report names any
+   reference not exercised. Small working-tree diffs may skip the
+   sweep, and say so.
 5. **Report** in the output contract below.
 
 ## Reference routing
@@ -379,8 +385,11 @@ test-coverage gap is `C5/test-coverage`, not a fourth namespace.
 ## Output format
 
 A report whose target ran the spine — a mixed doc+code target included —
-opens with the routed references actually read, the set step 1 routes
-and step 4's `references_read` reports, by name; then:
+opens with the routed references actually read, by name: the set step 1
+routes, as step 4's `references_read` reports it; when the sweep is
+skipped, the references the session itself read; in bulk fan-out, the
+routed set the orchestrator read followed by each reviewer's
+`references_read`. Then:
 
 1. **Verdict line** (per target) with one-sentence rationale, citing
    finding IDs ("one confirmed blocker (B1)").

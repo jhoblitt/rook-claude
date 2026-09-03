@@ -14,6 +14,12 @@ The launcher fails loud — a non-zero exit is a real failure, never an empty
 result, since a silent no-op would read as "no dead links", "no invalid
 actions", "empty dashboard".
 
+The invocation also shapes an agent's `Bash` grant. `check-links` is
+allocated to the `rook-reviewer` agent, and permission rules cannot expand
+`${CLAUDE_PLUGIN_ROOT}`, so the narrowest expressible grant for that
+invocation is the whole shell; reallocating the probe to the orchestrator
+would let the grant narrow.
+
 `CLAUDE_PLUGIN_DATA` selects the binary cache when its basename is this
 plugin's — a bare `<plugin>` or `<plugin>-<marketplace>` — and
 `${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude` does otherwise; a value naming
