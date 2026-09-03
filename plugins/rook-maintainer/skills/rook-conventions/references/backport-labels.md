@@ -108,8 +108,9 @@ SKILL.md — but ONLY when the operating maintainer authored the source PR
 being backported. Confirm first: `gh pr view <source-pr> --json author`.
 Anyone else's → leave it alone and ask.
 
-Prefer `--force-with-lease`, and re-fetch the live mergify branch head before
-rebasing so you replay what the PR currently shows.
+Rebasing and repushing it is `references/pull-requests.md` "Updating an open
+PR" — the reset to the fetched head and the pinned lease included — with the
+`rook/*` remote standing in for the fork.
 
 Two defects survive a clean-looking cherry-pick, and no linter catches either.
 Both checks below read `origin/release-X.Y`, so `git fetch origin` first, as

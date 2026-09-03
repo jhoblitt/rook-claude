@@ -10,10 +10,11 @@ is actually being written, or was just rejected.
 A commit message documents what changed and why, for a future reader of
 history — never how the change was produced. Leave out process notes: sanity
 checks that came back clean, "rebased onto master", draft status, labels
-added, which remote it was pushed from. Two exceptions: a finding that
-actually changed the diff is part of the change, and the AI-assistance
-disclosure, which belongs in the PR description and nowhere else
-(`references/pull-requests.md`). Never mention running `make codegen` /
+added, which remote it was pushed from — those go in the chat reply to the
+maintainer, never in the message or the PR description. Two exceptions: a
+finding that actually changed the diff is part of the change, and the
+AI-assistance disclosure, which belongs in the PR description and nowhere
+else (`references/pull-requests.md`). Never mention running `make codegen` /
 `make crds` anywhere — regenerated files in the diff are self-explanatory.
 
 AI-attribution trailers (`Co-Authored-By:`, `Assisted-by:`, …) are permitted

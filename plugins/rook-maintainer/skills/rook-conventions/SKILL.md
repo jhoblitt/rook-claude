@@ -1,6 +1,6 @@
 ---
 name: rook-conventions
-description: Use when authoring or shepherding changes to rook (github.com/rook/*) repos — committing, pushing branches, opening or updating PRs, requesting reviewers, weighing review feedback, backporting, regenerating CRDs or generated code, writing tests or GitHub Actions workflows, watching or retrying CI, or before ANY gh write (comment, label, close, edit) to a rook issue or PR.
+description: Use when authoring or shepherding changes to rook (github.com/rook/*) repos — committing, pushing branches, opening or updating PRs, weighing review feedback, backporting, regenerating CRDs or generated code, writing tests or GitHub Actions workflows, watching or retrying CI, or before ANY gh write (comment, label, close, edit) to a rook issue or PR.
 ---
 
 # Rook house conventions
@@ -34,6 +34,7 @@ below this table apply to every trigger.
 | building, testing, or linting rook; regenerating CRDs or generated code; writing rook tests | `references/building-and-testing.md` |
 | changing `.github/workflows/**`, `.mergify.yml`, or a pinned CI Kubernetes version | `references/workflows-and-ci.md` |
 | watching CI after a push, retrying flakes, or burning in a flake fix | `references/watching-ci.md` |
+| fanning out subagents | `references/fan-out.md` |
 | running one of this plugin's own tools through `run.sh`, or changing one | `references/plugin-tools.md` |
 
 ## Git commits
@@ -173,17 +174,7 @@ would reach a session that is deleting code.
   error, and it silently downgrades semantic navigation to grep. This is the
   normative statement of why; the skills and agent definitions carry only the
   bare instruction to load it first.
-- Fan-out width is ~6–8 agents in flight per SESSION — not per sweep,
-  corpus, or phase — with the rest queued and launched as slots free. Count
-  AGENTS, not tasks: a nested fan-out spends a whole panel from that one
-  budget, so a stage spawning panels runs one panel at a time rather than
-  one per item. When a slot frees, give it to a downstream stage of
-  something already in flight before the next queued item; otherwise a
-  "spawn verifiers as each reviewer completes" pipeline silently degrades
-  into a barrier once the queue is longer than the budget. A confirmation
-  gate bounds cost, not width — state both. This is the normative statement
-  of the width; the skills and agent definitions carry only their own
-  nested-fan-out delta.
+- Fan-out width and dispatch: `references/fan-out.md`.
 - Git ops that write `.git/config` — `git worktree add`, `git push -u`,
   `--set-upstream` — can fail inside a sandbox that denies
   `.git/config.lock`; plain `git commit` works sandboxed.

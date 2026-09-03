@@ -34,9 +34,8 @@ per-PR-verify / conventions machinery is identical.
    dead symbol/cluster, or one mechanical transform in one area — reviewable in
    under a minute. Prefer whole-file deletes when an entire file is dead.
 5. **Fan out aggressively, up to the width cap.** Decompose by directory /
-   package / candidate file and run one subagent per unit, in parallel, in a
-   single message — batched at rook-conventions "Harness notes" width, with the
-   rest queued as slots free. Use read-only
+   package / candidate file and run one subagent per unit; dispatch and
+   width are rook-conventions `references/fan-out.md`. Use read-only
    `Explore` agents for scanning/auditing; use `rook-maintainer:code-worker`
    agents (shipped with this plugin) with `isolation: worktree` for parallel
    implementation across independent files.
@@ -68,10 +67,11 @@ per-PR-verify / conventions machinery is identical.
   references, incl. tests").
 - Enumerate the work units to fan out over — usually immediate subdirectories of
   the target tree (`find <tree> -maxdepth 1 -mindepth 1 -type d`).
-- Spawn **one subagent per unit, all in one message**, to scan and report
-  candidates. For dead code, give each agent the recipe in "Tooling" below and
-  have it return a concise candidate list (file:line, signature, exported?,
-  confidence + reason) or "NO CANDIDATES".
+- Spawn one subagent per unit, dispatched per rook-conventions
+  `references/fan-out.md`, to scan and report candidates. For dead code, give
+  each agent the recipe in "Tooling" below and have it return a concise
+  candidate list (file:line, signature, exported?, confidence + reason) or
+  "NO CANDIDATES".
 - Also run a single authoritative whole-module pass yourself to cross-check the
   fan-out (for dead code: `deadcode` — see Tooling). Tools and agents have blind
   spots; the union minus false positives is the candidate set.
@@ -208,17 +208,18 @@ transform, keeping everything else in the loop identical.
 
 ## Fan-out patterns
 
-- **Scan**: one `Explore` agent per directory, all spawned in a single message,
-  on a small model (principle 7). Each runs the detector for its dir and
-  returns a structured candidate list. Give every agent the same definition of
-  "dead/violating" and the build-tag and sandbox caveats, so results are
-  comparable.
+- **Scan**: one `Explore` agent per directory, dispatched per rook-conventions
+  `references/fan-out.md`, on a small model (principle 7). Each runs the
+  detector for its dir and returns a structured candidate list. Give every
+  agent the same definition of "dead/violating" and the build-tag and sandbox
+  caveats, so results are comparable.
 - **Implement**: one `rook-maintainer:code-worker` agent per independent
   file/area with `isolation: worktree` to avoid working-tree collisions,
-  spawned together, on a small model (principle 7). Branch, commit, push and
-  `gh pr create` stay under your own control (consistent conventions, DCO,
-  force-push safety) — Phase 4 owns the split, and `agents/code-worker.md`
-  independently forbids the worker to push or open a PR.
+  dispatched per rook-conventions `references/fan-out.md`, on a small model
+  (principle 7). Branch, commit, push and `gh pr create` stay under your own
+  control (consistent conventions, DCO, force-push safety) — Phase 4 owns the
+  split, and `agents/code-worker.md` independently forbids the worker to push
+  or open a PR.
 - **Cross-check**: pair the fan-out with one authoritative whole-module pass and
   reconcile — discrepancies are usually a tool blind spot (e.g. a method on an
   instantiated type) worth investigating, not noise to ignore.
@@ -226,7 +227,8 @@ transform, keeping everything else in the loop identical.
 ## Gotchas learned the hard way
 
 - Always re-sync and re-run exclusion each session; merged PRs change the pool.
-- `--force-with-lease` (not `--force`) when amending pushed campaign branches.
+- Repushing a campaign branch behind an open PR is rook-conventions
+  `references/pull-requests.md` "Updating an open PR", lease form included.
 - Never edit the user's global `CLAUDE.md` (or other personal config)
   unilaterally — present the proposed wording and wait for approval.
 - Writing under the user's Claude config dir (`~/.claude` by default) needs
