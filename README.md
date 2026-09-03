@@ -166,6 +166,7 @@ flowchart TD
     Q1 -->|"kb refresh"| B1
     Q1 --> B0
     Q1 --> B2
+    Q1 --> BL
 
     subgraph SWEEP["the sweep — one resumable sweep dir per corpus"]
         R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
@@ -189,10 +190,13 @@ flowchart TD
     R5 --> R6["post · record in sweep.json · report URLs"]
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
+        BL["validate-actions label diff against label-map.md: needs no mine"] --> B6
         B0["rt-commits: the commit signal, offline"] --> B3
         B1["rt-fetch --deep-fetch: the review signal's walk,<br/>in the background — the long pole"] --> B1A
         B1A["rt-analyze --brief: buckets, the roster from CODE-OWNERS, flags"] --> B5
-        B2[["parallel miners: issue participation · live label list —<br/>they flag ambiguity, never resolve it"]] --> B5
+        B2["gh issue list export, one call"] --> B2I
+        B2I["rt-issues --brief: buckets by label-map.md, flags"] --> B2R
+        B2R["issue truncation re-count, width 8"] --> B5
         B3["identity sweep: each login-less identity through its sample sha,<br/>gh api commits at width 8"] --> B4
         B1 --> B4
         B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B5

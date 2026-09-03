@@ -252,6 +252,11 @@ this skill runs:
   per area from `git log`, and the identity worklist with a sample sha
   each. kb refresh only; spec and invocation:
   `references/kb-refresh.md`.
+- `rt-issues` — kb-refresh issue signal: buckets a `gh issue list` export
+  by `label-map.md`'s table into distinct issues per login per area,
+  flags truncated comment pages and unknown identities, and binds no
+  comment body. kb refresh only; spec and invocation:
+  `references/kb-refresh.md`.
 - `validate-kb` — the kb refresh's pre-write gate: login grammar and
   uniqueness, and per optional input — the previous kb, CODE-OWNERS, the
   fetch state — coverage, the top-maintainer tier check and the
@@ -277,12 +282,14 @@ this skill runs:
   reads it rather than summing two tables. Spec: `references/routing.md`.
 - `validate-actions` — phase-5 pre-write validation of proposed actions
   (label-set membership, the caps, the issues-only label rule, still-open
-  recheck). Spec: phase 5 above.
+  recheck); with `--label-map` it is the kb refresh's label diff instead.
+  Spec: phase 5 above and `references/kb-refresh.md`.
 
 All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
-`rt-commits`, `validate-kb`, the three `gen-*` tools, `validate-actions`,
-and `sweep-prefetch pool-summary`, which are offline — `validate-actions`
-and `validate-kb` judge the files they are handed rather than fetching
+`rt-commits`, `rt-issues`, `validate-kb`, the three `gen-*` tools,
+`validate-actions`, and `sweep-prefetch pool-summary`, which are offline —
+`validate-actions`, `validate-kb` and `rt-issues` judge the files they
+are handed rather than fetching
 their own, `rt-commits` reads a local checkout with `git log`, and
 `pool-summary` reduces files the sweep dir already holds. `sweep-prefetch`'s other two
 subcommands do need `gh`.
