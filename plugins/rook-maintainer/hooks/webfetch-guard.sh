@@ -36,8 +36,18 @@ fi
 # CLAUDE_PLUGIN_ROOT: the cache is a per-version directory that moves on every
 # update and can be reaped mid-session. Data outlives versions, and a fresh
 # version clone carries fresh mtimes, so the staleness check below rebuilds
-# after updates on its own.
-data="${CLAUDE_PLUGIN_DATA:-${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude}"
+# after updates on its own. Which variable selects that directory, and the
+# basename it must carry, is skills/rook-conventions/references/plugin-tools.md;
+# tools/run.sh is the sibling implementation, and carries why the plugin name
+# is a literal here. The hook runs in a session environment that may hold
+# another plugin's value.
+plugin=rook-maintainer
+data="${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude"
+if [ -n "${CLAUDE_PLUGIN_DATA:-}" ]; then
+  case "$(basename "$CLAUDE_PLUGIN_DATA")" in
+  "$plugin" | "$plugin"-*) data=$CLAUDE_PLUGIN_DATA ;;
+  esac
+fi
 bin="$data/webfetch-guard"
 
 stale() {

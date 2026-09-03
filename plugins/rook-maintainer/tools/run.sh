@@ -3,7 +3,8 @@
 #
 #   run.sh <tool> [args...]
 #
-# The fail-loud contract is skills/rook-conventions/references/plugin-tools.md.
+# The launcher contract -- fail-loud, and which variable selects the binary
+# cache -- is skills/rook-conventions/references/plugin-tools.md.
 # Unlike hooks/webfetch-guard.sh, which must get out of the way when it cannot
 # build, every failure path here prints to stderr and exits non-zero.
 #
@@ -28,7 +29,20 @@ src="${CLAUDE_PLUGIN_ROOT:-}/tools"
 # the cache is a per-version directory that moves on every update and can be
 # reaped mid-session. Data outlives versions, so the staleness check below is
 # all that ties a cached binary to the sources of the version now installed.
-data="${CLAUDE_PLUGIN_DATA:-${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude}/tools"
+#
+# Which basename that directory must carry is the contract cited above; the
+# model runs this from its own shell, so CLAUDE_PLUGIN_DATA may hold ANOTHER
+# installed plugin's (observed: .../plugins/data/codex-openai-codex). The name
+# is a literal here rather than parsed out of .claude-plugin/plugin.json -- sed
+# would silently pick author.name if the keys were reordered -- and
+# internal/launcher's test pins this constant to the manifest.
+plugin=rook-maintainer
+data="${XDG_CACHE_HOME:-$HOME/.cache}/rook-claude/tools"
+if [ -n "${CLAUDE_PLUGIN_DATA:-}" ]; then
+  case "$(basename "$CLAUDE_PLUGIN_DATA")" in
+  "$plugin" | "$plugin"-*) data="$CLAUDE_PLUGIN_DATA/tools" ;;
+  esac
+fi
 bin="$data/$tool"
 
 # The cache path holds a binary; nothing about it says WHICH binary, and the
