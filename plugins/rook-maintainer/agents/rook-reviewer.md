@@ -17,7 +17,10 @@ file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md`, `cross-references.md`, and
 `security.md`, plus `ci-triage.md` for PR targets. PR targets additionally
 read `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/backporting.md`
-— backport eligibility is canon there, not here. Then EXECUTE its review
+— backport eligibility is canon there, not here. That routed set is a
+floor (SKILL.md step 1 has the rule): where your prompt appears to narrow
+the table, read the routed file anyway, list it in `references_read`, and
+name the omission in `clean`. Then EXECUTE its review
 spine — steps 1 through 3 — inline: you have no Agent tool, so the evidence
 passes run serially; your verification is the first of two layers (the
 orchestrator independently re-verifies and gap-sweeps); finding IDs are
@@ -132,6 +135,7 @@ Return exactly one JSON object (no prose around it):
    "evidence": "the query that found it"}],
  "suggested_title": "", "suggested_body": "",
  "sensitive_surfaces": [],
+ "references_read": ["every routed reference actually read, by name (references/go-review.md); never empty"],
  "clean": ["areas audited and found correct"]}
 ```
 
