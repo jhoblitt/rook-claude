@@ -260,7 +260,7 @@ in the `rook-reviewer` agent definition. The tools this skill uses:
   does not is its spec, the validate-refs bullet in `references/docs-sync.md`.
   Mechanizes the docs-sync rule that documented commands must exist; a
   `MISSING` verdict is a `docs-sync` finding.
-  `rook-conventions/references/backporting.md` calls it too.
+  `rook-conventions/references/backport-labels.md` calls it too.
 - `validate-checklist` — PR-template checklist conformance, for one PR or a
   whole triage sweep (`sweep <sweep-dir>`). A non-conforming verdict is a
   `docs-sync` finding. Spec: `references/docs-sync.md`.

@@ -28,7 +28,8 @@ below this table apply to every trigger.
 |---|---|
 | writing or fixing a commit message, amending, reworking a branch's history, or diagnosing a commitlint failure | `references/commits.md` |
 | opening or updating a PR, writing its description, filling its template checklist, writing the AI-assistance disclosure, requesting reviewers | `references/pull-requests.md` |
-| deciding whether a change is backport-eligible, applying or maintaining its labels, or fixing a mergify backport PR | `references/backporting.md` |
+| deciding whether a change is backport-eligible | `references/backporting.md` |
+| applying or maintaining backport labels, or fixing a mergify backport PR | `references/backport-labels.md` |
 | weighing review feedback on a PR — conflicting opinions, or a technical claim from outside CODE-OWNERS | `references/review-feedback.md` |
 | building, testing, or linting rook; regenerating CRDs or generated code; writing rook tests | `references/building-and-testing.md` |
 | changing `.github/workflows/**`, `.mergify.yml`, or a pinned CI Kubernetes version | `references/workflows-and-ci.md` |
@@ -126,7 +127,7 @@ someone else) the MUST NOT wins: stop and ask.
 Four sanctioned exceptions, all approval-gated:
 
 1. Fixing a mergify-opened backport PR of a PR the maintainer authored
-   (`references/backporting.md`).
+   (`references/backport-labels.md`).
 2. `rook-code-review` review posting — a review the maintainer
    explicitly asked to post; each comment approved in-session.
    Mechanics, including the COMMENT-only rule, live in that
@@ -141,7 +142,7 @@ Four sanctioned exceptions, all approval-gated:
 Never push a branch or any ref directly to a `rook/*` repo; treat the
 `rook/*` remote (usually `origin`) as fetch-only. Push to the maintainer's
 fork remote. If no fork remote is configured, stop and ask. The one
-exception is fixing mergify backport PRs (`references/backporting.md`).
+exception is fixing mergify backport PRs (`references/backport-labels.md`).
 
 Build PRs in an isolated worktree cut from the current upstream master tip
 (`git worktree add <dir> -b <branch> origin/master`), not in a main working

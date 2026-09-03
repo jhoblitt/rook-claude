@@ -112,7 +112,7 @@ Return exactly one JSON object (no prose around it):
    "comment": "ready-to-post review comment text, self-contained"}],
  "ci": [{"check": "", "class": "REAL|KNOWN-FLAKE|INFRA", "evidence": ""}],
  "checklist": "PR-template checklist audit result",
- "backport": {"eligible": false, "label": null, "reason": "the row of rook-conventions references/backporting.md that decided it; give the label when eligible"},
+ "backport": {"eligible": false, "reason": "the row of rook-conventions references/backporting.md that decided it"},
  "test_coverage": {"unit": "adequate|gaps|n/a", "integration": "adequate|gaps|n/a", "gaps": ["specific unexercised paths"]},
  "maintainer_signals": "existing reviews weighted per CODE-OWNERS",
  "author_context": "authorAssociation, history — factual, no intent claims",

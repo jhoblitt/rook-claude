@@ -21,7 +21,7 @@
 //
 // Spec: skills/rook-code-review/references/docs-sync.md, the validate-refs
 // bullet. Callers: skills/rook-code-review/SKILL.md,
-// skills/rook-conventions/references/backporting.md.
+// skills/rook-conventions/references/backport-labels.md.
 package main
 
 import (

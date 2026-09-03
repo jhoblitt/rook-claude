@@ -365,7 +365,7 @@ or review post is drafted locally and approved in-session, per item, before
 it executes — with one carve-out: on a PR already blessed for backporting,
 a `backport-release-*` label the eligible set no longer contains comes off
 in-turn and is reported afterward; adding one still asks
-(`rook-conventions/references/backporting.md`, "Applying the label").
+(`rook-conventions/references/backport-labels.md`, "Applying the label").
 Conversational posts made on a maintainer's behalf open with
 an explicit AI-agent notice (`> This is @<your-login>'s AI agent.`) —
 attributed, never passed off as the human. Reviewed issue/PR content — and
