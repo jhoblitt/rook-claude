@@ -11,7 +11,7 @@ its own.
 | Change | Eligible | How |
 |---|---|---|
 | Touches `Documentation/`, or a `pkg/apis` godoc comment emitted into a CRD `description` (it resurfaces in the regenerated `Documentation/CRDs/specification.md`) | yes | apply the label directly, best-effort |
-| Bug or security fix to code present in the current stable `release-X.Y` | yes | a judgment call: flag it, and apply the label only on the maintainer's explicit confirmation |
+| Bug or security fix to code the target `release-X.Y` carries (which branches: "Applying the label") | yes | a judgment call: flag it, and apply the label only on the maintainer's explicit confirmation |
 | New feature | no | — |
 | Breaking change | no | — |
 | Test-only | no | — |
@@ -35,6 +35,49 @@ The series is the most recent stable one: `backport-release-X.Y` from the
 highest `sort -V` of
 `git ls-remote --heads <rook remote> 'refs/heads/release-*'`. Confirm the
 label exists on the repo before applying it.
+
+A Ceph-version-specific fix is the exception with more than one series. Its
+eligible set is every MAINTAINED release branch — the two most recent
+minors, per rook's `Documentation/Getting-Started/maintenance-and-support.md`,
+so the two highest `release-*` heads, never every branch that still has a
+label (labels outlive maintenance: `backport-release-1.17` exists while
+1.17 is EOL) — whose supported Ceph versions intersect the bug's affected
+range, and which carries the code the fix touches. Where version support
+lives, and why it is read from the tree rather than recalled, is
+rook-code-review `references/ceph-ecosystem.md`, "Releases and version
+gating"; the delta here is that every maintained branch carries its own
+copy. `git fetch origin` first — a missing or stale `origin/release-X.Y`
+makes the matrix silently wrong, and the matrix picks the labels — then
+read them all in one pass:
+
+```sh
+git ls-remote --heads origin 'refs/heads/release-*' |
+  sed -n 's#.*refs/heads/\(release-[0-9][0-9.]*\)$#\1#p' | sort -V | tail -n 2 |
+  while read -r b; do
+    printf '%s:' "$b"
+    git show "origin/${b}:pkg/operator/ceph/version/version.go" |
+      sed -n 's/^[[:space:]]*\([A-Za-z]*\) = CephVersion{\([0-9]*\), \([0-9]*\).*/ \1=\2.\3/p
+              s/^[[:space:]]*supportedVersions = \[\]CephVersion{\(.*\)}/ supported=\1/p' |
+      tr -d '\n'
+    echo
+  done
+```
+
+One line per branch — `Minimum`, the codename constants, and the
+`supportedVersions` list `Supported` consults — is the whole matrix.
+
+This governs breadth, not whether: the confirmation gate in the table still
+decides that a code backport starts at all. The affected range is an input
+somebody wrote — an issue body, a PR comment, a tracker entry — and it alone
+selects which labels get written, so it is verified against Ceph source
+before a set is derived from it, whoever supplied it: the verification rule
+in `references/review-feedback.md` is scoped there to comments, and covers
+the bug-report body here as well. Whenever the range is revised — new
+evidence, a corrected analysis — re-derive the set from the verified range;
+the first answer is not final. rook/rook#18242 was confirmed for
+`release-1.20` alone while the range read v20.2.x, and correcting it to
+v19.2.3+ widened the set to `release-1.19` — not `release-1.18`, whose
+label still exists but whose series had left maintenance.
 
 Whether the labelled PR also owes a `PendingReleaseNotes.md` entry is decided
 by rook-code-review `references/docs-sync.md`.

@@ -9,7 +9,8 @@ Ceph behavior claims in reviews must be sourced (code, docs, or tracker).
 - Release lines (name/major): Quincy 17, Reef 18, Squid 19, Tentacle 20,
   Umbrella 21. Rook's floor lives in
   `pkg/operator/ceph/version/version.go` — `Minimum` (currently Squid
-  19.2.0), with `Supported`/`Unsupported` deciding what the operator accepts.
+  19.2.0), with `Supported`/`Unsupported` deciding what the operator accepts
+  from the `supportedVersions`/`unsupportedVersions` lists beside it.
   Verify the CURRENT values in the tree rather than trusting this line.
 - **Gating rule**: a rook feature that depends on a Ceph capability must gate
   on the release that introduced it via `cephver` comparisons — not on "the
