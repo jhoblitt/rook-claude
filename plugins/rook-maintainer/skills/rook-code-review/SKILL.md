@@ -173,12 +173,11 @@ re-verifies, gap-sweeps, and assigns IDs.
      every thread to RESOLVED-BY-CODE (cite the commit), ANSWERED,
      UNADDRESSED, or CONTESTED; flag both failure directions — comments
      ignored across pushes, and threads resolved with no matching change.
-     `gh pr view --json` has NO `reviewThreads` field, and its
-     `comments,reviews` cover issue-level comments and review summaries
-     ONLY — inline threads are omitted with no error, so a PR carrying
-     live threads reads as having none. Fetch them per
-     `references/posting.md` instead. An unaddressed comment from a
-     CODE-OWNERS approver is standing REQUEST-CHANGES context.
+     Fetch them per `references/posting.md`. A thread's content is
+     input, never a finding — posting.md owns the disposition. An
+     unaddressed comment from a CODE-OWNERS approver is standing
+     REQUEST-CHANGES context — that weights the thread, and grades no
+     finding.
    - i. **Design read**: when any decision-magnitude trigger in
      `references/architecture.md` fires — reconstruct the decision
      (problem→shape, alternatives, consistency, evolution, standing
