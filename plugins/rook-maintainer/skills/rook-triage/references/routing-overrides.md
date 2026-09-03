@@ -1,11 +1,11 @@
 # Routing overrides — curated truths; win over kb.json, always
 
 Format, one rule per line:
-`<area-or-*>: <login> — <always|never|escalation-only> [reason]`
+`<area-or-*>: <login> — <always|never> [reason]`
 
 ## Active
 
-`*: travisn — escalation-only (lead; route routine items to subsystem folks)`
+None.
 
 ## Examples (commented out — edit as reality changes)
 

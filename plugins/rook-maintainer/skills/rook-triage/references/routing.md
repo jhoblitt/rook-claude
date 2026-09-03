@@ -50,6 +50,4 @@ the session model.
   review").
 - One targeted ping ≫ broadcast. Never re-ping the same person within 7
   days; re-ping once, then widen (report/Slack), don't add names.
-- travisn: escalation-class only (security / data-loss / regression /
-  stuck >30d) — routine items go to subsystem folks.
 - Never `/assign` anyone — self-assignment is the contributor's act.
