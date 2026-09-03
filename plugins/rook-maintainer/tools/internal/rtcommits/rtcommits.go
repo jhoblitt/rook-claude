@@ -1,6 +1,6 @@
 // Package rtcommits mines per-area commit authorship for the rook-triage kb
 // refresh — the "git log per area path-set (24 months, recency-weighted author
-// counts)" signal of skills/rook-triage/references/routing.md.
+// counts)" signal of skills/rook-triage/references/kb-refresh.md.
 //
 // It is the commit-side sibling of rtfetch/rtanalyze and shares their decisions
 // by CALLING them, not by restating them: the 25-area taxonomy is
@@ -8,7 +8,7 @@
 // same 1.0/0.5/0.25 boundaries, the window is rtfetch.WindowCutoff, and the bot
 // rule is rtanalyze.IsBot. The one deliberate local delta is botIdentity, which
 // narrows that rule for the login-less identities only git log produces. It
-// fills the `commits` and `last_active` columns of routing.md's `maintainers`
+// fills the `commits` and `last_active` columns of kb-refresh.md's `maintainers`
 // schema; `tier` comes from CODE-OWNERS and `reviews` from rt-analyze, and
 // nothing here invents either.
 //
@@ -31,7 +31,7 @@
 //
 // Nothing here touches the network, and nothing writes to the mined checkout.
 // Changing the weighting, the exclusions or the schema changes what the kb
-// refresh records; routing.md is that change's spec.
+// refresh records; kb-refresh.md is that change's spec.
 package rtcommits
 
 import (

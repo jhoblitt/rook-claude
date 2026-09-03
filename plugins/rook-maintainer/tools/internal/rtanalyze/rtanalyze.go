@@ -1,5 +1,5 @@
 // Package rtanalyze is the deterministic analysis layer of the rook-triage kb
-// refresh (skills/rook-triage/references/routing.md).
+// refresh (skills/rook-triage/references/kb-refresh.md).
 //
 // It consumes the rt_fetch output (rt_prs.jsonl + rt_fetch_state.json), buckets
 // merged PRs into the kb v3 area taxonomy and emits the two-tier miner contract

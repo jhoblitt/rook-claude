@@ -1,10 +1,10 @@
 // Package rtfetch mines merged pull requests, with their changed files and
 // reviews, for the rook-triage KB refresh (skills/rook-triage/references/
-// routing.md).
+// kb-refresh.md).
 //
 // One cursor walks repository.pullRequests (states: MERGED, UPDATED_AT DESC).
 // That connection has no search-API 1000-result cap, so a single walk covers
-// any window — which is why routing.md shards nothing and hands the whole
+// any window — which is why kb-refresh.md shards nothing and hands the whole
 // window to one invocation. The walk stops on a full page whose PRs are all
 // updatedAt-older than the cutoff: updatedAt >= mergedAt always holds and
 // pages are updatedAt ordered, so no in-window PR can follow such a page. A

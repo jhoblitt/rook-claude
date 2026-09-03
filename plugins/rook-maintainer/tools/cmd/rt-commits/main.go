@@ -1,5 +1,5 @@
 // rt-commits: per-area commit authorship for the rook-triage kb refresh
-// (rook-triage/references/routing.md, the "git log per area path-set" signal).
+// (rook-triage/references/kb-refresh.md, the "git log per area path-set" signal).
 //
 //	run.sh rt-commits --repo PATH [--months 24] [--now RFC3339] [--out FILE | --json]
 //	run.sh rt-commits --log FILE  [--months 24] [--now RFC3339] [--out FILE | --json]
