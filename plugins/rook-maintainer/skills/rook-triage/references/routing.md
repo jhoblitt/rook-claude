@@ -1,8 +1,8 @@
 # Routing and the knowledge base
 
-Rebuilding the KB — its sources, the mining tiers, the assembler's gates
-and the schema — is `references/kb-refresh.md`. This file is what routing
-does with the result.
+Rebuilding the KB — its sources, the stages and where judgment is spent,
+the assembler's gates and the schema — is `references/kb-refresh.md`. This
+file is what routing does with the result.
 
 Freshness: warn at phase 0 when the `generated` timestamp is >30 days
 old — the shipped snapshot's counts like any mined kb; never block. Absent

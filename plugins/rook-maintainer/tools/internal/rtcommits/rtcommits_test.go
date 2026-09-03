@@ -500,3 +500,54 @@ func TestAuthorDisplayNameIsSanitized(t *testing.T) {
 		t.Errorf("summary must carry the sanitized name:\n%s", strings.Join(res.Summary, "\n"))
 	}
 }
+
+// TestSampleSHAIsTheIdentitysNewestCommit pins the handle the kb refresh
+// resolves a login-less identity through: one sha per identity, the newest of
+// its commits in the window, so one lookup answers for the whole identity and
+// a merge-commit join on it lands in a PR the refresh's own window fetched.
+func TestSampleSHAIsTheIdentitysNewestCommit(t *testing.T) {
+	res := mineFixture(t, goldenNow, goldenMonths)
+	commits := fixtureCommits(t)
+	bySHA := map[string]Commit{}
+	for _, c := range commits {
+		bySHA[c.SHA] = c
+	}
+
+	belongs := func(id Identity, c Commit) bool {
+		if c.Name == id.Name {
+			return true
+		}
+		for _, e := range id.Emails {
+			if strings.EqualFold(e, c.Email) {
+				return true
+			}
+		}
+		return false
+	}
+	for _, id := range res.Doc.Identities {
+		c, ok := bySHA[id.SampleSHA]
+		if !ok {
+			t.Errorf("%s: sample_sha %q is not a fixture commit", id.Name, id.SampleSHA)
+			continue
+		}
+		if !belongs(id, c) {
+			t.Errorf("%s: sample %s was authored by %s <%s>", id.Name, c.SHA, c.Name, c.Email)
+		}
+		for _, o := range commits {
+			if belongs(id, o) && o.When.After(c.When) {
+				t.Errorf("%s: sample %s (%s) is older than its %s (%s)", id.Name, c.SHA, c.When, o.SHA, o.When)
+			}
+		}
+	}
+
+	alice := Identity{}
+	for _, id := range res.Doc.Identities {
+		if id.Name == "Alice Example" {
+			alice = id
+		}
+	}
+	if alice.SampleSHA != "a000001" {
+		t.Errorf("Alice's sample_sha = %q, want a000001: her newest commit, under the address that carries no login",
+			alice.SampleSHA)
+	}
+}

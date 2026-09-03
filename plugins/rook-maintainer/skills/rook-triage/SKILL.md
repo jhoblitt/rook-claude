@@ -241,16 +241,22 @@ this skill runs:
 - `rt-fetch` — kb-refresh fetch of merged PRs. kb refresh only; spec and
   invocation: `references/kb-refresh.md`.
 - `rt-analyze` — kb-refresh analysis: buckets the JSONL into the v3
-  area taxonomy and emits the `{data, flags}` miner contract. That mode is
+  area taxonomy, emits the roster it parses from CODE-OWNERS (`--roster`
+  suppresses the key), and writes the contract `internal/rtanalyze`
+  specifies. That mode is
   kb refresh only; spec and invocation: `references/kb-refresh.md`. Its
   `areas` subcommand classifies a changed-path set against that same
   taxonomy — the deterministic layer phase 1 reads and the spec
   `references/label-map.md`'s table states.
 - `rt-commits` — kb-refresh commit signal: recency-weighted author counts
-  per area from `git log`. kb refresh only; spec and invocation:
+  per area from `git log`, and the identity worklist with a sample sha
+  each. kb refresh only; spec and invocation:
   `references/kb-refresh.md`.
-- `validate-kb` — the kb refresh's pre-write gate on routing identities.
-  kb refresh only; spec and invocation: `references/kb-refresh.md`.
+- `validate-kb` — the kb refresh's pre-write gate: login grammar and
+  uniqueness, and per optional input — the previous kb, CODE-OWNERS, the
+  fetch state — coverage, the top-maintainer tier check and the
+  `source.reviews` sentence. kb refresh only; spec and invocation:
+  `references/kb-refresh.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.

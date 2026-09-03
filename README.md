@@ -66,6 +66,7 @@ Agents (spawned by the skills; addressable as `rook-maintainer:<name>`):
 | `rook-reviewer` | Context-isolated review of one PR or branch, returning structured findings. |
 | `design-attacker` | Single-perspective adversarial attack on a design proposal or major-decision diff — migration, version skew, security boundary, API evolution, operations, multisite, cost, upstream fit. |
 | `rook-triager` | Metadata triage of a batch of issues/PRs; analysis only, never writes. |
+| `kb-resolver` | Resolves the kb refresh's surviving flags by judgment from fenced briefs; read-only re-queries, never writes. |
 | `code-worker` | Scoped implementation subtasks for systemic-PR fan-out (worktree isolation). |
 
 ### Skill workflows
@@ -163,6 +164,8 @@ flowchart TD
 
     Q1 -->|"issues · prs · both (default, confirmed at phase 0)<br/>single item: issue N / pr N"| R0
     Q1 -->|"kb refresh"| B1
+    Q1 --> B0
+    Q1 --> B2
 
     subgraph SWEEP["the sweep — one resumable sweep dir per corpus"]
         R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
@@ -186,11 +189,19 @@ flowchart TD
     R5 --> R6["post · record in sweep.json · report URLs"]
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
-        B1["rt-fetch --deep-fetch → rt-analyze · rt-commits: merged-PR and<br/>commit signals, shipped Go tools end to end"] --> B2[["parallel miners: CODE-OWNERS · issue participation ·<br/>live label list — they flag ambiguity, never resolve it"]]
-        B2 --> B3["one resolver agent, then a deterministic assembler:<br/>validate-kb gates the identities, and a failing kb.json is not written"]
+        B0["rt-commits: the commit signal, offline"] --> B3
+        B1["rt-fetch --deep-fetch: the review signal's walk,<br/>in the background — the long pole"] --> B1A
+        B1A["rt-analyze --brief: buckets, the roster from CODE-OWNERS, flags"] --> B5
+        B2[["parallel miners: issue participation · live label list —<br/>they flag ambiguity, never resolve it"]] --> B5
+        B3["identity sweep: each login-less identity through its sample sha,<br/>gh api commits at width 8"] --> B4
+        B1 --> B4
+        B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B5
+        B5["the one gather: kb-resolver, one agent on the session model, every flag fenced"] --> B6
+        B6["assembler: validate-kb gates logins, coverage, top-maintainer tiers and the<br/>reviews provenance; a failing kb.json is not written"]
+        B6 -.->|"a failing login is a flag"| B5
     end
 
-    B3 -.->|"routing evidence for phase 1"| R1
+    B6 -.->|"routing evidence for phase 1"| R1
     R1 -.->|"route-to-deep-review, one review per PR"| CR["rook-code-review"]
     R1 -.->|"takeover-candidate flagged, executed elsewhere"| TO["rook-pr-takeover"]
 ```
