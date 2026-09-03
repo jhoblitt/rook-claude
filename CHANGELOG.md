@@ -1,3 +1,27 @@
+## [0.19.2](https://github.com/jhoblitt/rook-claude/compare/v0.19.1...v0.19.2) (2026-09-03)
+
+### Bug Fixes
+
+* **rook-maintainer:** ignore another plugin's CLAUDE_PLUGIN_DATA ([e149d12](https://github.com/jhoblitt/rook-claude/commit/e149d1273be11be5f4960dfe0cb6cca475906365)), closes [#85](https://github.com/jhoblitt/rook-claude/issues/85)
+* **rook-triage:** mine origin/master in rt-commits --repo ([de49593](https://github.com/jhoblitt/rook-claude/commit/de49593b9df3cab6c45319679d1b06381664c1e6)), closes [#84](https://github.com/jhoblitt/rook-claude/issues/84)
+* **rook-triage:** ship real logins in the kb snapshot ([da812bf](https://github.com/jhoblitt/rook-claude/commit/da812bf882206a6397e528a3bd0338088d5775d6)), closes [#83](https://github.com/jhoblitt/rook-claude/issues/83)
+* **rook-triage:** stop excluding travisn from routine routing ([5c0c38f](https://github.com/jhoblitt/rook-claude/commit/5c0c38f3df7b381a14346f1d480359d671cf942d)), closes [rook/rook#18242](https://github.com/rook/rook/issues/18242) [#77](https://github.com/jhoblitt/rook-claude/issues/77)
+
+### Refactoring
+
+* **rook-triage:** split kb refresh out of routing.md ([b10a921](https://github.com/jhoblitt/rook-claude/commit/b10a92182a1af775d084d6b43a33c721d2a06b00))
+
+
+## What's Changed
+* fix(rook-triage): correct the routing KB and its mining tools by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/92
+
+### Resolved issues
+
+* [#77](https://github.com/jhoblitt/rook-claude/issues/77) routing-overrides.md '*: travisn — escalation-only' is incorrect; travisn is a routine reviewer
+* [#83](https://github.com/jhoblitt/rook-claude/issues/83) kb-snapshot.json ships two display names in the maintainers login field
+* [#84](https://github.com/jhoblitt/rook-claude/issues/84) rt-commits --repo mines HEAD, but routing.md specifies origin/master
+* [#85](https://github.com/jhoblitt/rook-claude/issues/85) run.sh trusts an ambient CLAUDE_PLUGIN_DATA that may belong to another plugin
+
 ## [0.19.1](https://github.com/jhoblitt/rook-claude/compare/v0.19.0...v0.19.1) (2026-09-03)
 
 ### Bug Fixes
