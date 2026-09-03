@@ -76,9 +76,10 @@ a local branch.
    claims like any other diff. In later rook-code-review ledgers `fixed` reads as resolved,
    `no_change_needed` as withdrawn, and `skipped` stays open with its
    reason — a deliberate skip is not a refutation.
-3. Gate before pushing: rebase onto the current master tip (fetch first —
-   rook-conventions `references/pull-requests.md` "Updating an open PR";
-   before opening AND before every later repush); rook-code-review's pre-pr adversarial pass
+3. Gate before pushing: before opening, fetch and rebase onto the current
+   `<rook remote>/master` tip; before every later repush, rook-conventions
+   `references/pull-requests.md` "Updating an open PR" in full;
+   rook-code-review's pre-pr adversarial pass
    (fresh agent); and the local verification gate in rook-conventions
    `references/building-and-testing.md`. The adversarial pass reads the
    authority docs and `.golangci.yaml` from the rook remote's master, never

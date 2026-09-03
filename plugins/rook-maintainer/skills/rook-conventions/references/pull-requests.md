@@ -64,16 +64,22 @@ messages rather than growing the description.
 
 ## Updating an open PR
 
-Before repushing to an open rook PR, rebase its branch onto the current tip
-of the PR's actual base branch (`gh pr view <n> --json baseRefName` — usually
-`master`, sometimes `release-*`): fetch the base from the `rook/*` remote,
-rebase, resolve, force-push (`--force-with-lease`) to the fork. Never resolve
-a stale base with a merge commit from upstream.
+Before repushing to an open rook PR, one read —
+`gh pr view <n> --json baseRefName,headRefOid` — supplies both facts the
+update needs; then fetch both tips in one step, `git fetch <fork> <branch>`
+and `git fetch <rook remote> <baseRefName>` (usually `master`, sometimes
+`release-*`), which are independent of each other.
 
 Start from the PR's CURRENT remote head, not a stale local branch — a later
-session or manual push may have force-updated the fork branch. Re-fetch and
-reset to it (confirm via `gh pr view <n> --json headRefOid` +
-`git ls-remote <fork> <branch>`) BEFORE rebasing.
+session or manual push may have force-updated the fork branch. Reset to the
+fetched `<fork>/<branch>` BEFORE rebasing; it must equal `headRefOid`, or
+the PR moved under you: stop, re-read and re-fetch, and restart from the
+reset.
+
+Rebase onto the fetched `<rook remote>/<baseRefName>`, resolve, and
+force-push to the fork with the lease pinned to the head you read —
+`--force-with-lease=<branch>:<headRefOid>`, not the bare form. Never resolve
+a stale base with a merge commit from upstream.
 
 When a push substantively changes what the PR does — adding a new fix or
 mechanism as much as removing one — update the PR title and description in

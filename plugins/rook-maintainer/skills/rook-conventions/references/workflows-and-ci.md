@@ -17,8 +17,8 @@ Adding, removing, renaming, or restructuring a workflow/job — including
 `.mergify.yml` for matching `check-success=`/`status-success=` conditions
 before opening the PR. Backport automerge pins required checks by exact job
 name; a renamed/removed check can wedge mergify or let it merge unchecked.
-If the touched job isn't referenced there, no change is needed — say so,
-noting that you checked.
+If the touched job isn't referenced there, no change is needed — say so, as
+the process note it is (`references/commits.md`, "What a message says").
 
 A check name is `<job id> (<matrix values>)`, or
 `<caller job id> / <called job id> (<matrix values>)` when the job is a
