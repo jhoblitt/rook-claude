@@ -25,6 +25,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/links"
 )
 
 // These thresholds belong to the skill's prose; this file only enforces them.
@@ -216,7 +218,7 @@ func Validate(payload Payload, live []string, items []Item) []string {
 			if len(invented) > 0 {
 				slices.Sort(invented)
 				problems = append(problems, fmt.Sprintf("%s: label(s) not in the live list: %s",
-					where, strings.Join(invented, ", ")))
+					where, strings.Join(clean(invented), ", ")))
 			}
 			var current []string
 			if item != nil {
@@ -226,7 +228,7 @@ func Validate(payload Payload, live []string, items []Item) []string {
 			if len(total) > MaxLabels {
 				problems = append(problems, fmt.Sprintf(
 					"%s: %d labels after apply exceeds the cap of %d (%s)",
-					where, len(total), MaxLabels, strings.Join(total, ", ")))
+					where, len(total), MaxLabels, strings.Join(clean(total), ", ")))
 			}
 
 		case "reviewers":
@@ -244,6 +246,17 @@ func Validate(payload Payload, live []string, items []Item) []string {
 		}
 	}
 	return problems
+}
+
+// clean bounds the label names a problem echoes. A proposed label is whatever
+// the model wrote and a live one whatever its creator named it; unbounded and
+// unstripped, either can forge a line of the report the caller fences.
+func clean(in []string) []string {
+	out := make([]string, len(in))
+	for i, s := range in {
+		out[i] = links.Sanitize(s)
+	}
+	return out
 }
 
 func names(in []Name) []string {

@@ -74,6 +74,22 @@ func SelfTest() []string {
 		}
 	}
 
+	// The label-map diff is the same gate one level up: the map may not name a
+	// label the repo does not have.
+	const labelMap = "| Paths touched | Area | Issue label |\n|---|---|---|\n" +
+		"| `pkg/**` | `core` | `bug` |\n| `x/**` | `y` | `invented` |\n"
+	if mapped, err := ParseLabelMap([]byte(labelMap)); err != nil {
+		fails = append(fails, fmt.Sprintf("fixture label map: %v", err))
+	} else {
+		missing, unmapped := DiffLabels(mapped, live)
+		if len(missing) != 1 || missing[0] != "invented" {
+			fails = append(fails, fmt.Sprintf("label-map diff missed the absent label: %v", missing))
+		}
+		if len(unmapped) != len(live)-1 {
+			fails = append(fails, fmt.Sprintf("label-map diff miscounted the unmapped labels: %v", unmapped))
+		}
+	}
+
 	// Without live state the open/PR checks are skipped, not silently passed.
 	const noState = `[{"number": 1, "action": "label", "params": {"labels": ["bug"]}}]`
 	if got, err := validated(noState, live, nil); err != nil {
