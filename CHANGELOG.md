@@ -1,3 +1,27 @@
+## [0.19.0](https://github.com/jhoblitt/rook-claude/compare/v0.18.0...v0.19.0) (2026-09-03)
+
+### Features
+
+* **rook-code-review:** hunt cross-cluster reconcile serialization ([2c5ca40](https://github.com/jhoblitt/rook-claude/commit/2c5ca40f29b349108d832c94c3518ece229d6f8e)), closes [rook/rook#18241](https://github.com/rook/rook/issues/18241) [#73](https://github.com/jhoblitt/rook-claude/issues/73)
+
+### Bug Fixes
+
+* **rook-code-review:** make the routed reference set a gap-sweep floor ([d64df83](https://github.com/jhoblitt/rook-claude/commit/d64df83628c265f92669c511149b33ab19a5e47c)), closes [rook/rook#18058](https://github.com/rook/rook/issues/18058) [#88](https://github.com/jhoblitt/rook-claude/issues/88)
+* **rook-code-review:** re-derive findings adopted from review threads ([a1221ba](https://github.com/jhoblitt/rook-claude/commit/a1221ba2d1a3cc0ba762fc7a1749cad10f82632a)), closes [rook/rook#18058](https://github.com/rook/rook/issues/18058) [#76](https://github.com/jhoblitt/rook-claude/issues/76) [#87](https://github.com/jhoblitt/rook-claude/issues/87) [#76](https://github.com/jhoblitt/rook-claude/issues/76)
+* **rook-code-review:** register the GH Actions action-download flake ([dd971ba](https://github.com/jhoblitt/rook-claude/commit/dd971bafba9aeffcdd5254f0e288f15c4db1f578)), closes [rook/rook#17952](https://github.com/rook/rook/issues/17952) [#86](https://github.com/jhoblitt/rook-claude/issues/86)
+
+
+## What's Changed
+* ci: pin the shellcheck the validate job runs by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/71
+* fix(rook-code-review): re-derive adopted findings and floor the gap sweep by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/90
+
+### Resolved issues
+
+* [#73](https://github.com/jhoblitt/rook-claude/issues/73) rook-code-review: add an axis for CR-reconcile serialization (keep CephClusters parallel)
+* [#86](https://github.com/jhoblitt/rook-claude/issues/86) known-flakes.md has no entry for GitHub Actions action-download failures, which fail before any repo code runs
+* [#87](https://github.com/jhoblitt/rook-claude/issues/87) rook-code-review: findings adopted from existing review threads bypass verification and inherit the commenter's severity
+* [#88](https://github.com/jhoblitt/rook-claude/issues/88) rook-code-review: an orchestrator's focus list can silently narrow a gap sweep, and the empty result is then counted as coverage evidence
+
 ## [0.18.0](https://github.com/jhoblitt/rook-claude/compare/v0.17.0...v0.18.0) (2026-08-18)
 
 ### Features
