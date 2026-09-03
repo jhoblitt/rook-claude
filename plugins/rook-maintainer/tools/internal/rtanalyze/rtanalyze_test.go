@@ -16,7 +16,10 @@ const goldenNow = "2026-08-01T00:00:00Z"
 // run against the same fixture with the same --now. Byte equality is the whole
 // contract: the miner output is consumed by an assembler that diffs it, and
 // float weighting plus map iteration order are exactly where a rewrite drifts
-// silently. Regenerate only against the Python, never from this code.
+// silently. Regenerate only against the Python, never from this code: where a
+// change deliberately extends the document past what the Python emitted, the
+// golden is hand-edited on exactly the lines that change, so everything it does
+// not touch still came from the Python.
 func TestGoldenMatchesPython(t *testing.T) {
 	assertMatchesGolden(t, analyzeFixture(t, 15), "testdata")
 }
@@ -67,7 +70,8 @@ func analyzeFixture(t *testing.T, top int) *Result {
 		OutPath: "rt_final.json",
 		Top:     top,
 		Now:     now,
-		Roster:  Lowered(roster),
+		Roster:  Lowered(roster.Logins()),
+		Tiers:   roster,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -308,14 +312,74 @@ func TestParseCodeOwners(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if got := strings.Join(roster.Approvers, ","); got != "alice,Bob,eve" {
+		t.Errorf("approvers = %q, want the tier in file order", got)
+	}
+	if got := strings.Join(roster.Reviewers, ","); got != "frank,dangling" {
+		t.Errorf("reviewers = %q", got)
+	}
 	want := "Bob,alice,dangling,eve,frank"
-	if got := strings.Join(sortedKeys(roster), ","); got != want {
-		t.Errorf("roster = %q, want %q", got, want)
+	if got := strings.Join(sortedKeys(roster.Logins()), ","); got != want {
+		t.Errorf("Logins() = %q, want %q", got, want)
 	}
 	if empty, err := ParseCodeOwners(strings.NewReader("nothing here\n")); err != nil {
 		t.Fatal(err)
-	} else if len(empty) != 0 {
+	} else if len(empty.Logins()) != 0 {
 		t.Errorf("roster from a file with no tiers = %v", empty)
+	}
+}
+
+// A login listed twice under one key is one person; the same login under both
+// keys is what the file says, and the split is the caller's to read.
+func TestParseCodeOwnersDeduplicatesWithinATier(t *testing.T) {
+	roster, err := ParseCodeOwners(strings.NewReader(
+		"approvers:\n  - alice\n  - alice\n  - bob\nreviewers:\n  - alice\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := strings.Join(roster.Approvers, ","); got != "alice,bob" {
+		t.Errorf("approvers = %q", got)
+	}
+	if got := strings.Join(roster.Reviewers, ","); got != "alice" {
+		t.Errorf("reviewers = %q", got)
+	}
+}
+
+// The kb's roster is the CODE-OWNERS tiers, and a display name written through
+// as a login is the defect validate-kb exists for — so the tiers reach the
+// document from the file, never from a model reading it.
+func TestDocumentCarriesTheRosterTiers(t *testing.T) {
+	roster := member(t, analyzeFixture(t, 15).Doc, "roster").(Obj)
+	for _, tc := range []struct{ tier, want string }{
+		{"approvers", "alice,Bob,eve"},
+		{"reviewers", "frank,dangling"},
+	} {
+		var got []string
+		for _, login := range member(t, roster, tc.tier).([]any) {
+			got = append(got, login.(string))
+		}
+		if strings.Join(got, ",") != tc.want {
+			t.Errorf("roster.%s = %v, want %q", tc.tier, got, tc.want)
+		}
+	}
+}
+
+// --roster is a flat list, so there is no tier to write down and the key is
+// absent rather than guessed at.
+func TestUntieredRosterEmitsNoRosterKey(t *testing.T) {
+	res, err := Analyze(prsFrom(t, `{"number":1,"title":"t","mergedAt":"2026-07-01T00:00:00Z",
+		"author":{"login":"alice"},"files":{"nodes":[{"path":"cmd/rook/main.go"}]},
+		"reviews":{"nodes":[]}}`),
+		&State{StopReason: new("reached the window cutoff")},
+		Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow),
+			Roster: Lowered(ParseRoster("alice,bob"))})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, m := range res.Doc {
+		if m.Key == "roster" {
+			t.Errorf("--roster produced a tiered roster: %v", m.Val)
+		}
 	}
 }
 

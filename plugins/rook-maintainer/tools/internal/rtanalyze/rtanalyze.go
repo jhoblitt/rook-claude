@@ -3,8 +3,8 @@
 //
 // It consumes the rt_fetch output (rt_prs.jsonl + rt_fetch_state.json), buckets
 // merged PRs into the kb v3 area taxonomy and emits the two-tier miner contract
-// — {"data": {...}, "flags": [...]} — so the orchestrator resolves trivial flags
-// and sends only survivors to a resolver agent.
+// — {"data": {...}, "flags": [...], "roster": {...}} — so the orchestrator
+// resolves trivial flags and sends only survivors to a resolver agent.
 //
 // Area taxonomy = kb v3 (25 areas; rebucketed 2026-07-23: +build/design/
 // discover, core broadened). The classes the "Deliberately unbucketed"
@@ -12,6 +12,9 @@
 // area — they surface as bucket-ambiguity flags to confirm the gap is still
 // intentional, not silently dropped.
 //
+// Roster: the CODE-OWNERS tiers as the file lists them, which is the kb's
+// `roster` key, read by routing's approver/reviewer split
+// (references/routing.md, Selection step 4).
 // Data: per-area top reviewers (recency-weighted: 1.0 <=6mo, 0.5 <=12mo, 0.25
 // older; bots and self-reviews excluded; counted per review event) + 5 most
 // recent items, plus authors_last_merged (YYYY-MM per author).
@@ -127,6 +130,10 @@ type Options struct {
 	Now     time.Time
 	// Roster must be lowercased; see Lowered.
 	Roster map[string]bool
+	// Tiers is emitted as the document's roster, and is nil for the --roster
+	// form: that one carries no tiers, and writing it out as if it did would
+	// be a guess at which half of the split each login belongs to.
+	Tiers *Roster
 }
 
 // Result is the miner contract document plus the stderr run summary and the
@@ -294,29 +301,60 @@ func AreasForPaths(paths []string) []string {
 
 var codeOwnersKey = regexp.MustCompile(`^(approvers|reviewers):`)
 
-// ParseCodeOwners mines the flat CODE-OWNERS roster: every "- login" under an
+// Roster is CODE-OWNERS' two tiers, each in the order the file lists them and
+// deduplicated within a tier. The order is the authority's own — sorting would
+// invent one — and the tier is why this is a struct and not a set: routing's
+// approver/reviewer split reads it (references/routing.md, Selection step 4).
+type Roster struct {
+	Approvers []string
+	Reviewers []string
+}
+
+// Logins is both tiers as a membership set.
+func (r *Roster) Logins() map[string]bool {
+	out := make(map[string]bool, len(r.Approvers)+len(r.Reviewers))
+	for _, tier := range [][]string{r.Approvers, r.Reviewers} {
+		for _, login := range tier {
+			out[login] = true
+		}
+	}
+	return out
+}
+
+// ParseCodeOwners mines the CODE-OWNERS roster: every "- login" under an
 // approvers:/reviewers: key, until a non-comment non-list line closes it.
-func ParseCodeOwners(r io.Reader) (map[string]bool, error) {
-	roster := map[string]bool{}
-	inKey := false
+func ParseCodeOwners(r io.Reader) (*Roster, error) {
+	var roster Roster
+	var tier *[]string
 	sc := bufio.NewScanner(r)
 	sc.Buffer(make([]byte, 0, 64*1024), 4*1024*1024)
 	for sc.Scan() {
 		s := strings.TrimSpace(sc.Text())
-		if codeOwnersKey.MatchString(s) {
-			inKey = true
+		if m := codeOwnersKey.FindStringSubmatch(s); m != nil {
+			if tier = &roster.Approvers; m[1] == "reviewers" {
+				tier = &roster.Reviewers
+			}
 			continue
 		}
-		if inKey && strings.HasPrefix(s, "- ") {
-			roster[strings.TrimSpace(s[2:])] = true
+		if tier != nil && strings.HasPrefix(s, "- ") {
+			*tier = appendUnique(*tier, strings.TrimSpace(s[2:]))
 		} else if s != "" && !strings.HasPrefix(s, "#") && !strings.HasPrefix(s, "-") {
-			inKey = false
+			tier = nil
 		}
 	}
 	if err := sc.Err(); err != nil {
 		return nil, err
 	}
-	return roster, nil
+	return &roster, nil
+}
+
+func appendUnique(tier []string, login string) []string {
+	for _, seen := range tier {
+		if seen == login {
+			return tier
+		}
+	}
+	return append(tier, login)
 }
 
 // ParseRoster reads the --roster form: comma-separated logins.
@@ -926,6 +964,12 @@ func Analyze(prs []*PR, st *State, opts Options) (*Result, error) {
 			{Key: "authors_last_merged", Val: authors},
 		}},
 		{Key: "flags", Val: flagsArr},
+	}
+	if opts.Tiers != nil {
+		doc = append(doc, Member{Key: "roster", Val: Obj{
+			{Key: "approvers", Val: sanitizedAny(opts.Tiers.Approvers)},
+			{Key: "reviewers", Val: sanitizedAny(opts.Tiers.Reviewers)},
+		}})
 	}
 
 	summary := []string{fmt.Sprintf("PRs=%d zero_match=%d overmatch=%d flags=%s -> %s",

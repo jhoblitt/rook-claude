@@ -8,7 +8,7 @@
 //	run.sh rt-analyze areas --stdin
 //
 // Consumes rt-fetch's rt_prs.jsonl + rt_fetch_state.json from --in-dir and
-// writes the {data, flags} miner contract to --out (default
+// writes the miner contract internal/rtanalyze specifies to --out (default
 // <in-dir>/rt_final.json). Purely offline. The run summary goes to stderr; the
 // flags reach the resolver as the fenced block --brief FILE writes, and a run
 // given no --brief emits none.
@@ -79,17 +79,19 @@ func run(args []string) int {
 	}
 
 	var names map[string]bool
+	var tiers *rtanalyze.Roster
 	switch {
 	case *codeOwners != "":
 		f, err := os.Open(*codeOwners)
 		if err != nil {
 			return fail("%v", err)
 		}
-		names, err = rtanalyze.ParseCodeOwners(f)
+		tiers, err = rtanalyze.ParseCodeOwners(f)
 		_ = f.Close()
 		if err != nil {
 			return fail("%v", err)
 		}
+		names = tiers.Logins()
 		if len(names) == 0 {
 			return fail("no approvers/reviewers parsed from %s", *codeOwners)
 		}
@@ -123,6 +125,7 @@ func run(args []string) int {
 		Top:     *top,
 		Now:     at,
 		Roster:  rtanalyze.Lowered(names),
+		Tiers:   tiers,
 	})
 	if err != nil {
 		return fail("%v", err)

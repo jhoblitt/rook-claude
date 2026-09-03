@@ -631,5 +631,16 @@
    "evidence": "raw_reviews_total=3 across areas=['object', 'object-bucket-claims', 'object-multisite']",
    "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
   }
- ]
+ ],
+ "roster": {
+  "approvers": [
+   "alice",
+   "Bob",
+   "eve"
+  ],
+  "reviewers": [
+   "frank",
+   "dangling"
+  ]
+ }
 }
