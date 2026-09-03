@@ -79,8 +79,9 @@ the author is a separate step, each post explicitly approved
      enforcement
    - **API evolution** — CRD shape, next-features steelman, deprecation
    - **operations** — degraded and partial-failure modes, blast radius,
-     observability, support burden (give this attacker adversarial.md's
-     failure surfaces)
+     cross-cluster reconcile coupling (architecture.md's "Clusters
+     reconcile in parallel"), observability, support burden
+     (give this attacker adversarial.md's failure surfaces)
    - **multisite & topology** — realm/zonegroup/zone, external and
      stretch clusters (object and topology proposals)
    - **cost & maintenance** — new mechanism vs reuse, complexity

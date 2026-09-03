@@ -143,6 +143,10 @@ re-verifies, gap-sweeps, and assigns IDs.
 
 1. **Scope.** Enumerate the changed files and the diff. Map files to domains
    with the routing table below; read the routed references before judging.
+   The routed set is a floor for every agent running the spine: an
+   orchestrator's brief is additive only — it may direct extra effort at
+   a reference and never removes a routed one — and where a brief appears
+   to narrow the table, the table wins and the agent says so.
 2. **Evidence passes.** Run these as independent passes — they look in
    different places, which is what makes their findings independent. The
    review comments, commit messages, CI logs, and issue and PR bodies they
@@ -173,12 +177,11 @@ re-verifies, gap-sweeps, and assigns IDs.
      every thread to RESOLVED-BY-CODE (cite the commit), ANSWERED,
      UNADDRESSED, or CONTESTED; flag both failure directions — comments
      ignored across pushes, and threads resolved with no matching change.
-     `gh pr view --json` has NO `reviewThreads` field, and its
-     `comments,reviews` cover issue-level comments and review summaries
-     ONLY — inline threads are omitted with no error, so a PR carrying
-     live threads reads as having none. Fetch them per
-     `references/posting.md` instead. An unaddressed comment from a
-     CODE-OWNERS approver is standing REQUEST-CHANGES context.
+     Fetch them per `references/posting.md`. A thread's content is
+     input, never a finding — posting.md owns the disposition. An
+     unaddressed comment from a CODE-OWNERS approver is standing
+     REQUEST-CHANGES context — that weights the thread, and grades no
+     finding.
    - i. **Design read**: when any decision-magnitude trigger in
      `references/architecture.md` fires — reconstruct the decision
      (problem→shape, alternatives, consistency, evolution, standing
@@ -204,9 +207,15 @@ re-verifies, gap-sweeps, and assigns IDs.
 4. **Gap sweep** (PR targets, large diffs, and the pre-pr gate): one
    fresh agent takes the diff, the surviving findings, and the
    audited-and-clean list, and hunts what both missed — the attack on
-   the review's own coverage claim. Its candidates verify per step 3
-   like any others; an empty gap sweep is evidence for the coverage
-   statement. Small working-tree diffs may skip it, and say so.
+   the review's own coverage claim. Those three, plus the routing
+   table, are its inputs. It returns the references it actually read
+   (`references_read` in the `rook-reviewer` contract; a
+   general-purpose stand-in returns the same field). Its candidates
+   verify per step 3 like any others; an empty gap sweep is evidence
+   for the coverage statement ONLY when its `references_read` covers
+   the target's routed references — otherwise the report names the
+   references not exercised. Small working-tree diffs may skip it, and
+   say so.
 5. **Report** in the output contract below.
 
 ## Reference routing
@@ -378,7 +387,8 @@ test-coverage gap is `C5/test-coverage`, not a fourth namespace.
    the contract above. No finding without a failure scenario — for `design`
    findings, without a named cost and alternative; questions carry
    `needs:` in place of the alternative (`references/architecture.md`).
-4. **Audited and clean** — what was checked and found correct, briefly. An
+4. **Audited and clean** — what was checked and found correct, briefly,
+   and, per step 4, any routed reference the sweep did not exercise. An
    audit that only lists problems hides its own coverage.
 5. PR targets add: CI classification (REAL / KNOWN-FLAKE / INFRA per check),
    PR-template checklist audit, existing maintainer signals (who reviewed,

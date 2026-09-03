@@ -9,7 +9,7 @@ partial fixes, or "will follow up". The output decides whether the PR opens.
 The authoring session cannot review its own assumptions — it will re-read
 the code through the reasoning that produced it. Dispatch a FRESH agent
 (rook-maintainer:rook-reviewer type when available, else general-purpose —
-a fallback brief carries that agent file's hard rules inline AND its fetch
+a fallback brief carries that agent file's contract inline AND its fetch
 ban, `references/docs-sync.md`) whose prompt contains ONLY:
 
 - the branch diff (`git diff origin/master...HEAD`) and the repo path
@@ -33,10 +33,11 @@ checkout, and their briefs say nothing about refreshing precisely because
 it is already done (SKILL.md "The local checkout is read-only"). It
 applies to the single-agent gate as much as to the split one below.
 
-The spine's gap sweep needs a fresh agent the gate agent cannot spawn:
-the authoring session launches it on the gate's report — mechanical
-orchestration, never judging — and its candidates verify like any
-others before joining the gate's findings.
+The spine's gap sweep (SKILL.md step 4: its inputs, its `references_read`
+return, and what an empty sweep proves) needs a fresh agent the gate
+agent cannot spawn: the authoring session launches it — mechanical
+orchestration, never judging — and its verified candidates join the
+gate's findings.
 
 Pass j takes the same handoff: the gate agent runs reuse.md's generate
 stage only, so the authoring session launches fresh adjudicators on the
@@ -151,4 +152,6 @@ inference. All findings still pass verification.md before reporting.
   gate's code-level findings (proposal.md intake).
 
 Close with the standard "audited and clean" statement — the surfaces
-attacked and survived are the evidence the gate ran.
+attacked and survived are the evidence the gate ran, and the coverage it
+claims holds only under the gap sweep's `references_read` condition
+(SKILL.md step 4).

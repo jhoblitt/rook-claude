@@ -9,7 +9,7 @@ load-bearing that is more than a release old.
 
 ## Active classes
 
-| Class | Signature | Notes (as of 2026-07-26) |
+| Class | Signature | Notes |
 |---|---|---|
 | ceph bring-up wedge | canary/integration job dies in "wait for ceph to be ready" / mon quorum never forms | historic, load-sensitive |
 | mgr-ready on Ceph v20+ | canary waiting on mgr module / port 9283 readiness | UPSTREAM: ceph tracker 77967 (mgr/prometheus hang); rook #17906 tracks; not a rook regression |
@@ -20,6 +20,7 @@ load-bearing that is more than a release old.
 | keystone suite | keystone auth setup/teardown timeouts | environment-heavy suite |
 | multus attachment | multus setup / network-attachment failures in canary | root-caused as a `kubectl wait` empty-selector race in `setup-multus.sh` — check whether the rollout-status/vendored-manifest fix has landed before classifying |
 | registry/network | image pull backoff, TLS handshake to registries, apt/pip mirror errors | INFRA |
+| GH Actions action-download | `Failed to download action '<host>/repos/<owner>/<repo>/tarball/<sha>'` + `Name or service not known (internal-api.service.iad.github.net:443)`; `Failed to download archive ... after 3 attempts` | INFRA — GitHub fetching its OWN action tarballs, before the job body: no image pulled, no repo code run, so `registry/network` does not match. Fails at `consider (pre-job) debugging`, `consider (post-job) debugging`, `Set up job`, or any step that dies inside "Prepare all required actions" — that last one carries a meaningful-looking name (seen as `setup cluster resources`), so the step name is not evidence: check whether the step got past action preparation. Discriminator: time-correlation plus peers — it hits every job started in the outage window, and open PRs on the same base are green or carry only their own known reds; a real regression is not confined to one push's time window. Clears on one rerun. Seen rook #17952, 7 jobs across 4 runs created in the same minute (as of 2026-08-25) |
 
 ## Recently resolved — a match here is REAL, not flake
 
