@@ -16,11 +16,10 @@ parallel agents:
   defined on, and never the checkout's `HEAD`, which on a clone that trails
   its remote drops the newest and most heavily weighted commits. `--ref`
   overrides that, and a ref the checkout cannot resolve fails the run instead
-  of falling back. It never fetches, so `origin/master` is only as fresh as
-  the orchestrator's one refresh before the miners fan out — the read-only
-  checkout rule `rook-code-review` states. Run it rather than
-  hand-rolling the walk, the same rule
-  the reviews signal below carries. It reuses that signal's 25-area path
+  of falling back. It never fetches, so `origin/master` is as fresh as the
+  session's one refresh (`rook-code-review`'s read-only-checkout rule). Run
+  it rather than hand-rolling the walk, the same rule the reviews signal
+  below carries. It reuses that signal's 25-area path
   classifier and its recency weights, and excludes merge
   commits — git records no changed paths for a merge and its author is
   whoever pressed the button, which is why the window is ~1,535 commits on
