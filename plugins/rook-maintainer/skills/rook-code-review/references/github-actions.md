@@ -58,13 +58,12 @@ bump loop the `# vX.Y.Z` comments exist for is rook-conventions
 - `include`/`exclude` produce the intended combinations — enumerate them
   when non-trivial; `fail-fast` and `max-parallel` are deliberate choices
   (burn-in style matrices want `fail-fast: false`).
-- **Job names are status checks.** Matrix-derived names
-  (`job (v1.33.0)`) are pinned by branch protection and `.mergify.yml`
-  `check-success=` conditions. ANY rename/add/remove of a job or matrix
-  value must be reconciled against `.mergify.yml` — a stale pin wedges
-  mergify (waits forever) or lets backports merge unchecked. When clean, say
-  "checked `.mergify.yml`, no update needed" — absence of a mergify entry is
-  itself a check result (label-gated/nightly suites are typically absent).
+- **Job names are status checks.** Which changes rename a check, and the
+  `.mergify.yml` reconciliation they owe, is rook-conventions
+  `references/workflows-and-ci.md`, "Workflow changes and `.mergify.yml`".
+  In review an unreconciled pin is a finding. When clean, say "checked
+  `.mergify.yml`, no update needed" — absence of a mergify entry is itself
+  a check result (label-gated/nightly suites are typically absent).
 
 ## Rook conventions
 
