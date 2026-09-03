@@ -20,8 +20,8 @@ parallel agents:
   a `users.noreply.github.com` address resolve to one. The rest arrive as
   name + emails in the top-level `identities` array, with
   `identities_without_login` counting them — resolving those to logins is the
-  miner's job, and an unresolved identity must never be written into
-  `maintainers` as if its name were a login.
+  miner's job; the assembler's `validate-kb` gate below rejects a name
+  written through as a login.
 - Merged-PR review history per area — who actually reviews rgw vs csi vs
   osd (merged PRs + reviews, bucketed by changed paths).
   Sample: the last 24 months of merged PRs, capped at 4000, whichever bound
@@ -59,12 +59,20 @@ flags deterministically; surviving flags go to ONE resolver agent on the
 session model (re-query access; returns per-flag resolutions the assembler
 applies). The assembler validates deterministically regardless of tier —
 PR count plausible for the window, no previously-signalful area empty, top
-reviewers intersect CODE-OWNERS, provenance consistent with the bounds —
-and refuses to write kb.json on failure.
+reviewers intersect CODE-OWNERS, provenance consistent with the bounds, and
+every `maintainers[].login` and `roster` login accepted by
+`bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-kb --kb <candidate kb.json>`,
+the gate that enforces the login grammar `internal/mentions` owns and one
+entry per login per area — a failing identity is a refresh flag for the
+resolver, not a silent drop, and the tool's fenced block goes to the
+resolver verbatim, markers included. A failure anywhere in that list means
+no kb.json is written.
 
-Schema per area: `{paths[], keywords[], labels[], maintainers: [{login,
-tier, commits, reviews, issues, last_active}], recent_items[]}` plus a
-top-level `generated` timestamp.
+Schema: four top-level keys — `areas`, a map from area name to `{paths[],
+keywords[], labels[], maintainers: [{login, tier, commits, reviews, issues,
+last_active}], recent_items[]}`; `roster`, the CODE-OWNERS tiers as
+`{approvers[], reviewers[]}` of logins; `source`, the per-signal provenance
+strings the assembler's bounds check reads; and a `generated` timestamp.
 
 What a stale or absent KB means for a run, and the cold-start seed,
 are in `routing.md`.

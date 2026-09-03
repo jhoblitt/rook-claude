@@ -252,6 +252,8 @@ this skill runs:
   columns of the `maintainers` schema (offline; `--repo` mines a checkout,
   `--log` a captured dump, `--now` pins the weighting). Spec:
   `references/kb-refresh.md`.
+- `validate-kb` — the kb refresh's pre-write gate on routing identities.
+  kb refresh only; spec and invocation: `references/kb-refresh.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
@@ -275,11 +277,11 @@ this skill runs:
   recheck). Spec: phase 5 above.
 
 All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
-`rt-commits`, the two generators, `validate-actions`, and
-`sweep-prefetch pool-summary`, which are offline — `validate-actions`
-judges the label snapshot it is handed rather than fetching its own,
-`rt-commits` reads a local checkout with `git log`, and `pool-summary`
-reduces files the sweep dir already holds. `sweep-prefetch`'s other two
+`rt-commits`, `validate-kb`, the three `gen-*` tools, `validate-actions`,
+and `sweep-prefetch pool-summary`, which are offline — `validate-actions`
+and `validate-kb` judge the files they are handed rather than fetching
+their own, `rt-commits` reads a local checkout with `git log`, and
+`pool-summary` reduces files the sweep dir already holds. `sweep-prefetch`'s other two
 subcommands do need `gh`.
 
 ## Relationship to rook-code-review

@@ -793,8 +793,8 @@ func (t *tally) report(opts Options) areaReport {
 //
 // Known, accepted divergence: ToLower is simple case mapping where str.lower()
 // is full, so U+0130 folds to "i" here but to "i" plus a combining dot in
-// Python, which can break a tie the other way. GitHub logins are ASCII
-// alphanumeric plus hyphen, so no real login reaches it.
+// Python, which can break a tie the other way. No real login reaches it —
+// mentions.ValidLogin is the grammar.
 func rankReviewers(revs []*reviewerStat, top int) []*reviewerStat {
 	out := make([]*reviewerStat, len(revs))
 	copy(out, revs)
