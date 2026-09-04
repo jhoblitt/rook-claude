@@ -19,8 +19,9 @@
 //
 // Git identities are not GitHub logins. Identities are unioned across a shared
 // name or a shared email, but `login` is filled only from an
-// <id>+<login>@users.noreply.github.com address; otherwise it is null and the
-// caller maps `name`/`emails` onto the roster. Guessing a login from a display
+// <id>+<login>@users.noreply.github.com address; otherwise it is null and
+// `sample_sha` — the identity's newest commit in the window — is the handle the
+// refresh resolves it through (kb-refresh.md). Guessing a login from a display
 // name would silently break the join against CODE-OWNERS, so the gap is
 // reported instead — identities_without_login in the provenance block.
 //
@@ -142,13 +143,14 @@ type Author struct {
 }
 
 // Identity is the deduplicated author roster, repo-wide within the window — the
-// worklist for mapping the ones without a login onto CODE-OWNERS.
+// worklist for resolving the ones without a login.
 type Identity struct {
 	Login      *string  `json:"login"`
 	Name       string   `json:"name"`
 	Emails     []string `json:"emails"`
 	Commits    int      `json:"commits"`
 	LastActive string   `json:"last_active"`
+	SampleSHA  string   `json:"sample_sha"`
 }
 
 // Mine buckets commits into areas and accrues recency-weighted authorship.
@@ -213,6 +215,9 @@ func Mine(commits []Commit, opts Options) (*Result, error) {
 			continue
 		}
 		p.commits++
+		if p.sample == "" || c.When.After(p.last) {
+			p.sample = c.SHA
+		}
 		p.last = laterOf(p.last, c.When)
 
 		hits := rtanalyze.AreasForPaths(c.Paths)
@@ -310,6 +315,7 @@ type person struct {
 	bot     bool
 	commits int
 	last    time.Time
+	sample  string
 }
 
 type identitySet struct {
@@ -389,6 +395,7 @@ func (s *identitySet) roster() []Identity {
 			Emails:     sortedValues(p.emails),
 			Commits:    p.commits,
 			LastActive: yearMonth(p.last),
+			SampleSHA:  p.sample,
 		})
 	}
 	return out

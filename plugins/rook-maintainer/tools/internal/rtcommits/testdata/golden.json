@@ -223,7 +223,8 @@
         "bob@example.com"
       ],
       "commits": 4,
-      "last_active": "2026-02"
+      "last_active": "2026-02",
+      "sample_sha": "a000004"
     },
     {
       "login": null,
@@ -233,7 +234,8 @@
         "alice@example.com"
       ],
       "commits": 3,
-      "last_active": "2026-08"
+      "last_active": "2026-08",
+      "sample_sha": "a000001"
     },
     {
       "login": "anxkhn",
@@ -243,7 +245,8 @@
         "anas@anaskhan.me"
       ],
       "commits": 2,
-      "last_active": "2026-06"
+      "last_active": "2026-06",
+      "sample_sha": "a000013"
     },
     {
       "login": null,
@@ -252,7 +255,8 @@
         "dana@example.com"
       ],
       "commits": 2,
-      "last_active": "2026-05"
+      "last_active": "2026-05",
+      "sample_sha": "a000015"
     },
     {
       "login": null,
@@ -261,7 +265,8 @@
         "erin@example.com"
       ],
       "commits": 2,
-      "last_active": "2026-04"
+      "last_active": "2026-04",
+      "sample_sha": "a000016"
     },
     {
       "login": null,
@@ -270,7 +275,8 @@
         "carol@example.com"
       ],
       "commits": 1,
-      "last_active": "2024-08"
+      "last_active": "2024-08",
+      "sample_sha": "a000008"
     },
     {
       "login": null,
@@ -279,7 +285,8 @@
         "frank@example.com"
       ],
       "commits": 1,
-      "last_active": "2026-03"
+      "last_active": "2026-03",
+      "sample_sha": "a000017"
     },
     {
       "login": null,
@@ -288,7 +295,8 @@
         "grace@example.com"
       ],
       "commits": 1,
-      "last_active": "2026-02"
+      "last_active": "2026-02",
+      "sample_sha": "a000019"
     },
     {
       "login": null,
@@ -297,7 +305,8 @@
         "heidi@example.com"
       ],
       "commits": 1,
-      "last_active": "2026-01"
+      "last_active": "2026-01",
+      "sample_sha": "a000020"
     },
     {
       "login": null,
@@ -306,7 +315,8 @@
         "talbot@example.com"
       ],
       "commits": 1,
-      "last_active": "2026-07"
+      "last_active": "2026-07",
+      "sample_sha": "a000011"
     }
   ]
 }

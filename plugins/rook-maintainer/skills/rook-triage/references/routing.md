@@ -1,17 +1,17 @@
 # Routing and the knowledge base
 
-Rebuilding the KB — its sources, the mining tiers, the assembler's gates
-and the schema — is `references/kb-refresh.md`. This file is what routing
-does with the result.
+Rebuilding the KB — its sources, the stages and where judgment is spent,
+the assembler's gates and the schema — is `references/kb-refresh.md`. This
+file is what routing does with the result.
 
-Freshness: warn at phase 0 when >30 days old; never block. Absent KB:
-seed from the skill's `data/kb-snapshot.json` first; only with neither
-fall back to CODE-OWNERS tiers + per-item `git log -- <paths>` and say so
-in the report. A completed refresh should also update the shipped
-snapshot via a PR to the plugin repo — one mine serves every installer.
-
-Phase-1 triagers and phase-2 refuters never tier down: judgment stays on
-the session model.
+Freshness: warn at phase 0 when the `generated` timestamp is >30 days
+old — the shipped snapshot's counts like any mined kb; never block. Absent
+KB: seed from the skill's snapshot first
+(`cp "${CLAUDE_PLUGIN_ROOT}/skills/rook-triage/data/kb-snapshot.json" ~/.cache/rook-triage/kb.json`);
+only with neither fall back to CODE-OWNERS tiers + per-item
+`git log -- <paths>` and say so in the report. A completed refresh should
+also update the shipped snapshot via a PR to the plugin repo — one mine
+serves every installer.
 
 ## Selection (per item)
 
