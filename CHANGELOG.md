@@ -1,3 +1,28 @@
+## [0.22.0](https://github.com/jhoblitt/rook-claude/compare/v0.21.0...v0.22.0) (2026-09-04)
+
+### Features
+
+* **rook-triage:** check the kb against prev, CODE-OWNERS and the fetch state ([dc2eb07](https://github.com/jhoblitt/rook-claude/commit/dc2eb07407428d956b1975bb4d65a7b4a144fac5)), closes [#94](https://github.com/jhoblitt/rook-claude/issues/94)
+* **rook-triage:** emit the CODE-OWNERS roster from rt-analyze ([bdd67a0](https://github.com/jhoblitt/rook-claude/commit/bdd67a02a03066d80c066c602210038a6f1ab14c)), closes [#95](https://github.com/jhoblitt/rook-claude/issues/95)
+* **rook-triage:** ship the issue mine as rt-issues ([e1e0ab9](https://github.com/jhoblitt/rook-claude/commit/e1e0ab994ce66666d9923bfce700d471ebde5966)), closes [#97](https://github.com/jhoblitt/rook-claude/issues/97)
+* **rook-triage:** ship the label-map diff as a validate-actions mode ([bf8d5d2](https://github.com/jhoblitt/rook-claude/commit/bf8d5d24fde8c00c3e84bf7472a3e5bc3209c949)), closes [#97](https://github.com/jhoblitt/rook-claude/issues/97)
+
+### Bug Fixes
+
+* **rook-triage:** bound and fence the text rt-analyze mines ([5b56a4f](https://github.com/jhoblitt/rook-claude/commit/5b56a4f405715e664c113f0b3deb19a6ee337e50)), closes [#101](https://github.com/jhoblitt/rook-claude/issues/101)
+* **rook-triage:** correct the classifier's documentation and its zero-match tests ([76e5df4](https://github.com/jhoblitt/rook-claude/commit/76e5df433d61aae37b37ce8a629acdbffbe15ec2)), closes [#102](https://github.com/jhoblitt/rook-claude/issues/102)
+
+
+## What's Changed
+* feat(rook-triage): ship the kb refresh's gates and mines as tools by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/112
+
+### Resolved issues
+
+* [#94](https://github.com/jhoblitt/rook-claude/issues/94) validate-kb: move the assembler's remaining deterministic checks into the tool
+* [#95](https://github.com/jhoblitt/rook-claude/issues/95) kb refresh: derive `roster` from CODE-OWNERS in code and drop the source-1 miner
+* [#101](https://github.com/jhoblitt/rook-claude/issues/101) rt-analyze and rt-commits emit contributor-authored strings unfenced
+* [#102](https://github.com/jhoblitt/rook-claude/issues/102) rt-analyze: documentation and test nits left by the classifier fixes
+
 ## [0.21.0](https://github.com/jhoblitt/rook-claude/compare/v0.20.1...v0.21.0) (2026-09-03)
 
 ### Features
