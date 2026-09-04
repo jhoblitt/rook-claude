@@ -20,12 +20,20 @@ support→(no label exists; the disposition is redirect/convert).
 ## Area — path-glob first (deterministic for PRs)
 
 Two namespaces, and they are not the same. **Area** is the v3 taxonomy key
-the tooling emits — `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze areas <paths>`
-decides it, phase 0 stamps it into each PR item's `areas`, and `rt-analyze` /
-`rt-commits` bucket the KB by it. **Label** is rook's actual GitHub label, and
-only ever a proposal on an ISSUE. This table is that classifier's spec: a row
+the tooling emits — `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze areas --stdin`
+decides it (paths on stdin, one per line; `cmd/rt-analyze/areas.go` says
+why a leading `-` rules out the argv form), phase 0 stamps it into each PR
+item's `areas`, and
+`rt-analyze` / `rt-commits` bucket the KB by it. **Label** is rook's actual
+GitHub label, and only ever a proposal on an ISSUE. This table is that classifier's spec: a row
 whose Area is wrong is a bug in `AreasFor`, and changing one has to land in
-both.
+both. The `Area` and `Issue label` columns are machine-parsed as well:
+`validate-actions --label-map` reads the labels, `rt-issues` reads the pair to
+bucket issues by area. Each finds its columns by those headers and reads a
+cell's backtick spans, so renaming a header fails the parse and unbackticking a
+cell silently drops that row — an `Area` cell included, which costs `rt-issues`
+every label on that row. Either has to land in `internal/actions/labelmap.go`
+too.
 
 | Paths touched | Area | Issue label |
 |---|---|---|
@@ -40,7 +48,7 @@ both.
 | `pkg/operator/ceph/file/**` | `filesystem` | `filesystem` (MDS-specific: `ceph-mds`) |
 | `pkg/operator/ceph/nfs/**` | `ceph-nfs` | `ceph-nfs` |
 | `pkg/operator/ceph/csi/**` | `csi` | `csi` |
-| pool/RBD paths (not `pkg/operator/ceph/csi/**`, which is `csi`, nor `deploy/examples/csi/**`, which is unbucketed) | `block` | `block` |
+| pool/RBD paths (not `pkg/operator/ceph/csi/**`, which is `csi`, nor `deploy/examples/csi/**`, which is not `block`) | `block` | `block` |
 | `deploy/charts/**` | `helm` | `helm` |
 | `Documentation/**` | `docs` | `docs` |
 | `.github/workflows/**`, `tests/scripts/**` | `ci` | `ci` |
@@ -66,6 +74,13 @@ repo-meta files (root markdown, `.mergify.yml`, templates, CODE-OWNERS,
 and the generated artifacts the set `codegen` beside it enumerates
 (rook-code-review's `references/docs-sync.md` says what emits them) — the
 `deploy/charts/**` and `Documentation/**` rows above do not apply to them.
+"Generic" is the absence of a match, not a list: `AreasFor` has no
+`deploy/examples/` prefix rule, so an example manifest is bucketed only
+where its own path matches a substring rule (`cosi`, `external`, `multus`,
+`nvmeof`, `monitoring`, `exporter`, `/rbd`) — which is why
+`deploy/examples/external/*` is `ceph-external`, while `deploy/examples/csi/*`
+is carved out of the `/rbd` rule alone and so is not `block`, though
+`deploy/examples/csi/nvmeof/*` is still `nvmeof`.
 
 A stamped `areas` therefore has three states, and they are not
 interchangeable: a list is the classification; `[]` means classified and
@@ -86,8 +101,8 @@ staleness) · `help wanted` · `good-first-issue`.
 Hands off: `stale` (bot-owned — never apply or remove) · `keepalive`
 (respect: no lifecycle actions at all) · `WIP` / `do-not-merge` /
 `conflicts` (author/maintainer-owned) · `Are you human?` and `debug-*`
-(CI/ops tools) · backport labels (rook-code-review's flag-and-confirm
-flow owns those).
+(CI/ops tools) · backport labels (rook-conventions
+`references/backport-labels.md` owns those).
 
 Proposed-but-nonexistent — `triage-accepted`, `needs-info`: propose their
 creation to the user ONCE per install; until created, that state lives in

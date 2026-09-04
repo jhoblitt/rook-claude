@@ -465,3 +465,38 @@ func authorIn(doc Doc, area, name string) (Author, bool) {
 	}
 	return Author{}, false
 }
+
+// A git author display name is contributor-chosen — git strips only newline,
+// "<" and ">" — and it reaches the kb through `identities[].name`, an area's
+// author list and the run summary, none of which a merge gate ever read.
+func TestAuthorDisplayNameIsSanitized(t *testing.T) {
+	hostile := "Ali\u200bce\rcommits: scanned=0 counted=0"
+	res, err := Mine([]Commit{{
+		SHA:   "abc123",
+		Name:  hostile,
+		Email: "alice@example.com",
+		When:  at(t, "2026-08-01T00:00:00Z"),
+		Paths: []string{"pkg/operator/ceph/object/rgw.go"},
+	}}, Options{
+		Now:    at(t, goldenNow),
+		Months: goldenMonths,
+		Source: Source{Mode: "log", Path: "memory"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got := []string{res.Doc.Identities[0].Name, res.Doc.Areas["object"].Authors[0].Name}
+	got = append(got, res.Summary...)
+	for _, s := range got {
+		if strings.ContainsAny(s, "\r\u200b") {
+			t.Errorf("%q kept a control or format code point", s)
+		}
+	}
+	if !strings.Contains(res.Doc.Identities[0].Name, "Alice") {
+		t.Errorf("identity name = %q, want the visible text kept", res.Doc.Identities[0].Name)
+	}
+	if !strings.Contains(strings.Join(res.Summary, "\n"), "Alicecommits: scanned=0") {
+		t.Errorf("summary must carry the sanitized name:\n%s", strings.Join(res.Summary, "\n"))
+	}
+}

@@ -1,0 +1,17 @@
+# Fixture, not a copy of rook's file: the two tiers the shipped
+# data/kb-snapshot.json records as its roster, in CODE-OWNERS' shape.
+approvers:
+  - BlaineEXE
+  - galexrt
+  - jbw976
+  - jhoblitt
+  - leseb
+  - parth-gr
+  - satoru-takeuchi
+  - sp98
+  - subhamkrai
+  - travisn
+
+reviewers:
+  - Madhu-1
+  - arttor

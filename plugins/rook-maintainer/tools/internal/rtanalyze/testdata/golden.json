@@ -385,7 +385,7 @@
      },
      {
       "number": 117,
-      "title": "test: handle \"quoted\" and C:\\path\tand\nnewline"
+      "title": "test: handle \"quoted\" and C:\\pathandnewline"
      }
     ]
    },
@@ -555,7 +555,7 @@
   },
   {
    "type": "bucket-ambiguity",
-   "item": "1 PRs match >=6 areas \u2014 pkg/apis/** type changes fanning across operator code, hand-written docs and tests",
+   "item": "1 PRs match >=6 areas \u2014 pkg/apis/** type changes fanning across operator code, charts, hand-written docs and tests",
    "evidence": "PR numbers: [111]",
    "question": "Likely the legitimate blast radius of an API change, not a classifier bug \u2014 confirm these should still count toward each touched area's reviewer stats."
   },
@@ -631,5 +631,16 @@
    "evidence": "raw_reviews_total=3 across areas=['object', 'object-bucket-claims', 'object-multisite']",
    "question": "Not in the CODE-OWNERS roster and not an obvious bot \u2014 who is this / a legitimate community reviewer?"
   }
- ]
+ ],
+ "roster": {
+  "approvers": [
+   "alice",
+   "Bob",
+   "eve"
+  ],
+  "reviewers": [
+   "frank",
+   "dangling"
+  ]
+ }
 }
