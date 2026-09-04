@@ -1,3 +1,26 @@
+## [0.23.0](https://github.com/jhoblitt/rook-claude/compare/v0.22.0...v0.23.0) (2026-09-04)
+
+### Features
+
+* **rook-triage:** bound the issue mine and ship the label-list check ([77b1ed7](https://github.com/jhoblitt/rook-claude/commit/77b1ed78985188a63757bb0dc7505357d294668d)), closes [#97](https://github.com/jhoblitt/rook-claude/issues/97)
+* **rook-triage:** deep-fetch truncated PRs before any flag is resolved ([03824b3](https://github.com/jhoblitt/rook-claude/commit/03824b3e8597c8bc49afb21977f6d82b8b9d0b78)), closes [#96](https://github.com/jhoblitt/rook-claude/issues/96)
+
+### Bug Fixes
+
+* **rook-triage:** assign identity resolution to a stage that exists ([8f609f5](https://github.com/jhoblitt/rook-claude/commit/8f609f51bcaa78f472453b61567eac0d92a0d207)), closes [#94](https://github.com/jhoblitt/rook-claude/issues/94) [#95](https://github.com/jhoblitt/rook-claude/issues/95) [#98](https://github.com/jhoblitt/rook-claude/issues/98)
+* **rook-triage:** state four drifted rules once, at their homes ([7dba576](https://github.com/jhoblitt/rook-claude/commit/7dba57651e878520327364fc7c72960f0e36c1f8)), closes [#99](https://github.com/jhoblitt/rook-claude/issues/99)
+
+
+## What's Changed
+* feat(rook-triage): rebuild the kb refresh on the shipped tools by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/113
+
+### Resolved issues
+
+* [#96](https://github.com/jhoblitt/rook-claude/issues/96) kb refresh: deep-fetch before truncation flags reach the resolver
+* [#97](https://github.com/jhoblitt/rook-claude/issues/97) kb refresh: the issue-participation and label-list sources are unbounded and untooled
+* [#98](https://github.com/jhoblitt/rook-claude/issues/98) kb-refresh.md assigns identity resolution to a miner that no longer exists
+* [#99](https://github.com/jhoblitt/rook-claude/issues/99) rook-triage: four stale or duplicated renderings left after the kb-refresh split
+
 ## [0.22.0](https://github.com/jhoblitt/rook-claude/compare/v0.21.0...v0.22.0) (2026-09-04)
 
 ### Features
