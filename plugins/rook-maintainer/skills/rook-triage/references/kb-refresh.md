@@ -52,8 +52,9 @@ disjoint. No source resolves a flag; resolution is the stages below.
   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze --in-dir <dir> --code-owners <rook-checkout>/CODE-OWNERS --now <iso> --brief <dir>/rt_brief.md`
   (`--roster a,b,c` stands in for the file; `--now` pins the recency
   weighting for reproducible re-runs):
-  buckets the JSONL into the v3 area taxonomy (25 areas; recency weights
-  1.0/0.5/0.25 at 6/12 months; bots and self-reviews excluded), emits the
+  buckets the JSONL into the v3 area taxonomy (25 areas; the recency
+  weights `internal/rtanalyze` declares as one constant; bots and
+  self-reviews excluded), emits the
   `roster` key the schema below carries — the `CODE-OWNERS` tiers in file
   order, which the assembler reads from this output and never mines (the
   file is flat and repo-wide, so it supplies tiers and never per-area
