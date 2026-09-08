@@ -2,6 +2,7 @@ package rtanalyze
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -548,6 +549,35 @@ func member(t *testing.T, o Obj, key string) any {
 	}
 	t.Fatalf("no %q in object", key)
 	return nil
+}
+
+// The note is what a mined document's provenance says the decay was, so it and
+// the constants it describes are one statement: neither may move alone.
+func TestRecencyWeightsNoteStatesTheConstants(t *testing.T) {
+	want := fmt.Sprintf("%s <=%dd, %s <=%dd, %s older", pyFloat(RecencyFull), RecencyFullDays,
+		pyFloat(RecencyHalf), RecencyHalfDays, pyFloat(RecencyOld))
+	if RecencyWeightsNote != want {
+		t.Errorf("RecencyWeightsNote = %q, want %q", RecencyWeightsNote, want)
+	}
+}
+
+// Both boundaries are inclusive: a PR merged exactly RecencyFullDays ago still
+// counts full.
+func TestRecencyWeightBoundaries(t *testing.T) {
+	for _, tc := range []struct {
+		age  int
+		want float64
+	}{
+		{0, RecencyFull},
+		{RecencyFullDays, RecencyFull},
+		{RecencyFullDays + 1, RecencyHalf},
+		{RecencyHalfDays, RecencyHalf},
+		{RecencyHalfDays + 1, RecencyOld},
+	} {
+		if got := RecencyWeight(tc.age); got != tc.want {
+			t.Errorf("RecencyWeight(%d) = %v, want %v", tc.age, got, tc.want)
+		}
+	}
 }
 
 // windowState is the fetch record of a walk that counted something, which is

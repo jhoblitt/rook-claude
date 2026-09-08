@@ -15,9 +15,9 @@
 // Roster: the CODE-OWNERS tiers as the file lists them, which is the kb's
 // `roster` key, read by routing's approver/reviewer split
 // (references/routing.md, Selection step 4).
-// Data: per-area top reviewers (recency-weighted: 1.0 <=6mo, 0.5 <=12mo, 0.25
-// older; bots and self-reviews excluded; counted per review event) + 5 most
-// recent items, plus authors_last_merged (YYYY-MM per author).
+// Data: per-area top reviewers (decayed by RecencyWeight; bots and self-reviews
+// excluded; counted per review event) + 5 most recent items, plus
+// authors_last_merged (YYYY-MM per author).
 // Flags: bucket-ambiguity (zero-match groups, >=6-area overmatch split
 // apis-driven vs cross-cutting) · truncation (scoped to counted PRs) ·
 // spec-boundary (fetch errors, unclean stop reason) · identity-unknown (top
@@ -42,6 +42,34 @@ import (
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/links"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/untrusted"
 )
+
+// The recency decay both kb miners apply, and the most drift-prone number in
+// the package: a review or a commit counts RecencyFull while it is at most
+// RecencyFullDays old, RecencyHalf while at most RecencyHalfDays, RecencyOld
+// after that. RecencyWeight applies them and RecencyWeightsNote states them for
+// a mined document's provenance; rtcommits weights commits through both rather
+// than respelling either.
+const (
+	RecencyFullDays = 182
+	RecencyHalfDays = 365
+
+	RecencyFull = 1.0
+	RecencyHalf = 0.5
+	RecencyOld  = 0.25
+
+	RecencyWeightsNote = "1.0 <=182d, 0.5 <=365d, 0.25 older"
+)
+
+// RecencyWeight is the credit an item ageDays old carries.
+func RecencyWeight(ageDays int) float64 {
+	switch {
+	case ageDays <= RecencyFullDays:
+		return RecencyFull
+	case ageDays <= RecencyHalfDays:
+		return RecencyHalf
+	}
+	return RecencyOld
+}
 
 var allAreas = []string{
 	"object", "object-multisite", "object-cosi", "object-bucket-claims",
@@ -495,8 +523,8 @@ func ParseISO(s string) (time.Time, error) {
 }
 
 // AgeDays is (now - merged).days: whole days, floored toward minus infinity the
-// way timedelta normalization does. It is the input to the recency weighting
-// here and in rtcommits, which weights commits on the same boundaries.
+// way timedelta normalization does. It is RecencyWeight's input, here and in
+// rtcommits.
 func AgeDays(now, merged time.Time) int {
 	const secPerDay = 86400
 	sec := now.Unix() - merged.Unix()
@@ -586,9 +614,8 @@ type tally struct {
 }
 
 // tallyPRs walks the PRs once, bucketing each by changed path and accruing
-// recency-weighted review credit: 1.0 within 6 months of now, 0.5 within 12,
-// 0.25 beyond. Bots and self-reviews never count, and credit accrues per review
-// event rather than per reviewer.
+// review credit at RecencyWeight's decay. Bots and self-reviews never count,
+// and credit accrues per review event rather than per reviewer.
 func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 	t := &tally{
 		areas:       make(map[string]*areaState, len(allAreas)),
@@ -603,13 +630,7 @@ func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 		if err != nil {
 			return nil, fmt.Errorf("PR #%d mergedAt: %w", pr.Number, err)
 		}
-		w := 0.25
-		switch age := AgeDays(now, merged); {
-		case age <= 182:
-			w = 1.0
-		case age <= 365:
-			w = 0.5
-		}
+		w := RecencyWeight(AgeDays(now, merged))
 
 		author := ""
 		if pr.Author != nil {

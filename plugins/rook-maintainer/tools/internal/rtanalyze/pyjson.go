@@ -152,8 +152,8 @@ func writeHex4(b *strings.Builder, r rune) {
 }
 
 // pyFloat formats f as CPython's repr does. Every float this tool emits is a
-// sum of 1.0/0.5/0.25 weights rounded to two places, so the exponent form repr
-// switches to beyond 1e16 is unreachable and 'f' is exact.
+// sum of RecencyWeight's weights rounded to two places, so the exponent form
+// repr switches to beyond 1e16 is unreachable and 'f' is exact.
 func pyFloat(f float64) string {
 	s := strconv.FormatFloat(f, 'f', -1, 64)
 	if !strings.Contains(s, ".") {
