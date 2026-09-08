@@ -170,7 +170,7 @@ func loadCrossFile(prevPath, ownersPath, statePath string) (crossFile, error) {
 		}
 		// Without both bounds there is nothing to compare source.reviews
 		// against, and a check that cannot run must not report a pass.
-		if st.Counted == nil || st.OldestMergedAt == nil {
+		if !rtanalyze.HasBounds(st) {
 			return x, fmt.Errorf("%s records no counted/oldest_mergedat", statePath)
 		}
 		x.state = st

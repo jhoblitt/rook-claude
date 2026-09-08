@@ -968,8 +968,16 @@ func identityFlags(unknown []*unknownIdentity) []Flag {
 	return flags
 }
 
-// Analyze buckets prs into the area taxonomy and builds the miner contract.
+// Analyze buckets prs into the area taxonomy and builds the miner contract. A
+// walk without both bounds is refused: the provenance sentence kb-refresh.md's
+// schema fixes cannot be written without them, and an empty window is a failed
+// refresh rather than a document to hand an assembler.
 func Analyze(prs []*PR, st *State, opts Options) (*Result, error) {
+	if !HasBounds(st) {
+		return nil, fmt.Errorf("the fetch state records no window (counted=%s, "+
+			"oldest_mergedat=%q): the walk mined nothing to write a document from",
+			pyStrNumber(st.Counted), oldestDay(st))
+	}
 	t, err := tallyPRs(prs, opts.Now)
 	if err != nil {
 		return nil, err
@@ -1071,19 +1079,29 @@ func FlagArray(flags []Flag) []any {
 // writes it as the document's generated_from, the assembler carries it into
 // kb.json's source.reviews, and validate-kb --state re-derives it from the same
 // rt_fetch_state.json to check that what shipped still describes the walk.
+//
+// A state file without both bounds reaches neither of those paths — Analyze
+// refuses the walk and validate-kb refuses the file, both through HasBounds —
+// so the sentence a kb can carry always names a count and a day.
 func GeneratedFrom(st *State) string {
 	return fmt.Sprintf("%s merged PRs back to %s", pyStrNumber(st.Counted), oldestDay(st))
 }
 
+// HasBounds reports whether st carries the two bounds GeneratedFrom's sentence
+// names. An oldest_mergedat that is present but empty counts as absent: it
+// yields no day, and a sentence with no day is not the shape kb-refresh.md
+// specifies.
+func HasBounds(st *State) bool {
+	return st.Counted != nil && oldestDay(st) != ""
+}
+
+// oldestDay is the day part of oldest_mergedat, empty when the state carries
+// none. Callers gate on HasBounds rather than substituting a word for the day.
 func oldestDay(st *State) string {
-	oldest := ""
-	if st.OldestMergedAt != nil {
-		oldest = *st.OldestMergedAt
+	if st.OldestMergedAt == nil {
+		return ""
 	}
-	if day := strings.SplitN(oldest, "T", 2)[0]; day != "" {
-		return day
-	}
-	return "unknown"
+	return strings.SplitN(*st.OldestMergedAt, "T", 2)[0]
 }
 
 func flagCounts(flags []Flag) []countedType {
