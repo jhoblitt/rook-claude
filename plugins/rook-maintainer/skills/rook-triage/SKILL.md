@@ -262,27 +262,18 @@ this skill runs:
 
 - `rt-fetch` — kb-refresh fetch of merged PRs. kb refresh only; spec and
   invocation: `references/kb-refresh.md`.
-- `rt-analyze` — kb-refresh analysis: buckets the JSONL into the v3
-  area taxonomy, emits the roster it parses from CODE-OWNERS (`--roster`
-  suppresses the key), and writes the contract `internal/rtanalyze`
-  specifies. That mode is
-  kb refresh only; spec and invocation: `references/kb-refresh.md`. Its
-  `areas` subcommand classifies a changed-path set against that same
-  taxonomy — the deterministic layer phase 1 reads and the spec
-  `references/label-map.md`'s table states.
-- `rt-commits` — kb-refresh commit signal: recency-weighted author counts
-  per area from `git log`, and the identity worklist with a sample sha
-  each. kb refresh only; spec and invocation:
-  `references/kb-refresh.md`.
-- `rt-issues` — kb-refresh issue signal: buckets a `gh issue list` export
-  by `label-map.md`'s table into distinct issues per login per area,
-  flags truncated comment pages and unknown identities, and binds no
-  comment body. kb refresh only; spec and invocation:
-  `references/kb-refresh.md`.
+- `rt-analyze` — kb-refresh analysis: buckets the merged-PR JSONL into the
+  v3 area taxonomy. That mode is kb refresh only; spec and invocation:
+  `references/kb-refresh.md`. Its `areas` subcommand classifies a
+  changed-path set against that same taxonomy — the deterministic layer
+  phase 1 reads and the spec `references/label-map.md`'s table states.
+- `rt-commits` — kb-refresh commit signal. kb refresh only; spec and
+  invocation: `references/kb-refresh.md`.
+- `rt-issues` — kb-refresh issue signal. kb refresh only; spec and
+  invocation: `references/kb-refresh.md`.
 - `validate-kb` — the kb refresh's pre-write gate on the candidate
-  kb.json; what it gates, and which optional input adds which check, is
-  `references/kb-refresh.md`'s assemble stage. kb refresh only; spec and
-  invocation there too.
+  `kb.json`. kb refresh only; spec and invocation:
+  `references/kb-refresh.md`.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.

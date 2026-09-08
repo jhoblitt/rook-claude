@@ -162,7 +162,7 @@ kind of flag, and judgment is spent once:
    Then the gate:
    `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-kb --kb <candidate kb.json> --prev ~/.cache/rook-triage/kb.json --code-owners <rook-checkout>/CODE-OWNERS --state <dir>/rt_fetch_state.json`.
    Always: every `maintainers[].login` and `roster` login passes the login
-   grammar `internal/mentions` owns, once per login per area. Each other
+   grammar `internal/mentions` owns, and no area repeats a login. Each other
    flag is optional and is one check — `--prev`: no area with maintainers
    in the previous kb may be empty in the candidate; `--code-owners`: an
    area with enough maintainers to fill a review set has `MinApprovers` of
