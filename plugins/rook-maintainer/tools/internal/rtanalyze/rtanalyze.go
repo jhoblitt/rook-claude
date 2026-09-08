@@ -773,8 +773,11 @@ func (t *tally) bucketFlags() []Flag {
 	return flags
 }
 
-// samplePaths shows up to 8 paths per unbucketed PR, capped at 1500 characters
-// so one pathological PR cannot bury the rest of the evidence.
+// maxSampleBytes bounds the evidence sample so one pathological PR cannot bury
+// the rest of the flags.
+const maxSampleBytes = 1500
+
+// samplePaths shows up to 8 paths per unbucketed PR, bounded to maxSampleBytes.
 func (t *tally) samplePaths(want map[int]bool) string {
 	sample := Obj{}
 	for _, z := range t.zeroMatch {
@@ -787,13 +790,7 @@ func (t *tally) samplePaths(want map[int]bool) string {
 		}
 		sample = append(sample, Member{Key: strconv.Itoa(z.number), Val: sanitizedAny(head)})
 	}
-	encoded := MarshalCompact(sample)
-	if len(encoded) > 1500 {
-		// The cap is a byte count and the paths in it are contributor-authored,
-		// so the cut can land inside a rune; drop the partial tail it leaves.
-		encoded = strings.ToValidUTF8(encoded[:1500], "")
-	}
-	return encoded
+	return links.Truncate(MarshalCompact(sample), maxSampleBytes)
 }
 
 // provenanceFlags turns the fetch layer's own record of its limits into flags.

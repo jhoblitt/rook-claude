@@ -84,14 +84,20 @@ func Sanitize(s string) string {
 		}
 		return r
 	}, s)
-	return truncate(out, MaxURLBytes)
+	return Truncate(out, MaxURLBytes)
 }
 
-// truncate bounds s to limit BYTES, backing the cut off to the nearest rune
-// boundary. A cap that lands inside a multi-byte sequence would otherwise emit
-// half of one, and a plain-text or markdown sink has no U+FFFD substitution to
-// heal it the way a JSON encoder does.
-func truncate(s string, limit int) string {
+// Truncate bounds s to limit BYTES, backing the cut off to the nearest rune
+// boundary and marking it with an ellipsis: a string that was cut comes back at
+// most limit+3 bytes long and says on its face that it lost a tail. A cap that
+// lands inside a multi-byte sequence would otherwise emit half of one, and a
+// plain-text or markdown sink has no U+FFFD substitution to heal it the way a
+// JSON encoder does.
+//
+// Exported for the sinks that bound contributor text under a cap of their own
+// — rtanalyze's evidence samples — so a second byte-cut policy does not grow
+// beside this one.
+func Truncate(s string, limit int) string {
 	if len(s) <= limit {
 		return s
 	}
