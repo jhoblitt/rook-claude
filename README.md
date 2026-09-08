@@ -163,10 +163,7 @@ flowchart TD
     I1["target: the rook backlog — issues · PRs · one item<br/>filters: labels · author · updated-since · numbers · cap"] --> Q1{mode}
 
     Q1 -->|"issues · prs · both (default, confirmed at phase 0)<br/>single item: issue N / pr N"| R0
-    Q1 -->|"kb refresh"| B1
-    Q1 --> B0
-    Q1 --> B2
-    Q1 --> BL
+    Q1 -->|"kb refresh"| KB0
 
     subgraph SWEEP["the sweep — one resumable sweep dir per corpus"]
         R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary, with the<br/>approver budget the PR scope is sized against · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
@@ -190,6 +187,10 @@ flowchart TD
     R5 --> R6["post · record in sweep.json · report URLs"]
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
+        KB0["stage 1 — mine, resolving each source as it lands"] --> BL
+        KB0 --> B0
+        KB0 --> B1
+        KB0 --> B2
         BL["validate-actions label diff against label-map.md: needs no mine"] --> B6
         B0["rt-commits: the commit signal, offline"] --> B3
         B1["rt-fetch --deep-fetch: the review signal's walk,<br/>in the background — the long pole"] --> B1A
