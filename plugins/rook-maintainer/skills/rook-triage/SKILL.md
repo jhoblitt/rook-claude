@@ -91,9 +91,9 @@ numbers, count cap.
    work. Size scope against the `budget=` line too, when the block carries
    one: it is how many PRs the run can route reviewers to at all
    (`references/routing.md`, Selection step 4). Then get explicit
-   confirmation before any fan-out. Warn if
-   `kb.json` is missing or >30 days old (`references/routing.md`
-   fallback applies). On a PR corpus, close phase 0 AFTER that
+   confirmation before any fan-out. Warn on a missing or stale `kb.json`:
+   `references/routing.md`'s opening states the threshold and the
+   fallback. On a PR corpus, close phase 0 AFTER that
    confirmation with the batched checklist pass
    (`references/pr-triage.md`) — it is one `gh` call per audited PR, so a
    run abandoned at the gate spends none of them; phase 1 depends on its
