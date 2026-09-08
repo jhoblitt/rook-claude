@@ -51,6 +51,9 @@ Fail if any of:
 - The two branches are proposed as separate questions.
 - The corrected range is discarded as unverified despite the
   stipulation, leaving the set at `release-1.21` alone.
+- The widened range is attributed to contributor-z's comment rather
+  than to the session's verification of it — the set widens because a
+  non-owner corrected the range, with the stipulated check unnamed.
 - The PR is treated as unblessed — the report asks whether to backport
   at all before it will act on the removal.
 - Subagents were spawned despite the stated no-subagent environment.
