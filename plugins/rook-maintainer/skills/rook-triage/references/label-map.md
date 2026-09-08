@@ -24,8 +24,8 @@ the tooling emits — `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" rt-analyze area
 decides it (paths on stdin, one per line; `cmd/rt-analyze/areas.go` says
 why a leading `-` rules out the argv form), phase 0 stamps it into each PR
 item's `areas`, and
-`rt-analyze` / `rt-commits` bucket the KB by it. **Label** is rook's actual
-GitHub label, and only ever a proposal on an ISSUE. This table is that classifier's spec: a row
+`rt-analyze` / `rt-commits` bucket the KB by it, and `rt-issues` too (below).
+**Label** is rook's actual GitHub label, and only ever a proposal on an ISSUE. This table is that classifier's spec: a row
 whose Area is wrong is a bug in `AreasFor`, and changing one has to land in
 both. The `Area` and `Issue label` columns are machine-parsed as well:
 `validate-actions --label-map` reads the labels, `rt-issues` reads the pair to

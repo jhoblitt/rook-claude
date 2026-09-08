@@ -90,6 +90,13 @@ with this section, and the eval criteria that grade it too — a grading
 pass sees only the criteria text, so those state the rule instead of
 pointing at it (the plugin's `evals/README.md` has the exception).
 
+Fencing is for content a step actually READS. A field the step never needs
+is projected out at the read instead — a `jq` allowlist naming the keys the
+step uses, its output redirected to a file rather than into the transcript —
+and that projection carries no fence, because nothing crossed into context
+to fence. Prefer it to reading a document whole and fencing what the work
+had no use for.
+
 ## Posting GitHub comments requires an explicit instruction
 
 Never comment on, or reply to a review thread on, a rook PR or issue

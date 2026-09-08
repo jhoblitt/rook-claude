@@ -163,10 +163,7 @@ flowchart TD
     I1["target: the rook backlog — issues · PRs · one item<br/>filters: labels · author · updated-since · numbers · cap"] --> Q1{mode}
 
     Q1 -->|"issues · prs · both (default, confirmed at phase 0)<br/>single item: issue N / pr N"| R0
-    Q1 -->|"kb refresh"| B1
-    Q1 --> B0
-    Q1 --> B2
-    Q1 --> BL
+    Q1 -->|"kb refresh"| KB0
 
     subgraph SWEEP["the sweep — one resumable sweep dir per corpus"]
         R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary, with the<br/>approver budget the PR scope is sized against · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
@@ -190,6 +187,10 @@ flowchart TD
     R5 --> R6["post · record in sweep.json · report URLs"]
 
     subgraph KBR["kb refresh — rebuild the routing knowledge base"]
+        KB0["stage 1 — mine, resolving each source as it lands"] --> BL
+        KB0 --> B0
+        KB0 --> B1
+        KB0 --> B2
         BL["validate-actions label diff against label-map.md: needs no mine"] --> B6
         B0["rt-commits: the commit signal, offline"] --> B3
         B1["rt-fetch --deep-fetch: the review signal's walk,<br/>in the background — the long pole"] --> B1A
@@ -199,10 +200,12 @@ flowchart TD
         B2R["issue truncation re-count, width 8"] --> B5
         B3["identity sweep: each login-less identity through its sample sha,<br/>gh api commits at width 8"] --> B4
         B1 --> B4
-        B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B5
+        B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B3G
+        B1A --> B3G
+        B3G["login grammar: validate-kb --logins over every mined login"] --> B5
         B5["the one gather: kb-resolver, one agent on the session model, every flag fenced"] --> B6
         B6["assembler: validate-kb gates the candidate against what<br/>references/kb-refresh.md lists; a failing kb.json is not written"]
-        B6 -.->|"a failing login is a flag"| B5
+        B6 -.->|"exceptional: a login stage 2 did not see"| B5
     end
 
     B6 -.->|"routing evidence for phase 1"| R1
