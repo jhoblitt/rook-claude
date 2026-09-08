@@ -240,47 +240,55 @@ func TestPrevSignalfulAreaMayNotGoEmpty(t *testing.T) {
 	}
 }
 
-func TestTopReviewersMustIntersectCodeOwners(t *testing.T) {
-	roster := owners(t, "approvers:\n  - travisn\nreviewers:\n  - Madhu-1\n")
+// The depths are routing.md Selection step 4's bounds: MinApprovers of the top
+// MaxReviewers, for an area with at least MinReviewers maintainers to rank.
+func TestTopReviewersMustHoldTheApproverFloor(t *testing.T) {
+	roster := owners(t, "approvers:\n  - travisn\n  - leseb\nreviewers:\n  - Madhu-1\n")
 	tests := []struct {
 		name  string
 		area  string
 		wants bool
 	}{
-		{"all three off the roster", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"c","reviews":7}]`, true},
-		{"an approver in the top three", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"travisn","reviews":7}]`, false},
-		{"a reviewer counts too", `[{"login":"a","reviews":9},{"login":"MADHU-1","reviews":8},{"login":"c","reviews":7}]`, false},
-		{"fourth on the roster does not count", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"c","reviews":7},{"login":"travisn","reviews":6}]`, true},
+		{"none of the top on the roster", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"c","reviews":7}]`, true},
+		{"one approver is under the floor", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"travisn","reviews":7}]`, true},
+		{"two approvers at the smallest area size", `[{"login":"a","reviews":9},{"login":"LESEB","reviews":8},{"login":"travisn","reviews":7}]`, false},
+		{"a reviewer tier does not fill the floor", `[{"login":"MADHU-1","reviews":9},{"login":"b","reviews":8},{"login":"travisn","reviews":7}]`, true},
+		{"past the top five does not count", `[{"login":"a","reviews":9},{"login":"b","reviews":8},{"login":"c","reviews":7},{"login":"d","reviews":6},{"login":"travisn","reviews":5},{"login":"leseb","reviews":4}]`, true},
 		{"too few maintainers to rank", `[{"login":"a","reviews":9},{"login":"b","reviews":8}]`, false},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			kb := parse(t, `{"areas":{"osd":{"maintainers":`+tc.area+`}}}`)
+			kb := parse(t, `{"roster":{"approvers":["travisn","leseb"]},
+				"areas":{"osd":{"maintainers":`+tc.area+`}}}`)
 			problems, _ := validate(kb, crossFile{roster: roster})
 			if got := len(problems) == 1; got != tc.wants {
 				t.Fatalf("problems = %v, want a problem: %v", problems, tc.wants)
 			}
-			if tc.wants && !strings.Contains(problems[0], "none of the top 3") {
+			if tc.wants && !strings.Contains(problems[0], "hold an approver tier, want 2") {
 				t.Errorf("problem = %q", problems[0])
 			}
 		})
 	}
 }
 
-// Rank is commits+2*reviews, so a prolific committer who reviews nothing does
-// not displace a reviewer from the three the check reads.
+// Rank is commits+2*reviews, so a prolific committer who reviews nothing leads
+// the list the check reads — and pushes an approver past its depth.
 func TestRankMaintainersWeightsReviewsDouble(t *testing.T) {
-	roster := owners(t, "approvers:\n  - travisn\n")
-	kb := parse(t, `{"areas":{"osd":{"maintainers":[
+	roster := owners(t, "approvers:\n  - travisn\n  - leseb\n")
+	kb := parse(t, `{"roster":{"approvers":["travisn","leseb"]},
+		"areas":{"osd":{"maintainers":[
 		{"login":"committer","commits":40,"reviews":0},
 		{"login":"a","commits":0,"reviews":19},
 		{"login":"b","commits":0,"reviews":18},
-		{"login":"travisn","commits":0,"reviews":17}]}}}`)
+		{"login":"c","commits":0,"reviews":17},
+		{"login":"d","commits":0,"reviews":16},
+		{"login":"travisn","commits":0,"reviews":15},
+		{"login":"leseb","commits":0,"reviews":14}]}}}`)
 	problems, _ := validate(kb, crossFile{roster: roster})
 	if len(problems) != 1 {
-		t.Fatalf("problems = %v, want the off-roster top three reported", problems)
+		t.Fatalf("problems = %v, want the approver-less top reported", problems)
 	}
-	if !strings.Contains(problems[0], "(committer, a, b)") {
+	if !strings.Contains(problems[0], "(committer, a, b, c, d)") {
 		t.Errorf("problem = %q, want commits+2*reviews to rank committer first", problems[0])
 	}
 }
@@ -350,5 +358,40 @@ func TestSuccessLineNamesTheChecksThatRan(t *testing.T) {
 	report(&out, &errOut, nil, 4, 3)
 	if !strings.Contains(out.String(), "3 cross-file check(s) pass") {
 		t.Errorf("out = %q, want the cross-file checks named", out.String())
+	}
+}
+
+// The kb's roster is a copy of CODE-OWNERS, and every tier question is answered
+// from the copy: a login an identity pass added or dropped decides approvals
+// rook's own file does not.
+func TestRosterMustMatchCodeOwners(t *testing.T) {
+	roster := owners(t, "approvers:\n  - travisn\n  - leseb\nreviewers:\n  - Madhu-1\n")
+	area := `"areas":{"osd":{"maintainers":[{"login":"travisn","reviews":9},
+		{"login":"leseb","reviews":8},{"login":"a","reviews":7}]}}`
+	tests := []struct {
+		name      string
+		approvers string
+		want      string
+	}{
+		{"the file, in any case", `["TRAVISN","leseb"]`, ""},
+		{"a login the file does not grant", `["travisn","leseb","sneaky"]`,
+			"roster.approvers: sneaky not in CODE-OWNERS approvers:"},
+		{"a login the pass dropped", `["travisn"]`,
+			"roster.approvers: CODE-OWNERS lists leseb and the kb does not"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			kb := parse(t, `{"roster":{"approvers":`+tc.approvers+`},`+area+`}`)
+			problems, _ := validate(kb, crossFile{roster: roster})
+			if tc.want == "" {
+				if len(problems) != 0 {
+					t.Fatalf("problems = %v, want none", problems)
+				}
+				return
+			}
+			if len(problems) != 1 || problems[0] != tc.want {
+				t.Fatalf("problems = %v, want [%s]", problems, tc.want)
+			}
+		})
 	}
 }

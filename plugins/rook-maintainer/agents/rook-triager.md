@@ -70,8 +70,9 @@ PR items:
   "disposition": "the assessment, one or two clauses — triage's own judgment",
   "next": "one verb — suggest-Fixes-#N(self)",
   "reviewers_existing": "BlaineEXE (CHANGES_REQUESTED→COMMENTED, active)",
-  "reviewers_proposed": ["BlaineEXE", "subhamkrai"],
-  "cap_note": "subhamkrai at cap → assembly swaps BlaineEXE",
+  "reviewers_proposed": ["BlaineEXE", "subhamkrai", "Madhu-1"],
+  "reviewers_alternates": ["travisn", "sp98"],
+  "cap_note": "",
   "labels_proposed": [],
   "skip": "WIP title",
   "takeover": true,
@@ -107,8 +108,15 @@ Field notes, because several are load-bearing in ways the names do not show:
   a parenthetical note (`"sp98 (adjudicator, not requested)"`) which the
   generator splits off. The ledger charges a login once per item, so listing
   one person twice on one item is not a way to weight them.
-- `cap_note` is what the "Cap-swapped sets" table renders: say who was at
-  cap and who replaced them. Without it a swap is invisible in the report.
+- `reviewers_alternates` is the area's ranked remainder after your set —
+  at most 5 logins, and PR items only. Phase 4 applies the per-RUN cap,
+  which spans a run you cannot see, and it swaps in the first of these; a
+  set with no alternates leaves whoever applies the cap re-deriving a
+  ranking you already had.
+- `cap_note` is what the "Cap-swapped sets" table renders. Leave it `""`:
+  the per-RUN cap spans a whole run, which your batch cannot see, so the
+  swap is made at phase 4 off the run ledger and recorded here then.
+  Without it a swap is invisible in the report.
 - `skip` is the skip-class reason for a row that must still appear (WIP,
   draft, bot, do-not-merge); `close_class` marks a proposal that must
   survive phase 2's refutation.

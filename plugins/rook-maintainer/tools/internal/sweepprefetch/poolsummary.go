@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/actions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
 )
 
@@ -60,6 +61,9 @@ type SummaryOptions struct {
 	// Numbers restricts the summary to those items. Empty summarizes the whole
 	// snapshot; a number the snapshot does not carry is an error.
 	Numbers []int
+	// Approvers is how many approvers the routing kb's roster holds, which is
+	// what the approver budget is computed from. Zero leaves the budget out.
+	Approvers int
 }
 
 // Bucket is one row of a breakdown.
@@ -134,6 +138,12 @@ type PoolSummary struct {
 	Unlabeled         int            `json:"unlabeled"`
 	Diff              *DiffTotals    `json:"diff,omitempty"`
 	Comments          *CommentTotals `json:"comments,omitempty"`
+	// Approvers and ApproverBudget are set only for a prs corpus summarized
+	// with a kb: how many approvers are on the roster, and how many PRs a run
+	// can route before their per-person cap is spent (actions.ApproverBudget).
+	// Phase 0 sizes the sweep against the budget.
+	Approvers      int `json:"approvers,omitempty"`
+	ApproverBudget int `json:"approver_budget,omitempty"`
 }
 
 type poolDoc struct {
@@ -231,6 +241,10 @@ func Summarize(opts SummaryOptions) (*PoolSummary, error) {
 	}
 	if len(items) != len(doc.Items) {
 		s.SelectedFrom = len(doc.Items)
+	}
+	if opts.Approvers > 0 && doc.Kind == "prs" {
+		s.Approvers = opts.Approvers
+		s.ApproverBudget = actions.ApproverBudget(opts.Approvers)
 	}
 	if opts.Sweep != "" {
 		if s.Split, err = sweepSplit(opts.Sweep, items); err != nil {
@@ -517,6 +531,10 @@ func (s *PoolSummary) Markdown() string {
 			line += fmt.Sprintf(" %s %s with none", middot, plural(s.Comments.None, unitOne, unit))
 		}
 		lines = append(lines, line)
+	}
+	if s.Approvers > 0 {
+		lines = append(lines, fmt.Sprintf("approvers=%d budget=%d prs_in_scope=%d",
+			s.Approvers, s.ApproverBudget, s.Total))
 	}
 	return strings.Join(lines, "\n")
 }

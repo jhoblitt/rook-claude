@@ -770,3 +770,34 @@ func TestComma(t *testing.T) {
 		}
 	}
 }
+
+// Phase 0 sizes its fan-out against the budget, so pool-summary has to state it
+// beside the pool it is a budget for — and issues, which spend no approver, get
+// no budget line at all.
+func TestSummaryReportsTheApproverBudget(t *testing.T) {
+	dir := prPool(t)
+	summary, err := Summarize(SummaryOptions{SweepDir: dir, Now: at(t, summaryNow), Approvers: 8})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if summary.Approvers != 8 || summary.ApproverBudget != 12 {
+		t.Errorf("approvers/budget = %d/%d, want 8/12", summary.Approvers, summary.ApproverBudget)
+	}
+	want := "approvers=8 budget=12 prs_in_scope=" + strconv.Itoa(summary.Total)
+	if !strings.Contains(summary.Markdown(), want) {
+		t.Errorf("markdown is missing %q:\n%s", want, summary.Markdown())
+	}
+
+	if md := summarize(t, dir, "").Markdown(); strings.Contains(md, "budget=") {
+		t.Errorf("markdown carries a budget without a kb:\n%s", md)
+	}
+
+	issues, err := Summarize(SummaryOptions{
+		SweepDir: issuePool(t), Now: at(t, summaryNow), Approvers: 8})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if issues.Approvers != 0 || strings.Contains(issues.Markdown(), "budget=") {
+		t.Errorf("an issues pool got an approver budget:\n%s", issues.Markdown())
+	}
+}

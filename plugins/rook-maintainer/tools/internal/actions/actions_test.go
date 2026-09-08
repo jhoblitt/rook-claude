@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -41,17 +42,24 @@ func mustItems(t *testing.T, snapshot string) []Item {
 
 func problems(t *testing.T, payload string, items []Item) []string {
 	t.Helper()
-	return Validate(mustParse(t, payload), testLive, items)
+	return Validate(mustParse(t, payload), testLive, items, nil)
+}
+
+// testApprovers is the roster.approvers of a kb, as ParseKBApprovers returns it.
+var testApprovers = map[string]bool{"appr-a": true, "appr-b": true}
+
+func approverProblems(t *testing.T, payload string, items []Item) []string {
+	t.Helper()
+	return Validate(mustParse(t, payload), testLive, items, testApprovers)
 }
 
 func TestValidateAccepts(t *testing.T) {
 	items := mustItems(t, testSnapshot)
 	tests := []struct{ name, payload string }{
 		{"label an open issue", `[{"number": 1, "action": "label", "params": {"labels": ["needs-info"]}}]`},
-		{"reviewers on a pr", `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b"]}}]`},
+		{"reviewers on a pr", `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b", "c"]}}]`},
 		{"mentions at the cap", `[{"number": 1, "action": "comment", "params": {"mentions": ["a", "b", "c"]}}]`},
 		{"labels at the cap", `[{"number": 4, "action": "label", "params": {"labels": ["feature", "needs-info"]}}]`},
-		{"one reviewer", `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a"]}}]`},
 		{"five reviewers", `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b", "c", "d", "e"]}}]`},
 		{"close needs no params", `[{"number": 1, "action": "close"}]`},
 		{"convert needs no params", `[{"number": 1, "action": "convert", "params": {}}]`},
@@ -99,17 +107,22 @@ func TestValidateRejects(t *testing.T) {
 		{
 			"no reviewers",
 			`[{"number": 2, "action": "reviewers", "params": {"reviewers": []}}]`,
-			"actions[0] #2: 0 reviewers is outside 1–5",
+			"actions[0] #2: 0 reviewers is outside 3–5",
 		},
 		{
 			"missing reviewers key",
 			`[{"number": 2, "action": "reviewers", "params": {}}]`,
-			"actions[0] #2: 0 reviewers is outside 1–5",
+			"actions[0] #2: 0 reviewers is outside 3–5",
+		},
+		{
+			"two reviewers is under the floor",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b"]}}]`,
+			"actions[0] #2: 2 reviewers is outside 3–5",
 		},
 		{
 			"too many reviewers",
 			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b", "c", "d", "e", "f"]}}]`,
-			"actions[0] #2: 6 reviewers is outside 1–5",
+			"actions[0] #2: 6 reviewers is outside 3–5",
 		},
 		{
 			"too many mentions",
@@ -289,7 +302,7 @@ func TestPayloadThatIsNotAList(t *testing.T) {
 			t.Errorf("Parse(%s).IsList = true", payload)
 			continue
 		}
-		got := Validate(p, testLive, nil)
+		got := Validate(p, testLive, nil, nil)
 		if len(got) != 1 || got[0] != "actions payload: expected a list" {
 			t.Errorf("Parse(%s): Validate() = %v", payload, got)
 		}
@@ -395,7 +408,7 @@ func TestParseGHFixtures(t *testing.T) {
 	got := Validate(mustParse(t, `[
 	  {"number": 15012, "type": "issue", "action": "label", "params": {"labels": ["docs"]}},
 	  {"number": 14877, "type": "issue", "action": "close"}
-	]`), live, items)
+	]`), live, items, nil)
 	want := []string{
 		"actions[1] #14877: item is 'CLOSED', not OPEN — re-assess before writing",
 	}
@@ -424,7 +437,112 @@ func TestFixtureRun(t *testing.T) {
 		"actions[5] #102: label action on a PR — triage labels issues only",
 		"actions[6] #999: no live state supplied for this item",
 	}
-	if got := Validate(payload, live, items); !slices.Equal(got, want) {
+	if got := Validate(payload, live, items, nil); !slices.Equal(got, want) {
 		t.Errorf("Validate() = %v, want %v", got, want)
+	}
+}
+
+func TestReviewerSetsNeedTheApproverFloor(t *testing.T) {
+	items := mustItems(t, testSnapshot)
+	rejects := []struct{ name, payload, want string }{
+		{
+			"one approver is under the floor",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["appr-a", "x", "y"]}}]`,
+			"actions[0] #2: 1 of 3 reviewers hold an approver tier, want 2",
+		},
+		{
+			"a set with no approver at all",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["x", "y", "z"]}}]`,
+			"actions[0] #2: 0 of 3 reviewers hold an approver tier, want 2",
+		},
+	}
+	for _, tc := range rejects {
+		got := approverProblems(t, tc.payload, items)
+		if len(got) != 1 || got[0] != tc.want {
+			t.Errorf("%s: Validate() = %v, want [%s]", tc.name, got, tc.want)
+		}
+	}
+
+	accepts := []struct{ name, payload string }{
+		{"two approvers, matched case-insensitively",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["APPR-A", "appr-b", "x"]}}]`},
+		{"a full set of approvers",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["appr-a", "appr-b", "appr-a", "x", "y"]}}]`},
+	}
+	for _, tc := range accepts {
+		if got := approverProblems(t, tc.payload, items); len(got) != 0 {
+			t.Errorf("%s: Validate() = %v, want none", tc.name, got)
+		}
+	}
+
+	// A set of the wrong size is reported on its size alone: it gets redrawn,
+	// and the tiers of the names in it are the next set's question.
+	sized := `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["x", "y"]}}]`
+	got := approverProblems(t, sized, items)
+	if len(got) != 1 || got[0] != "actions[0] #2: 2 reviewers is outside 3–5" {
+		t.Errorf("Validate() = %v, want only the size reported", got)
+	}
+
+	// Without a kb the floor is skipped, not passed.
+	if got := problems(t, `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["x", "y", "z"]}}]`, items); len(got) != 0 {
+		t.Errorf("Validate() = %v, want the floor skipped with no approver set", got)
+	}
+}
+
+func TestReviewerActionsUnionPerItem(t *testing.T) {
+	items := mustItems(t, testSnapshot)
+	tests := []struct{ name, payload, want string }{
+		{
+			"the ceiling counts the union, reported once",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b", "c", "d"]}},
+			  {"number": 2, "action": "reviewers", "params": {"reviewers": ["e", "f", "g", "h"]}}]`,
+			"actions[0] #2: 8 reviewers is outside 3–5",
+		},
+		{
+			"the approver floor counts the union too",
+			`[{"number": 2, "action": "reviewers", "params": {"reviewers": ["appr-a", "x"]}},
+			  {"number": 2, "action": "reviewers", "params": {"reviewers": ["y"]}}]`,
+			"actions[0] #2: 1 of 3 reviewers hold an approver tier, want 2",
+		},
+	}
+	for _, tc := range tests {
+		got := approverProblems(t, tc.payload, items)
+		if len(got) != 1 || got[0] != tc.want {
+			t.Errorf("%s: Validate() = %v, want [%s]", tc.name, got, tc.want)
+		}
+	}
+
+	// One person named twice is one reviewer, however the two actions spell it.
+	split := `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["appr-a", "APPR-B", "x"]}},
+	           {"number": 2, "action": "reviewers", "params": {"reviewers": ["Appr-A", "appr-b"]}}]`
+	if got := approverProblems(t, split, items); len(got) != 0 {
+		t.Errorf("Validate() = %v, want none", got)
+	}
+}
+
+func TestApproverBudget(t *testing.T) {
+	// A roster under the floor budgets nothing: it cannot field a single set.
+	tests := []struct{ approvers, want int }{
+		{-1, 0}, {0, 0}, {1, 0}, {2, 3}, {3, 4}, {10, 15},
+	}
+	for _, tc := range tests {
+		if got := ApproverBudget(tc.approvers); got != tc.want {
+			t.Errorf("ApproverBudget(%d) = %d, want %d", tc.approvers, got, tc.want)
+		}
+	}
+}
+
+func TestParseKBApprovers(t *testing.T) {
+	got, err := ParseKBApprovers([]byte(`{"roster": {"approvers": ["Appr-A", "appr-b"],
+		"reviewers": ["rev-c"]}}`))
+	if err != nil {
+		t.Fatalf("ParseKBApprovers: %v", err)
+	}
+	want := map[string]bool{"appr-a": true, "appr-b": true}
+	if !maps.Equal(got, want) {
+		t.Errorf("ParseKBApprovers() = %v, want %v", got, want)
+	}
+	if _, err := ParseKBApprovers([]byte("not json")); err == nil {
+		t.Error("ParseKBApprovers accepted a file that is not JSON")
 	}
 }

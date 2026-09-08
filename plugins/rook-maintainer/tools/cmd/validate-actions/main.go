@@ -3,9 +3,14 @@
 // issues-only label rule, the still-open recheck).
 //
 //	gh label list --json name > labels.json
-//	run.sh validate-actions --actions actions.json --labels labels.json [--items items.json]
+//	run.sh validate-actions --actions actions.json --labels labels.json [--items items.json] [--kb kb.json]
 //	run.sh validate-actions --labels labels.json --label-map references/label-map.md
 //	run.sh validate-actions --self-test
+//
+// --kb is the routing kb the run selected from: its roster.approvers is what
+// makes the approver floor of Selection step 4 checkable here, since a proposed
+// action names reviewers as bare logins. Without it the floor is skipped rather
+// than passed, and the success line says so.
 //
 // --label-map is the other direction and takes no actions: it diffs the area
 // table's label column against that same label list, failing on a label the map
@@ -39,7 +44,7 @@ import (
 
 func usage(fs *flag.FlagSet) {
 	_, _ = fmt.Fprint(os.Stderr,
-		"usage: validate-actions --actions FILE --labels FILE [--items FILE]\n"+
+		"usage: validate-actions --actions FILE --labels FILE [--items FILE] [--kb FILE]\n"+
 			"       validate-actions --labels FILE --label-map FILE\n"+
 			"       validate-actions --self-test\n")
 	fs.PrintDefaults()
@@ -50,6 +55,7 @@ func run() int {
 	actionsPath := fs.String("actions", "", "proposed actions JSON")
 	labelsPath := fs.String("labels", "", "output of gh label list --json name")
 	itemsPath := fs.String("items", "", "live per-item state JSON (number, type, state, labels)")
+	kbPath := fs.String("kb", "", "routing kb.json; its roster.approvers enforces the approver floor on reviewer sets")
 	labelMapPath := fs.String("label-map", "", "references/label-map.md; diff its table against --labels instead of validating actions")
 	selfTest := fs.Bool("self-test", false, "verify the checks and exit")
 	fs.Usage = func() { usage(fs) }
@@ -78,7 +84,7 @@ func run() int {
 		return 0
 	}
 	if *labelMapPath != "" {
-		if *actionsPath != "" || *itemsPath != "" {
+		if *actionsPath != "" || *itemsPath != "" || *kbPath != "" {
 			usage(fs)
 			_, _ = fmt.Fprintln(os.Stderr,
 				"validate-actions: error: --label-map diffs the map against --labels; it validates no actions")
@@ -115,13 +121,18 @@ func run() int {
 			return 2
 		}
 	}
+	approvers, err := actions.LoadKBApprovers(*kbPath)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+		return 2
+	}
 
 	if len(live) == 0 {
 		_, _ = fmt.Fprintln(os.Stderr, "the live label list is empty — refusing to validate")
 		return 2
 	}
 	return report(os.Stdout, os.Stderr,
-		actions.Validate(payload, live, items), len(payload.Entries))
+		actions.Validate(payload, live, items, approvers), len(payload.Entries), approvers != nil)
 }
 
 func runDiff(labelMapPath, labelsPath string) int {
@@ -156,9 +167,15 @@ func load[T any](path, what string, parse func([]byte) (T, error)) (T, error) {
 	return v, nil
 }
 
-func report(out, errOut io.Writer, problems []string, n int) int {
+func report(out, errOut io.Writer, problems []string, n int, floorChecked bool) int {
 	if len(problems) == 0 {
-		_, _ = fmt.Fprintf(out, "all %d proposed action(s) pass the pre-write checks\n", n)
+		// A pass that skipped a check has to say which, or the executor reads
+		// it as the whole gate having run.
+		skipped := " (floor not checked: no --kb)"
+		if floorChecked {
+			skipped = ""
+		}
+		_, _ = fmt.Fprintf(out, "all %d proposed action(s) pass the pre-write checks%s\n", n, skipped)
 		return 0
 	}
 	note := fmt.Sprintf("%d problem(s) across %d proposed action(s). Everything between the\n"+

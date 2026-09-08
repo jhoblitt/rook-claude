@@ -77,7 +77,9 @@ numbers, count cap.
    log) settles an item. Present the pool with a script rather than
    counting over the snapshot:
    `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" sweep-prefetch pool-summary <sweep-dir>
-   --sweep <sweep-dir>/sweep.json` (add `--viewer <login>` on a PR corpus;
+   --sweep <sweep-dir>/sweep.json` (on a PR corpus add `--viewer <login>`,
+   and `--kb ~/.cache/rook-triage/kb.json` when that file exists —
+   `references/routing.md` says what lapses when it does not;
    pass `--sweep` only when that file already carries an `items` map —
    State below — since a first run has nothing to carry and the flag fails
    loud rather than reporting a split it cannot compute). Paste its
@@ -86,7 +88,10 @@ numbers, count cap.
    ~1 triager agent per ~10 items NEEDING assessment, carried cards and
    the items the ledger does not list (a PR corpus skips drafts and bots
    by default, and they cost a skip row rather than an agent) are not
-   work. Then get explicit confirmation before any fan-out. Warn if
+   work. Size scope against the `budget=` line too, when the block carries
+   one: it is how many PRs the run can route reviewers to at all
+   (`references/routing.md`, Selection step 4). Then get explicit
+   confirmation before any fan-out. Warn if
    `kb.json` is missing or >30 days old (`references/routing.md`
    fallback applies). On a PR corpus, close phase 0 AFTER that
    confirmation with the batched checklist pass
@@ -123,31 +128,47 @@ numbers, count cap.
    reconciliation is phase 3's job, and waits there.
 3. **Report** — the advise artifact, assembled from two halves. The
    generator writes every per-item table, the skip rows and the reviewer /
-   mention ledger; you write ONLY what no lookup can produce — the
-   disposition evidence behind each proposal, cross-cutting observations,
-   and on first run a repo-hygiene notes section. Never type a table or a
-   count: `references/reporting.md` has the per-corpus command and the
-   concatenation, and owns the format contract the generator implements.
+   mention ledger; you write ONLY what no lookup can produce, which
+   `references/reporting.md` enumerates. Never type a table or a
+   count: that file has the per-corpus command, the run ledger's one
+   invocation and the concatenation, and owns the format contract the
+   generator implements.
    Then the dashboard; state in `sweep.json`.
 4. **Approve.** FIRST reconcile across the run, since nothing downstream
-   sees both dirs. The per-person total is a script — never a hand tally
-   over two rendered tables:
-   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-run-ledger <prs-dir> <issues-dir>`
-   (one dir for a single-corpus run). Read its `OVER CAP` line: on a real
-   `both` run two of three breaches were invisible in the per-corpus
-   ledgers, because 2-and-2 reads clean twice and is a breach once. What
+   sees both dirs. The per-person total is a script's, never a hand tally
+   over two rendered tables — and the script already ran: read the
+   `OVER CAP` status column in the `run-ledger.md` phase 3 wrote into this
+   dir (`references/reporting.md`) rather than re-running it over inputs
+   nothing has changed since phase 2. On a real `both` run two of three
+   breaches were invisible in the per-corpus ledgers, because 2-and-2 reads
+   clean twice and is a breach once. The cap is applied HERE, per
+   `references/routing.md` Selection step 4; record each swap in that
+   item's `cap_note` in its `batch-*.json`, which is what the
+   "Cap-swapped sets" table renders. Its `OVER BUDGET` line is yours the
+   same way — the PRs past the approver budget queue to the next run, and
+   you pick which; those go in `report-notes.md`. Re-run this corpus's
+   `--markdown` generator and `references/reporting.md`'s concatenation
+   afterwards, so the report carries both. What
    stays yours is the judgment — which proposals to drop — plus any
    issue↔PR pair proposed on both sides (State above), which no count
    catches. Then walk proposed actions per item —
    each draft is an editable file under `actions/`; approve / edit / skip.
    Honor explicit batch authorization; never assume it.
-5. **Execute.** Run `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions` immediately before every
-   write — it decides label-set membership against a live `gh label list`,
-   the label/mention/reviewer caps, the issues-only label rule, and the
+5. **Execute.** Run `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-actions`
+   (add `--kb ~/.cache/rook-triage/kb.json` when that file exists —
+   `references/routing.md`; without it the success line says the approver
+   floor went unchecked)
+   immediately before every write — it decides label-set membership against
+   a live `gh label list`, the label/mention/reviewer bounds and the approver
+   floor (`references/routing.md`, Selection step 4), the issues-only label rule, and the
    still-open recheck, and a non-zero exit sends those items back to the
-   report instead of to GitHub. Two things it does NOT decide, which stay
+   report instead of to GitHub. One `--actions` payload carries an item's
+   WHOLE approved set — every approved draft for that item — because the
+   reviewer bounds are checked over the union within one payload, and a set
+   split across two invocations is two sets to the gate and one request to
+   GitHub. Two things it does NOT decide, which stay
    here: whether a human answered or relabelled the item since assessment,
-   and the per-person per-RUN cap, which is enforced at selection
+   and the per-person per-RUN cap, which phase 4 applies off the run ledger
    (`references/routing.md`). Then post, record in `sweep.json`, report URLs.
 
 Resume: every phase restarts from `sweep.json`. Re-runs adjust lifecycle
@@ -196,7 +217,8 @@ flags (`suspicious-content`, `escalate`, `takeover-candidate`).
     report.md                  # the advise artifact (notes + tables, concatenated)
     report-notes.md            # the synthesis sections — the only part you write
     report-tables.md           # gen-*-dashboard --markdown: per-item tables + reviewer ledger
-    run-ledger.md              # gen-run-ledger: the per-person cap across the whole run;
+    run-ledger.md              # gen-run-ledger: the per-person cap across the whole run,
+                               #   and with --kb the approver budget it spent;
                                #   written identically into every dir the run touches
     batch-<k>.json             # raw triager output, one file per agent batch
     threads.json               # fetched issue bodies+comments (mention mining)
@@ -257,11 +279,10 @@ this skill runs:
   flags truncated comment pages and unknown identities, and binds no
   comment body. kb refresh only; spec and invocation:
   `references/kb-refresh.md`.
-- `validate-kb` — the kb refresh's pre-write gate: login grammar and
-  uniqueness, and per optional input — the previous kb, CODE-OWNERS, the
-  fetch state — coverage, the top-maintainer tier check and the
-  `source.reviews` sentence. kb refresh only; spec and invocation:
-  `references/kb-refresh.md`.
+- `validate-kb` — the kb refresh's pre-write gate on the candidate
+  kb.json; what it gates, and which optional input adds which check, is
+  `references/kb-refresh.md`'s assemble stage. kb refresh only; spec and
+  invocation there too.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.
@@ -271,19 +292,21 @@ this skill runs:
   each PR's paths classify to), plus `classify-refs` for the cross-ref
   columns and `pool-summary`, which reduces the snapshot to the block
   phase 0 presents — offline, and with `--sweep` it adds the fresh /
-  carried split the fan-out estimate is sized from.
+  carried split the fan-out estimate is sized from, with `--kb` the
+  approver budget the PR scope is sized against.
 - `gen-pr-dashboard` / `gen-issues-dashboard` — dashboards from
   canonical sweep-dir inputs only; `--markdown` renders the same rows as
   `report-tables.md` for phase 3 instead of the dashboard. Spec:
   `references/reporting.md`.
 - `gen-run-ledger` — the per-person cap across a whole run: one or two
-  sweep dirs in, `run-ledger.md` into each. It is the only check of that
+  sweep dirs in, `run-ledger.md` into each, and with `--kb` the approver
+  budget beside the totals. It is the only check of that
   cap (`validate-actions` covers the per-item bounds, not this), so phase 4
-  reads it rather than summing two tables. Spec: `references/routing.md`.
-- `validate-actions` — phase-5 pre-write validation of proposed actions
-  (label-set membership, the caps, the issues-only label rule, still-open
-  recheck); with `--label-map` it is the kb refresh's label diff instead.
-  Spec: phase 5 above and `references/kb-refresh.md`.
+  reads its fragment rather than summing two tables. Run once, at phase 3
+  (`references/reporting.md`). Spec: `references/routing.md`.
+- `validate-actions` — the phase-5 pre-write gate on proposed actions;
+  with `--label-map` it is the kb refresh's label diff instead. Spec:
+  phase 5 above and `references/kb-refresh.md`.
 
 All need authenticated `gh` (sandbox disabled) except `rt-analyze`,
 `rt-commits`, `rt-issues`, `validate-kb`, the three `gen-*` tools,

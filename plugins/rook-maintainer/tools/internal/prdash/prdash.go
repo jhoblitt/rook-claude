@@ -124,7 +124,9 @@ func scalar(raw json.RawMessage) string {
 
 // Item is one triager assessment out of a batch-*.json array. CapNote records
 // why a reviewer set had to be swapped; it reaches the markdown ledger only,
-// since the dashboard has no room for it.
+// since the dashboard has no room for it. ReviewersAlternates is carried
+// unrendered: phase 4 swaps an over-cap login for the first of them, and a
+// field the loader dropped would be one the agent has to be asked for twice.
 type Item struct {
 	Number            int    `json:"number"`
 	Kind              Text   `json:"kind"`
@@ -136,6 +138,7 @@ type Item struct {
 	XLinks            []Ref  `json:"xlinks"`
 	Dups              []Ref  `json:"dups"`
 	ReviewersProposed []Text `json:"reviewers_proposed"`
+	ReviewersAlt      []Text `json:"reviewers_alternates"`
 	CapNote           Text   `json:"cap_note"`
 }
 

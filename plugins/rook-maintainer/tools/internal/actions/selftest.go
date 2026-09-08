@@ -20,9 +20,10 @@ func SelfTest() []string {
 	  {"number": 4, "type": "issue", "state": "OPEN",
 	   "labels": [{"name": "bug"}, {"name": "core"}, {"name": "docs"}]}
 	]`
+	const kb = `{"roster": {"approvers": ["appr-a", "appr-b"], "reviewers": ["rev-c"]}}`
 	const accepted = `[
 	  {"number": 1, "action": "label", "params": {"labels": ["needs-info"]}},
-	  {"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b"]}},
+	  {"number": 2, "action": "reviewers", "params": {"reviewers": ["appr-a", "APPR-B", "rev-c"]}},
 	  {"number": 1, "action": "comment", "params": {"mentions": ["a", "b", "c"]}}
 	]`
 	rejected := []struct{ action, want string }{
@@ -36,7 +37,12 @@ func SelfTest() []string {
 		   "params": {"labels": ["feature", "ceph-object", "needs-info"]}}`,
 			"exceeds the cap of 5"},
 		{`{"number": 1, "action": "reviewers", "params": {"reviewers": []}}`,
-			"outside 1–5"},
+			"outside 3–5"},
+		{`{"number": 1, "action": "reviewers", "params": {"reviewers": ["a", "b"]}}`,
+			"2 reviewers is outside 3–5"},
+		{`{"number": 1, "action": "reviewers",
+		   "params": {"reviewers": ["appr-a", "rev-c", "x"]}}`,
+			"1 of 3 reviewers hold an approver tier, want 2"},
 		{`{"number": 1, "action": "comment",
 		   "params": {"mentions": ["a", "b", "c", "d"]}}`,
 			"exceeds the cap of 3"},
@@ -55,15 +61,19 @@ func SelfTest() []string {
 	if err != nil {
 		return []string{fmt.Sprintf("fixture items: %v", err)}
 	}
+	approvers, err := ParseKBApprovers([]byte(kb))
+	if err != nil {
+		return []string{fmt.Sprintf("fixture kb: %v", err)}
+	}
 
-	if got, err := validated(accepted, live, items); err != nil {
+	if got, err := validated(accepted, live, items, approvers); err != nil {
 		fails = append(fails, err.Error())
 	} else if len(got) > 0 {
 		fails = append(fails, fmt.Sprintf("safe actions were rejected: %v", got))
 	}
 
 	for _, tc := range rejected {
-		got, err := validated("["+tc.action+"]", live, items)
+		got, err := validated("["+tc.action+"]", live, items, approvers)
 		if err != nil {
 			fails = append(fails, err.Error())
 			continue
@@ -90,17 +100,36 @@ func SelfTest() []string {
 		}
 	}
 
-	// Without live state the open/PR checks are skipped, not silently passed.
+	// Two reviewers actions on one PR are one request to GitHub, so the ceiling
+	// is the union's.
+	const split = `[
+	  {"number": 2, "action": "reviewers", "params": {"reviewers": ["a", "b", "c", "d"]}},
+	  {"number": 2, "action": "reviewers", "params": {"reviewers": ["e", "f", "g", "h"]}}
+	]`
+	if got, err := validated(split, live, items, nil); err != nil {
+		fails = append(fails, err.Error())
+	} else if len(got) != 1 || !strings.Contains(got[0], "8 reviewers is outside") {
+		fails = append(fails, fmt.Sprintf("split reviewer set: want the union reported, got %v", got))
+	}
+
+	// Without live state the open/PR checks are skipped, not silently passed,
+	// and without a kb so is the approver floor.
 	const noState = `[{"number": 1, "action": "label", "params": {"labels": ["bug"]}}]`
-	if got, err := validated(noState, live, nil); err != nil {
+	if got, err := validated(noState, live, nil, nil); err != nil {
 		fails = append(fails, err.Error())
 	} else if len(got) > 0 {
 		fails = append(fails, fmt.Sprintf("no-snapshot run reported %v", got))
 	}
+	const noKB = `[{"number": 2, "action": "reviewers", "params": {"reviewers": ["x", "y", "z"]}}]`
+	if got, err := validated(noKB, live, items, nil); err != nil {
+		fails = append(fails, err.Error())
+	} else if len(got) > 0 {
+		fails = append(fails, fmt.Sprintf("no-kb run reported %v", got))
+	}
 	return fails
 }
 
-func validated(payload string, live []string, items []Item) ([]string, error) {
+func validated(payload string, live []string, items []Item, approvers map[string]bool) ([]string, error) {
 	parsed, err := Parse([]byte(payload))
 	if err != nil {
 		return nil, fmt.Errorf("fixture %s: %v", compact(payload), err)
@@ -108,7 +137,7 @@ func validated(payload string, live []string, items []Item) ([]string, error) {
 	if !parsed.IsList {
 		return nil, fmt.Errorf("fixture %s: not a list", compact(payload))
 	}
-	return Validate(parsed, live, items), nil
+	return Validate(parsed, live, items, approvers), nil
 }
 
 func compact(s string) string {

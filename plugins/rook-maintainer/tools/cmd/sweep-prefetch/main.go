@@ -6,7 +6,7 @@
 //	run.sh sweep-prefetch snapshot SWEEP_DIR --kind prs|issues \
 //	    [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]
 //	run.sh sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]
-//	run.sh sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN] \
+//	run.sh sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN] [--kb FILE] \
 //	    [--now RFC3339] [--numbers 1,2,3 | --numbers-file F] [--json]
 //
 // snapshot enumerates every OPEN item of --kind, or exactly --numbers (numbers
@@ -51,6 +51,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/actions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/sweepprefetch"
 )
 
@@ -64,7 +65,7 @@ func usage() {
 	fmt.Fprint(os.Stderr, "usage: sweep-prefetch snapshot SWEEP_DIR --kind prs|issues"+
 		" [--numbers 1,2,3 | --numbers-file F] [--repo rook/rook]\n"+
 		"       sweep-prefetch classify-refs SWEEP_DIR [--repo rook/rook]\n"+
-		"       sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN]"+
+		"       sweep-prefetch pool-summary SWEEP_DIR [--sweep FILE] [--viewer LOGIN] [--kb FILE]"+
 		" [--now RFC3339] [--numbers 1,2,3 | --numbers-file F] [--json]\n")
 }
 
@@ -151,6 +152,7 @@ func runPoolSummary(args []string) int {
 	now := fs.String("now", "", "RFC3339 timestamp the age buckets are measured from (default: current time); pin it for reproducible re-runs")
 	numbers := fs.String("numbers", "", "comma-separated item numbers to summarize instead of the whole snapshot")
 	numbersFile := fs.String("numbers-file", "", "file of item numbers, one per line")
+	kb := fs.String("kb", "", "routing kb.json; its roster.approvers sizes the approver budget the pool is measured against")
 	asJSON := fs.Bool("json", false, "emit the same numbers as JSON instead of the markdown block")
 	fs.Usage = usage
 
@@ -169,6 +171,11 @@ func runPoolSummary(args []string) int {
 			return fail(fmt.Errorf("--now: %w", err), 1)
 		}
 	}
+	approvers, err := actions.LoadKBApprovers(*kb)
+	if err != nil {
+		return fail(err, 1)
+	}
+	opts.Approvers = len(approvers)
 	if *numbers != "" || *numbersFile != "" {
 		if opts.Numbers, err = itemNumbers(*numbers, *numbersFile); err != nil {
 			return fail(err, 1)

@@ -321,6 +321,16 @@ func (r *Roster) Logins() map[string]bool {
 	return out
 }
 
+// ApproverSet is the approvers tier alone, lowercased — the form every tier
+// question is asked in, GitHub logins being case-insensitive.
+func (r *Roster) ApproverSet() map[string]bool {
+	out := make(map[string]bool, len(r.Approvers))
+	for _, login := range r.Approvers {
+		out[login] = true
+	}
+	return Lowered(out)
+}
+
 // ParseCodeOwners mines the CODE-OWNERS roster: every "- login" under an
 // approvers:/reviewers: key, until a non-comment non-list line closes it.
 func ParseCodeOwners(r io.Reader) (*Roster, error) {

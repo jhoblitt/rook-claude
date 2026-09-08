@@ -693,3 +693,23 @@ func rowNumbers(t *testing.T, section string) []int {
 	}
 	return out
 }
+
+// The alternates ride along for phase 4's cap swap. Nothing renders them —
+// the goldens in this package are the proof — but a loader that dropped them
+// would send whoever applies the cap back to the agent for a ranking it had.
+func TestLoadKeepsReviewerAlternates(t *testing.T) {
+	for _, it := range loadFixture(t).Items {
+		if it.Number != 18120 {
+			continue
+		}
+		var got []string
+		for _, login := range it.ReviewersAlt {
+			got = append(got, string(login))
+		}
+		if len(got) != 2 || got[0] != "sp98" || got[1] != "parth-gr" {
+			t.Fatalf("reviewers_alternates = %v, want [sp98 parth-gr]", got)
+		}
+		return
+	}
+	t.Fatal("item 18120 is not in the fixture")
+}

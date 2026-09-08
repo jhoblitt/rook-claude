@@ -30,20 +30,35 @@ then concatenate, notes first:
 
 ```sh
 bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-pr-dashboard <sweep-dir> --markdown     # or gen-issues-dashboard
-bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-run-ledger <prs-dir> <issues-dir>       # one dir for a single-corpus run
+bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" gen-run-ledger <prs-dir> <issues-dir> --kb ~/.cache/rook-triage/kb.json
 cat <sweep-dir>/report-notes.md <sweep-dir>/report-tables.md <sweep-dir>/run-ledger.md \
   > <sweep-dir>/report.md
 ```
 
-`gen-run-ledger` writes the same fragment into every dir the run touches,
-because the cap spans them: a maintainer reading only the issues report has
-to see a breach the PR dir contributed to.
+`gen-run-ledger` takes one dir for a single-corpus run, and `--kb` when
+that file exists (`references/routing.md` says when it does not, and what
+lapses) — with it the fragment also carries the approver budget and what
+the run spent of it. This is the run's ONE ledger run: phase 4 reads the
+`OVER CAP` status column and the `OVER BUDGET` line out of `run-ledger.md`
+rather than re-running the tool over inputs frozen since phase 2.
+
+It sums BOTH corpora, so it runs at the phase 3 that follows the LAST
+corpus's phase 2 — over a half-assessed sibling it reports totals nobody
+committed. On a `both` run the first corpus's report waits there for it,
+and the same fragment goes into every dir, because the cap spans them: a
+maintainer reading only the issues report has to see a breach the PR dir
+contributed to.
 
 Both steps are yours: you write `report-notes.md` and you run both commands.
 The tables never enter context — not to write, not to copy. What
 `report-notes.md` holds is what no lookup can produce: the disposition
-evidence behind each proposal, cross-cutting observations, and the
-repo-hygiene notes.
+evidence behind each proposal, cross-cutting observations, the repo-hygiene
+notes, and — once phase 4 has decided them — the PRs deferred past the
+approver budget. Those arrive after this file has been assembled, so amend
+it at phase 4 and re-run the concatenation above; a deferred PR the report
+does not name reads as one nobody reached. A cap swap is not written here:
+it belongs in that item's `cap_note`, which the generator renders into the
+"Cap-swapped sets" table.
 
 This is not a style preference. Hand-typing the ledger for the
 `2026-07-23-prs-assessable` sweep recorded "subhamkrai 3/3" while the
