@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -44,27 +45,85 @@ type reply struct {
 	err  error
 }
 
+// stub answers a query from routes when a key matches it — the deep pass runs
+// its queries concurrently, so nothing fixes the order they arrive in — and
+// from the ordered replies otherwise, which is what the serial walk needs.
+// gate, when set, runs before a query is answered and is how a test forces a
+// completion order.
 type stub struct {
 	t       *testing.T
+	mu      sync.Mutex
 	replies []reply
+	routes  map[string]reply
+	gate    func(ctx context.Context, q string)
 	queries []string
 	naps    []time.Duration
 }
 
-func (s *stub) query(_ context.Context, q string, out any) error {
-	s.queries = append(s.queries, q)
-	if len(s.replies) == 0 {
-		s.t.Fatalf("unexpected query #%d: %s", len(s.queries), q)
+func (s *stub) query(ctx context.Context, q string, out any) error {
+	if s.gate != nil {
+		s.gate(ctx, q)
 	}
-	r := s.replies[0]
-	s.replies = s.replies[1:]
+	s.record(q)
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	r, ok := s.take(q)
+	if !ok {
+		s.t.Errorf("unexpected query: %s", q)
+		return fmt.Errorf("stub has no reply for %s", q)
+	}
 	if r.err != nil {
 		return r.err
 	}
 	return json.Unmarshal([]byte(r.data), out)
 }
 
-func (s *stub) sleep(d time.Duration) { s.naps = append(s.naps, d) }
+func (s *stub) record(q string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.queries = append(s.queries, q)
+}
+
+func (s *stub) take(q string) (reply, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for key, r := range s.routes {
+		if strings.Contains(q, key) {
+			delete(s.routes, key)
+			return r, true
+		}
+	}
+	if len(s.replies) == 0 {
+		return reply{}, false
+	}
+	r := s.replies[0]
+	s.replies = s.replies[1:]
+	return r, true
+}
+
+func (s *stub) sleep(d time.Duration) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.naps = append(s.naps, d)
+}
+
+// wantQueried checks that each fragment was carried by exactly one query, the
+// order-independent form of the "which queries went out" assertion.
+func wantQueried(t *testing.T, s *stub, fragments ...string) {
+	t.Helper()
+	for _, want := range fragments {
+		n := 0
+		for _, q := range s.queries {
+			if strings.Contains(q, want) {
+				n++
+			}
+		}
+		if n != 1 {
+			t.Errorf("%d queries carried %q, want 1:\n%s", n, want, strings.Join(s.queries, "\n"))
+		}
+	}
+}
 
 func fixture(t *testing.T, name string) reply {
 	t.Helper()
@@ -86,6 +145,12 @@ func newTestFetcher(opts Options, s *stub) *Fetcher {
 
 func runWalkErr(t *testing.T, opts Options, replies ...reply) (*stub, string, error) {
 	t.Helper()
+	return runWalkRoutedErr(t, opts, nil, replies...)
+}
+
+func runWalkRoutedErr(t *testing.T, opts Options, routes map[string]reply,
+	replies ...reply) (*stub, string, error) {
+	t.Helper()
 	if opts.OutDir == "" {
 		opts.OutDir = t.TempDir()
 	}
@@ -104,13 +169,19 @@ func runWalkErr(t *testing.T, opts Options, replies ...reply) (*stub, string, er
 	if opts.MaxPages == 0 {
 		opts.MaxPages = 10
 	}
-	s := &stub{t: t, replies: replies}
+	s := &stub{t: t, replies: replies, routes: routes}
 	return s, opts.OutDir, newTestFetcher(opts, s).Run(context.Background())
 }
 
 func runWalk(t *testing.T, opts Options, replies ...reply) (*stub, string) {
 	t.Helper()
-	s, dir, err := runWalkErr(t, opts, replies...)
+	return runWalkRouted(t, opts, nil, replies...)
+}
+
+func runWalkRouted(t *testing.T, opts Options, routes map[string]reply,
+	replies ...reply) (*stub, string) {
+	t.Helper()
+	s, dir, err := runWalkRoutedErr(t, opts, routes, replies...)
 	if err != nil {
 		t.Fatalf("Run: %v", err)
 	}
@@ -497,11 +568,7 @@ func TestDeepFetchPatchesRecordsAndMovesFlags(t *testing.T) {
   ]
 }`)
 
-	s := &stub{t: t, replies: []reply{
-		fixture(t, "deep_files_page1.json"),
-		fixture(t, "deep_files_page2.json"),
-		fixture(t, "deep_reviews.json"),
-	}}
+	s := &stub{t: t, routes: deepRoutes102(t)}
 	f := newTestFetcher(Options{OutDir: dir, Repo: "rook/rook", DeepFetchOnly: true}, s)
 	if err := f.Run(context.Background()); err != nil {
 		t.Fatalf("Run: %v", err)
@@ -554,19 +621,141 @@ func TestDeepFetchPatchesRecordsAndMovesFlags(t *testing.T) {
 	if len(s.queries) != 3 {
 		t.Fatalf("issued %d deep queries, want 3", len(s.queries))
 	}
-	if strings.Contains(s.queries[0], "after:") {
-		t.Errorf("first files query carried a cursor: %s", s.queries[0])
+	wantQueried(t, s, "pullRequest(number: 102) { files(first: 100)",
+		`pullRequest(number: 102) { files(first: 100, after: "DF1")`,
+		"pullRequest(number: 102) { reviews(first: 100)")
+}
+
+// deepRoutes102 answers the three queries PR 102's two flags produce, keyed by
+// the PR, the connection and the cursor rather than by arrival order.
+func deepRoutes102(t *testing.T) map[string]reply {
+	t.Helper()
+	return map[string]reply{
+		"pullRequest(number: 102) { files(first: 100)":               fixture(t, "deep_files_page1.json"),
+		`pullRequest(number: 102) { files(first: 100, after: "DF1")`: fixture(t, "deep_files_page2.json"),
+		"pullRequest(number: 102) { reviews(first: 100)":             fixture(t, "deep_reviews.json"),
 	}
-	if !strings.Contains(s.queries[1], `after: "DF1"`) {
-		t.Errorf("second files query did not page: %s", s.queries[1])
+}
+
+// truncatedSet writes a JSONL and a state file in which every numbered PR
+// carries a files truncation, and returns the route that answers each one in a
+// single page.
+func truncatedSet(t *testing.T, dir string, numbers []int) map[string]reply {
+	t.Helper()
+	var jsonl, flags strings.Builder
+	routes := map[string]reply{}
+	for i, n := range numbers {
+		fmt.Fprintf(&jsonl, `{"number":%d,"title":"t","mergedAt":"2025-05-01T09:00:00Z",`+
+			`"updatedAt":"2025-05-02T09:00:00Z","author":null,`+
+			`"files":{"pageInfo":{"hasNextPage":true},"nodes":[]},`+
+			`"reviews":{"pageInfo":{"hasNextPage":false},"nodes":[]}}`+"\n", n)
+		if i > 0 {
+			flags.WriteString(",")
+		}
+		fmt.Fprintf(&flags, `{"number":%d,"kind":"files","mergedAt":"2025-05-01T09:00:00Z"}`, n)
+		routes[fmt.Sprintf("pullRequest(number: %d)", n)] = reply{data: fmt.Sprintf(
+			`{"repository":{"pullRequest":{"files":{"pageInfo":{"hasNextPage":false},`+
+				`"nodes":[{"path":"pkg/%d.go"}]}}}}`, n)}
 	}
-	for i, want := range []string{"files(first: 100", "files(first: 100", "reviews(first: 100"} {
-		if !strings.Contains(s.queries[i], want) {
-			t.Errorf("query %d missing %q:\n%s", i, want, s.queries[i])
+	writeFile(t, filepath.Join(dir, PRsFile), jsonl.String())
+	writeFile(t, filepath.Join(dir, StateFile),
+		`{"repo":"rook/rook","truncations":[`+flags.String()+`]}`)
+	return routes
+}
+
+func prNumbers(first, n int) []int {
+	out := make([]int, n)
+	for i := range out {
+		out[i] = first + i
+	}
+	return out
+}
+
+// The pass runs its paginations concurrently, so the flag whose fetch finishes
+// last must still land where the state file listed it: the JSONL keeps its line
+// order and deep_fetched keeps the truncation order. The gate holds a full
+// width of PRs until the last of them is queried, which is the reverse of the
+// order a serial pass would complete them in — and holds them no matter what
+// deepFetchWidth is set to.
+func TestDeepFetchAppliesInFlagOrder(t *testing.T) {
+	dir := t.TempDir()
+	numbers := prNumbers(201, deepFetchWidth)
+	routes := truncatedSet(t, dir, numbers)
+	last := fmt.Sprintf("number: %d", numbers[len(numbers)-1])
+
+	released := make(chan struct{})
+	var once sync.Once
+	s := &stub{t: t, routes: routes, gate: func(_ context.Context, q string) {
+		if strings.Contains(q, last) {
+			once.Do(func() { close(released) })
+			return
+		}
+		select {
+		case <-released:
+		case <-time.After(5 * time.Second):
+			t.Errorf("the last PR's query never arrived; the pass is not concurrent")
+		}
+	}}
+	f := newTestFetcher(Options{OutDir: dir, Repo: "rook/rook", DeepFetchOnly: true}, s)
+	if err := f.Run(context.Background()); err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+
+	for i, line := range readLines(t, dir) {
+		want := fmt.Sprintf(`"number":%d,`, numbers[i])
+		if !strings.Contains(line, want) ||
+			!strings.Contains(line, fmt.Sprintf(`"path":"pkg/%d.go"`, numbers[i])) {
+			t.Errorf("line %d = %s, want %s patched with its own files", i, line, want)
 		}
 	}
-	if !strings.Contains(s.queries[0], "pullRequest(number: 102)") {
-		t.Errorf("query 0 did not target PR 102:\n%s", s.queries[0])
+	st := decodeState(t, dir)
+	if len(st.DeepFetched) != len(numbers) {
+		t.Fatalf("deep_fetched = %+v, want %d entries", st.DeepFetched, len(numbers))
+	}
+	for i, got := range st.DeepFetched {
+		if got.Number != numbers[i] {
+			t.Errorf("deep_fetched[%d] = %d, want %d (the truncation order)", i, got.Number, numbers[i])
+		}
+	}
+}
+
+// DeepFetch throws every result away once one fetch fails, so the pass must
+// stop buying pages at the first failure rather than run the rest of the set at
+// up to a gh timeout apiece. The failure it reports is the real one: the
+// cancellation it fires reaches the slots still in flight, and one of those
+// names a PR that was fine.
+func TestDeepFetchStopsAtTheFirstFailure(t *testing.T) {
+	dir := t.TempDir()
+	numbers := prNumbers(301, deepFetchWidth+4)
+	routes := truncatedSet(t, dir, numbers)
+	broken := numbers[deepFetchWidth/2]
+	routes[fmt.Sprintf("pullRequest(number: %d)", broken)] = reply{err: errors.New("boom")}
+
+	s := &stub{t: t, routes: routes, gate: func(ctx context.Context, q string) {
+		if strings.Contains(q, fmt.Sprintf("number: %d", broken)) {
+			return
+		}
+		select {
+		case <-ctx.Done():
+		case <-time.After(5 * time.Second):
+			t.Errorf("the pass did not cancel the fetches in flight: %s", q)
+		}
+	}}
+	f := newTestFetcher(Options{OutDir: dir, Repo: "rook/rook", DeepFetchOnly: true}, s)
+	err := f.Run(context.Background())
+	if err == nil {
+		t.Fatal("DeepFetch swallowed a failed pagination")
+	}
+	if !strings.Contains(err.Error(), fmt.Sprintf("deep-fetch PR %d files", broken)) ||
+		!strings.Contains(err.Error(), "boom") {
+		t.Errorf("error = %v, want the real failure, not a cancellation", err)
+	}
+	if len(s.queries) > deepFetchWidth+1 {
+		t.Errorf("issued %d queries for %d flags; the pass kept going after the failure",
+			len(s.queries), len(numbers))
+	}
+	if len(decodeState(t, dir).DeepFetched) != 0 {
+		t.Error("a failed pass moved flags to deep_fetched")
 	}
 }
 
@@ -628,10 +817,8 @@ func TestDeepFetchRejectsMissingEndCursor(t *testing.T) {
 
 func TestWalkThenDeepFetch(t *testing.T) {
 	dir := t.TempDir()
-	s, _ := runWalk(t, Options{OutDir: dir, DeepFetch: true},
-		fixture(t, "page1.json"), fixture(t, "page3.json"),
-		fixture(t, "deep_files_page1.json"), fixture(t, "deep_files_page2.json"),
-		fixture(t, "deep_reviews.json"))
+	s, _ := runWalkRouted(t, Options{OutDir: dir, DeepFetch: true}, deepRoutes102(t),
+		fixture(t, "page1.json"), fixture(t, "page3.json"))
 
 	if len(s.queries) != 5 {
 		t.Fatalf("issued %d queries, want 2 walk + 3 deep", len(s.queries))
