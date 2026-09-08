@@ -117,15 +117,19 @@ kind of flag, and judgment is spent once:
 2. **Resolve deterministically** — the orchestrator, scripts only, each
    pass one `xargs -0 -P 8` command fed NUL-delimited by `jq -j`, one
    script invocation per item, and the item's shape checked in the script
-   before it reaches a URL or a rev range. The identity sweep, its count
-   bounded by `provenance.identities_without_login`:
-   `jq -j '.identities[] | select(.login == null) | .sample_sha + "\u0000"' <dir>/rt_commits.json | xargs -0 -P 8 -n 1 sh -c 'case "$1" in *[!0-9a-f]*|"") exit 1 ;; esac; echo "$1 $(gh api "repos/rook/rook/commits/$1" --jq .author.login)"' _`
+   before it reaches a URL or a rev range. Each pass answers into a file of
+   its own, created empty first (`: > <dir>/identities.txt`,
+   `: > <dir>/merge_join.txt`), so a mine with no login-less identity leaves
+   an empty file rather than none. The identity sweep, its count bounded by
+   `provenance.identities_without_login`:
+   `jq -j '.identities[] | select(.login == null) | .sample_sha + "\u0000"' <dir>/rt_commits.json | xargs -0 -P 8 -n 1 sh -c 'case "$1" in *[!0-9a-f]*|"") exit 1 ;; esac; echo "$1 $(gh api "repos/rook/rook/commits/$1" --jq .author.login)"' _ > <dir>/identities.txt`
    — GitHub maps the commit's email itself (a plain gmail address resolved
    to `parth-gr` on the 2026-09-03 check), and `null` means it cannot. For
-   those, once the walk is in, the merge-commit join — only a login or
+   those, once the walk is in, the merge-commit join. It runs after the
+   sweep, whose `<sha> null` lines are its worklist — only a login or
    nothing comes back per identity, and the address comparison is a shell
    predicate, so no address enters context:
-   `jq -j '.identities[] | select(.login == null) | .sample_sha + "\u0000" + (.emails | if length > 0 then join("\n") else "-" end) + "\u0000"' <dir>/rt_commits.json | xargs -0 -P 8 -n 2 sh -c 'case "$1" in *[!0-9a-f]*|"") exit 1 ;; esac; m=$(git -C <rook-checkout> log --first-parent --ancestry-path --merges --reverse --format=%H "$1..origin/master" | head -1); [ -n "$m" ] || exit 0; n=$(git -C <rook-checkout> log -1 --format=%s "$m" | sed -n "s/^Merge pull request #\([0-9]*\).*/\1/p"); [ -n "$n" ] || exit 0; [ "$(git -C <rook-checkout> log --format=%aE "$m^1..$m^2" | tr "[:upper:]" "[:lower:]" | sort -u)" = "$(printf %s "$2" | tr "[:upper:]" "[:lower:]" | sort -u)" ] || exit 0; l=$(jq -r --argjson n "$n" "select(.number == \$n) | .author.login // empty" <dir>/rt_prs.jsonl); [ -n "$l" ] && echo "$1 $l"' _`
+   `jq -j --rawfile s <dir>/identities.txt '[$s | split("\n")[] | select(endswith(" null")) | split(" ")[0]] as $todo | .identities[] | select(.sample_sha | IN($todo[])) | .sample_sha + "\u0000" + (.emails | if length > 0 then join("\n") else "-" end) + "\u0000"' <dir>/rt_commits.json | xargs -0 -P 8 -n 2 sh -c 'case "$1" in *[!0-9a-f]*|"") exit 1 ;; esac; m=$(git -C <rook-checkout> log --first-parent --ancestry-path --merges --reverse --format=%H "$1..origin/master" | head -1); [ -n "$m" ] || exit 0; n=$(git -C <rook-checkout> log -1 --format=%s "$m" | sed -n "s/^Merge pull request #\([0-9]*\).*/\1/p"); [ -n "$n" ] || exit 0; [ "$(git -C <rook-checkout> log --format=%aE "$m^1..$m^2" | tr "[:upper:]" "[:lower:]" | sort -u)" = "$(printf %s "$2" | tr "[:upper:]" "[:lower:]" | sort -u)" ] || exit 0; l=$(jq -r --argjson n "$n" "select(.number == \$n) | .author.login // empty" <dir>/rt_prs.jsonl); [ -n "$l" ] && echo "$1 $l"' _ > <dir>/merge_join.txt`
    — the first merge on `origin/master`'s own first-parent chain that
    descends from the sample sha names the PR (a merge forged inside a
    contributor's branch is off that chain), the answer is that PR's
@@ -136,7 +140,15 @@ kind of flag, and judgment is spent once:
    reaches the re-count, which counts per login inside `jq` with `CUTOFF`
    set to the window's cutoff:
    `jq -j '.flags[] | select(.type == "truncation") | .item | ltrimstr("issue #") + "\u0000"' <dir>/rt_issues_final.json | xargs -0 -P 8 -n 1 sh -c 'case "$1" in *[!0-9]*|"") exit 1 ;; esac; gh api --paginate --slurp "repos/rook/rook/issues/$1/comments" | jq -c --arg n "$1" --arg cutoff "$CUTOFF" "add | map(select(.created_at >= \$cutoff)) | group_by(.user.login) | map({issue: (\$n | tonumber), login: .[0].user.login, comments: length})"' _`.
-   Label drift is the diff above.
+   Label drift is the diff above. Last, the login grammar, over every login
+   the mine produced: both answer files, the logins `rt-commits` resolved
+   itself, and `rt-analyze`'s `roster` — absent under `--roster`, which is
+   what the `?`s allow for. One `jq` assembles the array —
+   `jq -n --slurpfile c <dir>/rt_commits.json --slurpfile a <dir>/rt_final.json --rawfile s <dir>/identities.txt --rawfile m <dir>/merge_join.txt '[$c[0].identities[].login] + [$a[0].roster.approvers[]?, $a[0].roster.reviewers[]?] + [($s, $m) | split("\n")[] | split(" ")[1]] | map(select(. != null and . != "" and . != "null")) | unique' > <dir>/logins.json`
+   — and the shipped gate checks it, the same grammar `--kb` applies:
+   `bash "${CLAUDE_PLUGIN_ROOT}/tools/run.sh" validate-kb --logins <dir>/logins.json`.
+   A login it rejects is a flag for stage 3 like any other, which is what
+   keeps grammar failures out of stage 4's gate.
 3. **Resolve by judgment.** Whatever survives — bucket-ambiguity,
    spec-boundary, coverage-gap, identity-unknown, an identity neither path
    resolved — is the one gather: ONE `rook-maintainer:kb-resolver` agent,
@@ -172,10 +184,12 @@ kind of flag, and judgment is spent once:
    from `internal/actions` (`routing.md`) — and the candidate's own
    `roster.approvers` is that list, neither widened nor trimmed by an
    identity pass; `--state`: `source.reviews` opens
-   with the sentence the fetch recorded (Schema below). A failing login is
-   a flag for the resolver, not a silent drop, and its fenced problem list
-   — markers, note and all — goes into the resolver's brief as stage 3
-   fences everything else. A failure anywhere in that list means no
+   with the sentence the fetch recorded (Schema below). A login that fails
+   here is the exceptional path — stage 2 checked the ones the mine
+   produced, so what reaches this gate is one the assembly introduced.
+   It is a flag for the resolver, not a silent drop, and its fenced
+   problem list — markers, note and all — goes into the resolver's brief
+   as stage 3 fences everything else. A failure anywhere in that list means no
    kb.json is written.
 
 Schema: four top-level keys — `areas`, a map from area name to `{paths[],

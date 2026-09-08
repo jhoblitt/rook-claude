@@ -200,10 +200,12 @@ flowchart TD
         B2R["issue truncation re-count, width 8"] --> B5
         B3["identity sweep: each login-less identity through its sample sha,<br/>gh api commits at width 8"] --> B4
         B1 --> B4
-        B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B5
+        B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B3G
+        B1A --> B3G
+        B3G["login grammar: validate-kb --logins over every mined login"] --> B5
         B5["the one gather: kb-resolver, one agent on the session model, every flag fenced"] --> B6
         B6["assembler: validate-kb gates the candidate against what<br/>references/kb-refresh.md lists; a failing kb.json is not written"]
-        B6 -.->|"a failing login is a flag"| B5
+        B6 -.->|"exceptional: a login stage 2 did not see"| B5
     end
 
     B6 -.->|"routing evidence for phase 1"| R1
