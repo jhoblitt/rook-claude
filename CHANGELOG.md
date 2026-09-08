@@ -1,3 +1,24 @@
+## [0.24.1](https://github.com/jhoblitt/rook-claude/compare/v0.24.0...v0.24.1) (2026-09-08)
+
+### Bug Fixes
+
+* **rook-code-review:** make the fallback brief's WebFetch ban override the inlined roster ([64efa84](https://github.com/jhoblitt/rook-claude/commit/64efa84d5fb66e411afd487273502b2e3be2814b)), closes [#125](https://github.com/jhoblitt/rook-claude/issues/125)
+* **rook-code-review:** route the PR-target extras from the table ([f982761](https://github.com/jhoblitt/rook-claude/commit/f982761c6c1cc66e8c64766ac3cdecb9967089bc)), closes [#129](https://github.com/jhoblitt/rook-claude/issues/129)
+* **rook-code-review:** stop enumerating the inlined agent file's sections ([7c250ba](https://github.com/jhoblitt/rook-claude/commit/7c250ba39b8baeaa5e3f74e28b2f842e7d3a5031)), closes [#130](https://github.com/jhoblitt/rook-claude/issues/130)
+
+
+## What's Changed
+* fix(rook-code-review): PR-target routing row, fence eval, grader precision by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/138
+
+### Resolved issues
+
+* [#120](https://github.com/jhoblitt/rook-claude/issues/120) cross-cluster-lock-window eval: criteria item 4's scratch-file guard is vacuous
+* [#124](https://github.com/jhoblitt/rook-claude/issues/124) No eval exercises the fresh-token fence rule
+* [#125](https://github.com/jhoblitt/rook-claude/issues/125) Fallback reviewer brief inlines the agent's WebFetch permission beside its own fetch ban
+* [#129](https://github.com/jhoblitt/rook-claude/issues/129) rook-code-review step 4's derived routed set cannot flag omission of the PR-target extras
+* [#130](https://github.com/jhoblitt/rook-claude/issues/130) docs-sync.md's fallback-brief enumeration names sections design-attacker does not have
+* [#133](https://github.com/jhoblitt/rook-claude/issues/133) Two eval graders under-specify what they claim to pin
+
 ## [0.24.0](https://github.com/jhoblitt/rook-claude/compare/v0.23.1...v0.24.0) (2026-09-08)
 
 ### Features
