@@ -142,12 +142,15 @@ messages, examples, workflows:
   left alone. What the stand-in never gains is the narrow tool roster the
   agent file declares, which is why a fallback brief carries the agent
   file inline in full — its canon, hard rules, and output contract. That
-  brief still bans WebFetch outright, everywhere: the
-  stand-in keeps a roster the agent file would have narrowed, and a rule an
-  agent enforces on itself is one an injected diff can argue it out of. The
-  hook backs the ban inside a rook checkout; outside one the brief is the
-  only thing holding. Either way, return a load-bearing citation unverified
-  rather than fetch it unconfined.
+  brief still bans WebFetch outright, everywhere: the stand-in keeps a
+  roster the agent file would have narrowed, and a rule an agent enforces
+  on itself is one an injected diff can argue it out of. The brief states
+  that ban as overriding the inlined `tools:` line and the
+  allowlisted-fetch rule that travel with the agent file. Inside a rook
+  checkout the hook narrows the stand-in's fetches to the allowlist the
+  ban overrides — it never enforces the ban itself, so in a checkout or
+  out of one the brief is the only thing holding. Either way, return a
+  load-bearing citation unverified rather than fetch it unconfined.
 - **Stability**: GitHub links to specific lines/files pin a SHA or tag, not
   `master`; docs.ceph.com links pin a release path (`/en/squid/`) when the
   claim is version-specific; strip tracking params.
