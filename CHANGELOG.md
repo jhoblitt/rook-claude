@@ -1,3 +1,19 @@
+## [0.23.1](https://github.com/jhoblitt/rook-claude/compare/v0.23.0...v0.23.1) (2026-09-08)
+
+### Bug Fixes
+
+* **rook-conventions:** check baseRefName's shape before fetching it ([1fc131b](https://github.com/jhoblitt/rook-claude/commit/1fc131b1aabed04bab14177abe984836a576db82)), closes [#134](https://github.com/jhoblitt/rook-claude/issues/134)
+* **rook-conventions:** keep ptr.To in changes headed for a backport ([a72f90b](https://github.com/jhoblitt/rook-claude/commit/a72f90b73388774edae815af16f5d922fe56b6e9)), closes [#114](https://github.com/jhoblitt/rook-claude/issues/114)
+
+
+## What's Changed
+* fix(rook-conventions): keep ptr.To in backport-bound changes; shape-check baseRefName by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/137
+
+### Resolved issues
+
+* [#114](https://github.com/jhoblitt/rook-claude/issues/114) rook-conventions: state the backport carve-out for new(expr) vs ptr.To
+* [#134](https://github.com/jhoblitt/rook-claude/issues/134) pull-requests.md interpolates baseRefName into git fetch without a shape check
+
 ## [0.23.0](https://github.com/jhoblitt/rook-claude/compare/v0.22.0...v0.23.0) (2026-09-04)
 
 ### Features
