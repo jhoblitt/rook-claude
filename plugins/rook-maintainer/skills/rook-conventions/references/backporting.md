@@ -1,7 +1,8 @@
 # Backporting rook/rook changes
 
 This file is the normative statement of backport ELIGIBILITY — which
-changes earn a `backport-release-X.Y` label and which never do. Every other
+changes earn a `backport-release-X.Y` label and which never do — and of
+what a change headed for a backport may contain. Every other
 mention of eligibility in this plugin points here and never restates the
 classes; `rook-code-review` reports against this table rather than carrying
 its own.
@@ -31,3 +32,15 @@ it as one is the error this table exists to prevent.
 
 Which branches, applying and maintaining the label, and fixing a mergify
 backport PR are `references/backport-labels.md`.
+
+## Backports predate `new(expr)`
+
+`new(expr)` is Go 1.26, and a cherry-pick has to compile on every release
+branch it targets — so a change carrying a backport label keeps
+`k8s.io/utils/ptr.To` for a pointer to a literal while any target branch
+(`references/backport-labels.md` derives the set) has a `go` directive
+below 1.26; read `origin/<branch>:go.mod` rather than recalling it. A
+`ptr.To` on an added line of such a change is correct, not a `style`
+finding; `rook-code-review`'s `references/go-review.md`, "Modernization",
+yields to this rule. An author who intends a backport asks for the label
+in the PR; the label, not the intent, is what excepts the change.

@@ -28,7 +28,7 @@ below this table apply to every trigger.
 |---|---|
 | writing or fixing a commit message, amending, reworking a branch's history, or diagnosing a commitlint failure | `references/commits.md` |
 | opening or updating a PR, writing its description, filling its template checklist, writing the AI-assistance disclosure, requesting reviewers | `references/pull-requests.md` |
-| deciding whether a change is backport-eligible | `references/backporting.md` |
+| deciding whether a change is backport-eligible, or writing one headed for a backport | `references/backporting.md` |
 | applying or maintaining backport labels, or fixing a mergify backport PR | `references/backport-labels.md` |
 | weighing review feedback on a PR — conflicting opinions, or a technical claim from outside CODE-OWNERS | `references/review-feedback.md` |
 | building, testing, or linting rook; regenerating CRDs or generated code; writing rook tests | `references/building-and-testing.md` |

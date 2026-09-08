@@ -88,7 +88,9 @@ is left alone.**
   For a pointer to a literal, new code uses `new(expr)`. `ptr.To` from
   `k8s.io/utils/ptr` is acceptable where it already stands — converting
   existing call sites is not a finding — but a `ptr.To` introduced on an
-  added line gets the same `style` finding as the two-line temporary.
+  added line gets the same `style` finding as the two-line temporary. The
+  exception is a change carrying a backport label: `rook-conventions`,
+  `references/backporting.md`, "Backports predate `new(expr)`" owns it.
 - When a change updates a line or function, modernizing what it touches is
   PART of the update — expected, never scope creep. Scope creep is only
   rewriting logic the change does not otherwise touch; untouched code
