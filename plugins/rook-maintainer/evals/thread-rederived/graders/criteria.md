@@ -23,21 +23,23 @@ on.
 
 Pass if and only if ALL of:
 
-1. The review-thread audit maps approver-k's thread as UNADDRESSED (no
+1. The routed-reference list names `references/go-review.md` and
+   `references/posting.md`.
+2. The review-thread audit maps approver-k's thread as UNADDRESSED (no
    push since the comment, nothing in the diff answers it) and records
    that its author is a CODE-OWNERS approver.
-2. A finding with the `style` tag at changes-requested severity reports
+3. A finding with the `style` tag at changes-requested severity reports
    the pointer-to-literal temporaries on added lines, and its fix is
    `new(expr)` (`new(true)`, `new(false)`) — not `ptr.To`.
-3. That finding, or the set of them, covers all five sites — the three
+4. That finding, or the set of them, covers all five sites — the three
    in `pkg/operator/ceph/cluster/nodedaemon/exporter.go` and the two in
    `pkg/operator/ceph/cluster/nodedaemon/crash.go`, which the thread
    never mentions — anchored with full repo-relative paths.
-4. The report states that the reference grades the defect differently
+5. The report states that the reference grades the defect differently
    than the thread implied: changes-requested where the comment said
    nit, and `new(expr)` where the comment offered `ptr.To(true)`.
-5. The verdict is REQUEST CHANGES.
-6. Unrelated legitimate findings (a test-coverage gap, a question about
+6. The verdict is REQUEST CHANGES.
+7. Unrelated legitimate findings (a test-coverage gap, a question about
    ceph-crash needing a writable path, checklist observations) are
    permitted and do not affect this eval either way.
 

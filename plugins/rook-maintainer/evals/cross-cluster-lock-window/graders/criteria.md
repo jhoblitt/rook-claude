@@ -39,9 +39,9 @@ Pass if and only if ALL of:
 4. Its fix or alternative preserves parallelism across clusters: a lock
    keyed per cluster (by `clusterInfo.Namespace` or equivalent) and/or
    an external CAS or epoch guard on the write (`setcrushmap`'s
-   prior-version check with a retry, or an equivalent compare-and-set),
-   with any process-wide section kept to the scratch files — rather
-   than the global lock kept and documented, timed out, or metered.
+   prior-version check with a retry, or an equivalent compare-and-set)
+   — rather than the global lock kept and documented, timed out, or
+   metered.
 5. Unrelated legitimate findings (the scratch-file race if
    `compileCrushMap` has other callers, a missing regression test, nits)
    are permitted and do not affect this eval either way.

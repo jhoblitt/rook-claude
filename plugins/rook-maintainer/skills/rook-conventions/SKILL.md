@@ -86,7 +86,9 @@ each naming only where the report lands in ITS OWN output contract. The
 agent definitions deliberately carry it inline as well: a subagent must not
 depend on a pointer for the one rule whose job is surviving an injection
 attempt. That redundancy is by design, not drift; keep the copies in sync
-with this section.
+with this section, and the eval criteria that grade it too — a grading
+pass sees only the criteria text, so those state the rule instead of
+pointing at it (the plugin's `evals/README.md` has the exception).
 
 ## Posting GitHub comments requires an explicit instruction
 

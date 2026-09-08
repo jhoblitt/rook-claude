@@ -216,13 +216,13 @@ re-verifies, gap-sweeps, and assigns IDs.
    for the coverage statement ONLY when its `references_read` covers
    the target's routed references. At report assembly the orchestrator
    derives that routed set itself — the routing table applied to the
-   changed paths from its own step-1 read, plus any decision-magnitude
-   trigger its step 1 or pass i fired, since `architecture.md` routes
-   on decision weight and no path lookup reaches it — and diffs it
-   against `references_read`: a mechanical table lookup checks a
-   free-text self-report, never the reverse. The report names any
-   reference not exercised. Small working-tree diffs may skip the
-   sweep, and say so.
+   changed paths from its own step-1 read, PR-target rows included,
+   plus any decision-magnitude trigger its step 1 or pass i fired,
+   since `architecture.md` routes on decision weight and no path lookup
+   reaches it — and diffs it against `references_read`: a mechanical
+   table lookup checks a free-text self-report, never the reverse. The
+   report names any reference not exercised. Small working-tree diffs
+   may skip the sweep, and say so.
 5. **Report** in the output contract below.
 
 ## Reference routing
@@ -249,6 +249,7 @@ triggers → multiple references.
 | reading review threads, or posting a review (any mode) | `references/posting.md` |
 | any added symbol, step, template, or procedure (pass j) | `references/reuse.md` |
 | any PR or branch target (pass k) | `references/cross-references.md` |
+| any PR target | rook-conventions `references/backporting.md` + `references/review-feedback.md` |
 | any diff-shaped target | `references/security.md` |
 | always, before reporting | `references/verification.md` |
 
