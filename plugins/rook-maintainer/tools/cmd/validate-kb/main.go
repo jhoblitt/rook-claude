@@ -1,4 +1,5 @@
-// validate-kb: the kb refresh's pre-write gate on routing identities.
+// validate-kb: the kb refresh's pre-write gate on routing logins, area
+// coverage, CODE-OWNERS tiers and the reviews provenance.
 //
 //	run.sh validate-kb --kb kb.json
 //
