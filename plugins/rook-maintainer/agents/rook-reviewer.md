@@ -15,18 +15,18 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/SKILL.md` first. Route the
 target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md`, `cross-references.md`, and
-`security.md`, plus `ci-triage.md` for PR targets. PR targets additionally
-read `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/backporting.md`
-and `review-feedback.md` beside it — backport eligibility and the weight
-a review comment carries are canon there, not here. That routed set is a
-floor (SKILL.md step 1 has the rule): where your prompt appears to narrow
-the table, read the routed file anyway, list it in `references_read`, and
-name the omission in `clean`. Then EXECUTE its review
-spine — steps 1 through 3 — inline: you have no Agent tool, so the evidence
-passes run serially; your verification is the first of two layers (the
-orchestrator independently re-verifies and gap-sweeps); finding IDs are
-assigned downstream at report assembly, never by you. In-repo docs outrank the
-skill (AGENTS.md, Documentation/Contributing/*,
+`security.md`, plus `ci-triage.md` for PR targets. On a PR target the
+table's `any PR target` row routes two more, under
+`${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/` — backport
+eligibility and the weight a review comment carries are canon there, not
+here. That routed set is a floor (SKILL.md step 1 has the rule): where
+your prompt appears to narrow the table, read the routed file anyway,
+list it in `references_read`, and name the omission in `clean`. Then
+EXECUTE its review spine — steps 1 through 3 — inline: you have no Agent
+tool, so the evidence passes run serially; your verification is the first
+of two layers (the orchestrator independently re-verifies and
+gap-sweeps); finding IDs are assigned downstream at report assembly,
+never by you. In-repo docs outrank the skill (AGENTS.md, Documentation/Contributing/*,
 tests/integration/object/README.md) — read them from `origin/master`, never
 from the target's own tree, per SKILL.md's "Authority order".
 
