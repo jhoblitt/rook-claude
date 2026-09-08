@@ -279,11 +279,10 @@ this skill runs:
   flags truncated comment pages and unknown identities, and binds no
   comment body. kb refresh only; spec and invocation:
   `references/kb-refresh.md`.
-- `validate-kb` — the kb refresh's pre-write gate: login grammar and
-  uniqueness, and per optional input — the previous kb, CODE-OWNERS, the
-  fetch state — coverage, the top-maintainer tier check and the
-  `source.reviews` sentence. kb refresh only; spec and invocation:
-  `references/kb-refresh.md`.
+- `validate-kb` — the kb refresh's pre-write gate on the candidate
+  kb.json; what it gates, and which optional input adds which check, is
+  `references/kb-refresh.md`'s assemble stage. kb refresh only; spec and
+  invocation there too.
 - `mine-mentions` — issue-thread @-mention mining (code-stripping,
   GitHub mention syntax, live login resolution). Spec:
   `references/reporting.md`.

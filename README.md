@@ -201,7 +201,7 @@ flowchart TD
         B1 --> B4
         B4["merge-commit join for what GitHub cannot map,<br/>once rt_prs.jsonl is in"] --> B5
         B5["the one gather: kb-resolver, one agent on the session model, every flag fenced"] --> B6
-        B6["assembler: validate-kb gates logins, coverage, top-maintainer tiers and the<br/>reviews provenance; a failing kb.json is not written"]
+        B6["assembler: validate-kb gates the candidate against what<br/>references/kb-refresh.md lists; a failing kb.json is not written"]
         B6 -.->|"a failing login is a flag"| B5
     end
 

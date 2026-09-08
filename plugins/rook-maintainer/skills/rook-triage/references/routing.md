@@ -40,15 +40,15 @@ serves every installer.
    are @-mention or report-only (they may not be requestable on GitHub).
    These numbers have one code mirror, `internal/actions`'
    `MinReviewers`/`MaxReviewers`/`MinApprovers`, and a change has to land
-   there; `validate-actions --kb` and `ApproverBudget` both read it rather
-   than restating it. Issues → @-mention 1–2 (≤3), whose mirror is
-   `MaxMentions`. Per-person per-RUN cap: 3 items across every corpus the
-   run touches. Selection proposes without it (step 2); it is APPLIED at
-   phase 4, off the run ledger's `OVER CAP` status column — swap the
-   over-cap person for the next login of that item's
-   `reviewers_alternates`, the ranked remainder selection left behind
-   (`agents/rook-triager.md`), and what the swap displaces goes in the
-   report as "also relevant", never posted. This number has one code
+   there; `validate-actions --kb`, `validate-kb`'s tier check and
+   `ApproverBudget` all read it rather than restating it. Issues →
+   @-mention 1–2 (≤3), whose mirror is `MaxMentions`. Per-person per-RUN
+   cap: 3 items across every corpus the run touches. Selection proposes
+   without it (step 2); it is APPLIED at phase 4, off the run ledger's
+   `OVER CAP` status column — swap the over-cap person for the next login
+   of that item's `reviewers_alternates`, the ranked remainder selection
+   left behind (`agents/rook-triager.md`), and what the swap displaces goes
+   in the report as "also relevant", never posted. This number has one code
    mirror, `mdreport.PerPersonCap`, which is what the ledger compares
    against. Nothing else checks the cap, so `gen-run-ledger` is where a
    breach becomes visible — and it must be the RUN-wide view, because a

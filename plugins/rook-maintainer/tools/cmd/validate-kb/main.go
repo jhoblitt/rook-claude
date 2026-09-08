@@ -22,11 +22,15 @@
 //   - --prev FILE: an area with maintainers in the previous kb.json must not be
 //     empty in the candidate. A refresh that empties one mined nothing for it,
 //     and writing that loses routing for the area.
-//   - --code-owners FILE: for every area with at least 3 maintainers, one of the
-//     top 3 by commits+2*reviews must hold a CODE-OWNERS tier. K is 3 as the
-//     upper bound routing.md's Selection step 4 requests: an area whose top K
-//     are all off-roster sends every proposal through that step's approver
-//     swap, which is the shape of a mis-mined area.
+//   - --code-owners FILE: an area with enough maintainers to fill a review set
+//     must have MinApprovers of its top MaxReviewers by commits+2*reviews on
+//     CODE-OWNERS' approvers: list, and the kb's own roster.approvers must be
+//     that list. The bounds mirror references/routing.md Selection step 4,
+//     which owns them, and are read from internal/actions: an area that cannot
+//     field the approvers a request needs sends every proposal through that
+//     step's approver swap, which is the shape of a mis-mined area, and a
+//     roster that drifted from the file routes approvals to a tier rook does
+//     not grant.
 //   - --state FILE: source.reviews must OPEN with the sentence rt_fetch_state.json
 //     produces — "<counted> merged PRs back to <oldest merge day>", exactly
 //     rtanalyze.GeneratedFrom — so the assembler may append a note after it but
@@ -49,6 +53,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/actions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/links"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/mentions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/rtanalyze"
@@ -79,10 +84,6 @@ type crossFile struct {
 	state  *rtanalyze.State
 }
 
-// topK is the reviewer depth the CODE-OWNERS intersection checks; see the
-// package doc for why 3.
-const topK = 3
-
 func usage(fs *flag.FlagSet) {
 	_, _ = fmt.Fprint(os.Stderr,
 		"usage: validate-kb --kb FILE [--prev FILE] [--code-owners FILE] [--state FILE]\n")
@@ -93,7 +94,7 @@ func run() int {
 	fs := flag.NewFlagSet("validate-kb", flag.ContinueOnError)
 	kbPath := fs.String("kb", "", "candidate kb.json to validate")
 	prevPath := fs.String("prev", "", "the kb.json being replaced; no area it had maintainers for may be empty")
-	ownersPath := fs.String("code-owners", "", "rook's CODE-OWNERS; each area's top reviewers must intersect it")
+	ownersPath := fs.String("code-owners", "", "rook's CODE-OWNERS; each area's top-ranked maintainers must include enough approvers")
 	statePath := fs.String("state", "", "rt_fetch_state.json; source.reviews must open with the bounds it records")
 	fs.Usage = func() { usage(fs) }
 
@@ -232,6 +233,7 @@ func validate(kb doc, x crossFile) ([]string, int) {
 		problems = append(problems, emptiedAreas(kb, *x.prev)...)
 	}
 	if x.roster != nil {
+		problems = append(problems, rosterDrift(kb, x.roster)...)
 		problems = append(problems, unownedAreas(kb, x.roster)...)
 	}
 	if x.state != nil {
@@ -257,31 +259,69 @@ func emptiedAreas(kb, prev doc) []string {
 	return problems
 }
 
-// unownedAreas reports an area whose top topK maintainers are all off the
-// CODE-OWNERS roster. Areas with fewer than topK maintainers are skipped: with
-// nobody to displace, an off-roster top is the area's whole signal, not a
-// ranking that went wrong.
+// unownedAreas reports an area whose top actions.MaxReviewers maintainers hold
+// fewer than actions.MinApprovers approver tiers. Areas with fewer than
+// actions.MinReviewers maintainers are skipped: too small to field a review set
+// at all, their top is the area's whole signal rather than a ranking that went
+// wrong.
 func unownedAreas(kb doc, roster *rtanalyze.Roster) []string {
-	owners := rtanalyze.Lowered(roster.Logins())
+	approvers := roster.ApproverSet()
 	var problems []string
 	for _, name := range sortedKeys(kb.Areas) {
 		ranked := rankMaintainers(kb.Areas[name].Maintainers)
-		if len(ranked) < topK {
+		if len(ranked) < actions.MinReviewers {
 			continue
 		}
-		owned := false
+		top := ranked[:min(len(ranked), actions.MaxReviewers)]
+		held := 0
 		var logins []string
-		for _, m := range ranked[:topK] {
-			owned = owned || owners[strings.ToLower(m.Login)]
+		for _, m := range top {
+			if approvers[strings.ToLower(m.Login)] {
+				held++
+			}
 			logins = append(logins, clean(m.Login))
 		}
-		if !owned {
+		if held < actions.MinApprovers {
 			problems = append(problems, fmt.Sprintf(
-				"%s: none of the top %d by commits+2*reviews (%s) holds a CODE-OWNERS tier",
-				clean(name), topK, strings.Join(logins, ", ")))
+				"%s: %d of the top %d by commits+2*reviews (%s) hold an approver tier, want %d",
+				clean(name), held, len(top), strings.Join(logins, ", "), actions.MinApprovers))
 		}
 	}
 	return problems
+}
+
+// rosterDrift reports a kb roster.approvers that is not CODE-OWNERS' own. The
+// roster is a copy of the file, and every tier question — the swap in Selection
+// step 4, the check above — is answered from it, so a login an identity pass
+// added or dropped grants or denies an approval rook's file does not.
+func rosterDrift(kb doc, roster *rtanalyze.Roster) []string {
+	owned := roster.ApproverSet()
+	claimed := map[string]bool{}
+	for _, login := range kb.Roster["approvers"] {
+		claimed[strings.ToLower(login)] = true
+	}
+	var problems []string
+	if extra := missingFrom(claimed, owned); len(extra) > 0 {
+		problems = append(problems, fmt.Sprintf(
+			"roster.approvers: %s not in CODE-OWNERS approvers:", strings.Join(extra, ", ")))
+	}
+	if absent := missingFrom(owned, claimed); len(absent) > 0 {
+		problems = append(problems, fmt.Sprintf(
+			"roster.approvers: CODE-OWNERS lists %s and the kb does not", strings.Join(absent, ", ")))
+	}
+	return problems
+}
+
+// missingFrom is the sorted, sanitized members of a that b does not have.
+func missingFrom(a, b map[string]bool) []string {
+	var out []string
+	for login := range a {
+		if !b[login] {
+			out = append(out, clean(login))
+		}
+	}
+	sort.Strings(out)
+	return out
 }
 
 // rankMaintainers orders by routing.md's own Selection score, commits+2*reviews,

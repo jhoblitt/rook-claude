@@ -155,10 +155,13 @@ kind of flag, and judgment is spent once:
    Always: every `maintainers[].login` and `roster` login passes the login
    grammar `internal/mentions` owns, once per login per area. Each other
    flag is optional and is one check — `--prev`: no area with maintainers
-   in the previous kb may be empty in the candidate; `--code-owners`: for
-   every area with at least 3 maintainers, one of the top `K=3` by
-   `commits + 2*reviews` holds a CODE-OWNERS tier (K is Selection step 4's
-   upper request bound, `routing.md`); `--state`: `source.reviews` opens
+   in the previous kb may be empty in the candidate; `--code-owners`: an
+   area with enough maintainers to fill a review set has `MinApprovers` of
+   its top `MaxReviewers` by `commits + 2*reviews` on CODE-OWNERS'
+   `approvers:` list — Selection step 4's bounds, which the check reads
+   from `internal/actions` (`routing.md`) — and the candidate's own
+   `roster.approvers` is that list, neither widened nor trimmed by an
+   identity pass; `--state`: `source.reviews` opens
    with the sentence the fetch recorded (Schema below). A failing login is
    a flag for the resolver, not a silent drop, and its fenced problem list
    — markers, note and all — goes into the resolver's brief as stage 3
