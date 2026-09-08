@@ -303,7 +303,7 @@ func TestSingleCorpusRunHasOneProvenanceColumn(t *testing.T) {
 func TestGenerateWritesTheLedgerIntoEveryDir(t *testing.T) {
 	dirs := []string{copyFixture(t, prsDir), copyFixture(t, issuesDir)}
 	var log bytes.Buffer
-	if err := Generate(dirs, &log); err != nil {
+	if err := Generate(dirs, 0, &log); err != nil {
 		t.Fatalf("Generate() = %v", err)
 	}
 
@@ -340,7 +340,7 @@ func TestGenerateWritesTheLedgerIntoEveryDir(t *testing.T) {
 // silent tool as an unfinished one.
 func TestGenerateSaysWhenNobodyIsOverCap(t *testing.T) {
 	var log bytes.Buffer
-	if err := Generate([]string{copyFixture(t, prsDir)}, &log); err != nil {
+	if err := Generate([]string{copyFixture(t, prsDir)}, 0, &log); err != nil {
 		t.Fatalf("Generate() = %v", err)
 	}
 	if !strings.Contains(log.String(), "nobody over the per-person per-run cap of 3") {
@@ -358,7 +358,7 @@ func TestGenerateWritesNothingOnFailure(t *testing.T) {
 	dir := copyFixture(t, prsDir)
 	writeFile(t, filepath.Join(dir, LedgerFile), "previous\n")
 	var discard bytes.Buffer
-	if err := Generate([]string{dir, dir}, &discard); err == nil {
+	if err := Generate([]string{dir, dir}, 0, &discard); err == nil {
 		t.Fatal("Generate() accepted one dir twice")
 	}
 	b, err := os.ReadFile(filepath.Join(dir, LedgerFile))
@@ -450,4 +450,46 @@ func firstDiff(a, b []byte) int {
 func excerpt(b []byte, at int) string {
 	end := min(at+80, len(b))
 	return string(b[min(at, len(b)):end])
+}
+
+// The budget is the run-wide half of the rule: the cap bounds a person, the
+// budget bounds how many PRs the approvers between them can cover.
+func TestGenerateReportsTheApproverBudget(t *testing.T) {
+	var log bytes.Buffer
+	dir := copyFixture(t, prsDir)
+	if err := Generate([]string{dir}, 8, &log); err != nil {
+		t.Fatalf("Generate() = %v", err)
+	}
+	if !strings.Contains(log.String(), "Approver budget: 12 PR(s) from 8 approvers; this run routed 4") {
+		t.Errorf("log = %q, want the budget line", log.String())
+	}
+	// The report carries the fragment, not the log, so the budget has to be in
+	// both: phase 4 decides the deferral from what it approves.
+	b, err := os.ReadFile(filepath.Join(dir, LedgerFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(b), "_Approver budget: 12 PR(s) from 8 approvers; this run routed 4_") {
+		t.Errorf("%s does not carry the budget:\n%s", LedgerFile, b)
+	}
+	if strings.Contains(log.String(), "OVER BUDGET") {
+		t.Errorf("log = %q, want a run inside its budget", log.String())
+	}
+
+	log.Reset()
+	if err := Generate([]string{copyFixture(t, prsDir)}, 2, &log); err != nil {
+		t.Fatalf("Generate() = %v", err)
+	}
+	if !strings.Contains(log.String(), "OVER BUDGET: 4 PR(s) routed against a budget of 3 from 2 approvers — 1 queue to the next run") {
+		t.Errorf("log = %q, want the over-budget line", log.String())
+	}
+
+	// No kb, no budget: a run that named no roster is not a run of budget zero.
+	log.Reset()
+	if err := Generate([]string{copyFixture(t, prsDir)}, 0, &log); err != nil {
+		t.Fatalf("Generate() = %v", err)
+	}
+	if strings.Contains(log.String(), "budget") {
+		t.Errorf("log = %q, want no budget line", log.String())
+	}
 }

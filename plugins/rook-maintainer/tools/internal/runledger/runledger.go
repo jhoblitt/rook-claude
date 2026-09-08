@@ -1,6 +1,8 @@
 // Package runledger builds the RUN-scoped routing ledger of a rook-triage run:
 // per person, how many ITEMS the whole run proposes routing to them, against
-// mdreport.PerPersonCap.
+// mdreport.PerPersonCap — and, when the run's approver roster is given, how
+// many PRs that cap and the approver floor together left it room to route
+// (actions.ApproverBudget).
 //
 // The cap of skills/rook-triage/references/routing.md is per person per RUN —
 // 3 items across every corpus the run touches — and `both`, the default mode,
@@ -9,7 +11,9 @@
 // on two PRs and two issues sits under the cap in both dirs and breaches the
 // run's. Nothing downstream re-checks the cap — validate-actions deliberately
 // does not — so this fragment is the only place that breach becomes visible.
-// Caller: rook-triage phase 4's cross-dir reconciliation, via gen-run-ledger.
+// Caller: rook-triage phase 3's report assembly, via gen-run-ledger, once per
+// run and after the last corpus's phase 2 (references/reporting.md). Phase 4
+// reconciles against the fragment it wrote.
 //
 // Counting is mdreport's, not this package's: Counts charges a login once per
 // item, and the same login on an issue and a PR is two charges. What is added
@@ -28,6 +32,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/actions"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/issuesdash"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/mdreport"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/prdash"
@@ -77,9 +82,13 @@ type Sweep struct {
 	Proposals []mdreport.Proposal
 }
 
-// Run is a triage run's sweep dirs, at most one per corpus.
+// Run is a triage run's sweep dirs, at most one per corpus, and the size of the
+// approver roster they were routed from. Approvers is 0 for a run that named no
+// kb, which leaves the budget out of the fragment rather than reporting one of
+// zero PRs.
 type Run struct {
-	Sweeps []Sweep
+	Sweeps    []Sweep
+	Approvers int
 }
 
 // Row is one person's line of the ledger: the run-wide count charged to them,
@@ -277,6 +286,11 @@ func (r *Run) Render(w io.Writer) error {
 	if err := mdreport.Para(w, "_%s_", r.scope()); err != nil {
 		return err
 	}
+	if line := r.budgetLine(); line != "" {
+		if err := mdreport.Para(w, "_%s_", line); err != nil {
+			return err
+		}
+	}
 	if len(rows) == 0 {
 		return mdreport.Para(w, "_No routing proposed in this run._")
 	}
@@ -299,6 +313,40 @@ func (r *Run) Render(w io.Writer) error {
 		t.Row(cells...)
 	}
 	return t.Err()
+}
+
+// budgetLine states the approver budget and what the run spent of it, in the
+// fragment as on the log: phase 4 decides the deferral from the report it
+// approves, not from a terminal it may no longer have.
+func (r *Run) budgetLine() string {
+	if r.Approvers <= 0 {
+		return ""
+	}
+	budget, routed := actions.ApproverBudget(r.Approvers), r.routedPRs()
+	if routed > budget {
+		return fmt.Sprintf("OVER BUDGET: %d PR(s) routed against a budget of %d from %d "+
+			"approvers — %d queue to the next run", routed, budget, r.Approvers, routed-budget)
+	}
+	return fmt.Sprintf("Approver budget: %d PR(s) from %d approvers; this run routed %d",
+		budget, r.Approvers, routed)
+}
+
+// routedPRs is how many of the run's PRs got a reviewer set at all, which is
+// what the approver budget bounds — an item nobody was proposed on spends none
+// of it.
+func (r *Run) routedPRs() int {
+	n := 0
+	for _, s := range r.Sweeps {
+		if s.Corpus != PRs {
+			continue
+		}
+		for _, p := range s.Proposals {
+			if len(p.Logins) > 0 {
+				n++
+			}
+		}
+	}
+	return n
 }
 
 // scope says which dirs the totals span and why they can exceed what either
@@ -324,12 +372,19 @@ func (r *Run) scope() string {
 //
 // Being over cap is not a tool failure — the fragment has to reach the report
 // either way, and the breach is the maintainer's call at phase 4 — so it is
-// reported loudly and exits 0. Only a broken input exits non-zero.
-func Generate(dirs []string, log io.Writer) error {
+// reported loudly and exits 0. Only a broken input exits non-zero. A run over
+// the approver budget is reported the same way: the PRs past it are the next
+// run's, which is a decision phase 4 makes, not one a tool can take.
+//
+// approvers is the size of the routing kb's approver roster, or 0 to leave the
+// budget out; the budget itself is actions.ApproverBudget, the same number
+// pool-summary prints at phase 0.
+func Generate(dirs []string, approvers int, log io.Writer) error {
 	run, err := Load(dirs...)
 	if err != nil {
 		return err
 	}
+	run.Approvers = approvers
 	rows, err := run.Rows()
 	if err != nil {
 		return err
@@ -371,6 +426,11 @@ func Generate(dirs []string, log io.Writer) error {
 		}
 		if _, err := fmt.Fprintf(log, "OVER CAP (%d): %s\n",
 			len(over), strings.Join(breaches, ", ")); err != nil {
+			return err
+		}
+	}
+	if line := run.budgetLine(); line != "" {
+		if _, err := fmt.Fprintln(log, line); err != nil {
 			return err
 		}
 	}

@@ -169,12 +169,12 @@ flowchart TD
     Q1 --> BL
 
     subgraph SWEEP["the sweep — one resumable sweep dir per corpus"]
-        R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
+        R0["phase 0 — sweep-prefetch snapshot: one GraphQL pass per<br/>corpus, stamping each PR's areas · pool-summary, with the<br/>approver budget the PR scope is sized against · kb<br/>freshness warning (a cold start seeds the snapshot)"] --> Q2{"explicit scope +<br/>fan-out confirmation"}
         Q2 -->|"confirmed — PR corpus"| R0B["validate-checklist sweep<br/>→ checklist.jsonl + skips.json"]
         Q2 -->|"confirmed — issues corpus"| R1
         R0B --> R1[["phase 1 — assess: rook-triager agents, batches of ~10 at<br/>capped width; deterministic → mined KB → LLM judgment last"]]
         R1 -->|"as each batch arrives"| R2[["phase 2 — refute closes: one agent per close-class<br/>proposal; a refuted close drops to link/report-only"]]
-        R2 --> R3["phase 3 — report: classify-refs + mine-mentions, then<br/>gen-pr/issues-dashboard --markdown write the tables and<br/>ledger; you write only report-notes.md · dashboard.html"]
+        R2 --> R3["phase 3 — report: classify-refs + mine-mentions, then<br/>gen-pr/issues-dashboard --markdown write the tables and<br/>ledger; gen-run-ledger runs ONCE, after the last corpus's<br/>phase 2; you write only report-notes.md · dashboard.html"]
     end
 
     R3 --> Q3{"act on the report?"}
@@ -182,7 +182,7 @@ flowchart TD
     Q3 -->|yes| R4
 
     subgraph AGATE["approval gate — every GitHub write"]
-        R4["phase 4 — reconcile FIRST: gen-run-ledger across both<br/>sweep dirs (the per-person per-RUN cap)"] --> Q4{"per item: approve · edit · skip<br/>(or an explicitly authorized batch)"}
+        R4["phase 4 — reconcile FIRST: read phase 3's run ledger across<br/>both sweep dirs — OVER CAP (the per-person per-RUN cap,<br/>applied here) and OVER BUDGET (PRs deferred to the next run)"] --> Q4{"per item: approve · edit · skip<br/>(or an explicitly authorized batch)"}
         Q4 -->|"approved"| R5["phase 5 — validate-actions immediately before each<br/>write; a non-zero exit sends those items back to the report"]
     end
 
