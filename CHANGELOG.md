@@ -1,3 +1,32 @@
+## [0.24.2](https://github.com/jhoblitt/rook-claude/compare/v0.24.1...v0.24.2) (2026-09-08)
+
+### Bug Fixes
+
+* **rook-triage:** check the login grammar in stage 2 of the kb refresh ([5d11b20](https://github.com/jhoblitt/rook-claude/commit/5d11b200f340020b0d6f1b90de6f545b3efc526e)), closes [#136](https://github.com/jhoblitt/rook-claude/issues/136)
+* **rook-triage:** keep PR titles out of the kb assembler's context ([e3848de](https://github.com/jhoblitt/rook-claude/commit/e3848deb36ec1946325b6510bd79841920fb1f59)), closes [#115](https://github.com/jhoblitt/rook-claude/issues/115)
+* **rook-triage:** move the refresh-only tool descriptions out of SKILL.md ([50a782b](https://github.com/jhoblitt/rook-claude/commit/50a782ba8ab3015237583bc8be16f4f8bb19a396)), closes [#121](https://github.com/jhoblitt/rook-claude/issues/121)
+* **rook-triage:** name rt-issues among the tools that bucket by area ([139f219](https://github.com/jhoblitt/rook-claude/commit/139f2190cdd31405f59d175ad53172c4b3bbcbc4)), closes [#122](https://github.com/jhoblitt/rook-claude/issues/122)
+* **rook-triage:** point kb-refresh.md at the recency weights instead of copying them ([70a0f2b](https://github.com/jhoblitt/rook-claude/commit/70a0f2b5f775b3985c8fd322e3b75ef55ddc9afa)), closes [#123](https://github.com/jhoblitt/rook-claude/issues/123)
+* **rook-triage:** stop restating the stale-KB threshold in SKILL.md ([1d412a5](https://github.com/jhoblitt/rook-claude/commit/1d412a5f07dbd7d01d073c6ff60cb06c282412d7)), closes [#118](https://github.com/jhoblitt/rook-claude/issues/118)
+
+### Documentation
+
+* draw the kb refresh's four mine sources off one mode edge ([332267d](https://github.com/jhoblitt/rook-claude/commit/332267d08f402489df715895b7c034009deaf4c5)), closes [#131](https://github.com/jhoblitt/rook-claude/issues/131)
+
+
+## What's Changed
+* fix(rook-triage): allowlist the assembler read, one home per number, grammar in stage 2 by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/139
+
+### Resolved issues
+
+* [#115](https://github.com/jhoblitt/rook-claude/issues/115) kb assembler reads rt_final.json unfenced; recent_items titles persist into kb.json
+* [#118](https://github.com/jhoblitt/rook-claude/issues/118) rook-triage SKILL.md restates the 30-day stale-KB threshold whose home is routing.md
+* [#121](https://github.com/jhoblitt/rook-claude/issues/121) rook-triage SKILL.md carries refresh-only tool descriptions in the entry file
+* [#122](https://github.com/jhoblitt/rook-claude/issues/122) label-map.md's bucketing sentence omits rt-issues
+* [#123](https://github.com/jhoblitt/rook-claude/issues/123) Recency weights are stated three times across rtanalyze and kb-refresh.md
+* [#131](https://github.com/jhoblitt/rook-claude/issues/131) README kb-refresh subgraph: three unlabelled mode edges read as extra modes
+* [#136](https://github.com/jhoblitt/rook-claude/issues/136) kb refresh: check login grammar in stage 2 so a validate-kb failure never needs a second resolver round
+
 ## [0.24.1](https://github.com/jhoblitt/rook-claude/compare/v0.24.0...v0.24.1) (2026-09-08)
 
 ### Bug Fixes
