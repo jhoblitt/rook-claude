@@ -66,9 +66,10 @@ messages rather than growing the description.
 
 Before repushing to an open rook PR, one read —
 `gh pr view <n> --json baseRefName,headRefOid` — supplies both facts the
-update needs; then fetch both tips in one step, `git fetch <fork> <branch>`
-and `git fetch <rook remote> <baseRefName>` (usually `master`, sometimes
-`release-*`), which are independent of each other.
+update needs. Stop unless `baseRefName` is exactly `master` or matches the
+anchored pattern `^release-[0-9]+\.[0-9]+$`; then fetch both tips in one
+step, `git fetch <fork> <branch>` and `git fetch <rook remote> "<baseRefName>"`
+(quoted at use), which are independent of each other.
 
 Start from the PR's CURRENT remote head, not a stale local branch — a later
 session or manual push may have force-updated the fork branch. Reset to the
