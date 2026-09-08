@@ -1,3 +1,22 @@
+## [0.24.0](https://github.com/jhoblitt/rook-claude/compare/v0.23.1...v0.24.0) (2026-09-08)
+
+### Features
+
+* **rook-triage:** raise reviewer bounds to 3–5 and require two approvers ([6a5dd73](https://github.com/jhoblitt/rook-claude/commit/6a5dd73c972d12be08340a860ebf096dd276440c)), closes [#126](https://github.com/jhoblitt/rook-claude/issues/126)
+
+### Bug Fixes
+
+* **rook-triage:** derive validate-kb's K from routing's shared bounds ([15e9020](https://github.com/jhoblitt/rook-claude/commit/15e902000b95cf656d74789218f9c3776829aa0a)), closes [#119](https://github.com/jhoblitt/rook-claude/issues/119)
+
+
+## What's Changed
+* feat(rook-triage): request 3–5 reviewers with two approvers; one home for the bounds by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/141
+
+### Resolved issues
+
+* [#119](https://github.com/jhoblitt/rook-claude/issues/119) validate-kb's K=3 mirrors routing.md's request bound with nothing enforcing the coupling
+* [#126](https://github.com/jhoblitt/rook-claude/issues/126) routing.md: raise PR reviewer bounds to 3-5 and require two approvers
+
 ## [0.23.1](https://github.com/jhoblitt/rook-claude/compare/v0.23.0...v0.23.1) (2026-09-08)
 
 ### Bug Fixes
