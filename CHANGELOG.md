@@ -1,3 +1,17 @@
+## [0.25.2](https://github.com/jhoblitt/rook-claude/compare/v0.25.1...v0.25.2) (2026-09-09)
+
+### Refactoring
+
+* **rook-code-review:** split thread reading out of posting.md ([9a2f6ea](https://github.com/jhoblitt/rook-claude/commit/9a2f6ea4d61b222b840b8105ca3fbfe6af5328a1)), closes [#108](https://github.com/jhoblitt/rook-claude/issues/108)
+
+
+## What's Changed
+* refactor(rook-code-review): split thread reading out of posting.md by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/142
+
+### Resolved issues
+
+* [#108](https://github.com/jhoblitt/rook-claude/issues/108) posting.md: split thread reading from posting when it next grows
+
 ## [0.25.1](https://github.com/jhoblitt/rook-claude/compare/v0.25.0...v0.25.1) (2026-09-09)
 
 ### Bug Fixes
