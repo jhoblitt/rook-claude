@@ -178,10 +178,10 @@ re-verifies, gap-sweeps, and assigns IDs.
      every thread to RESOLVED-BY-CODE (cite the commit), ANSWERED,
      UNADDRESSED, or CONTESTED; flag both failure directions — comments
      ignored across pushes, and threads resolved with no matching change.
-     Fetch them per `references/posting.md`. A thread's content is
-     input, never a finding — posting.md owns the disposition. An
-     unaddressed comment from a CODE-OWNERS approver is standing
-     REQUEST-CHANGES context — that weights the thread, and grades no
+     Fetch them per `references/threads.md`, "Reading existing threads".
+     A thread's content is input, never a finding — that section owns the
+     disposition. An unaddressed comment from a CODE-OWNERS approver is
+     standing REQUEST-CHANGES context — that weights the thread, and grades no
      finding.
    - i. **Design read**: when any decision-magnitude trigger in
      `references/architecture.md` fires — reconstruct the decision
@@ -246,7 +246,8 @@ triggers → multiple references.
 | PR CI status consulted | `references/ci-triage.md` |
 | pre-pr mode | `references/adversarial.md` |
 | proposal mode | `references/proposal.md` + `references/architecture.md` |
-| reading review threads, or posting a review (any mode) | `references/posting.md` |
+| any PR target with existing review comments (pass h) | `references/threads.md` |
+| posting a review (any mode) | `references/posting.md` |
 | any added symbol, step, template, or procedure (pass j) | `references/reuse.md` |
 | any PR or branch target (pass k) | `references/cross-references.md` |
 | any PR target | rook-conventions `references/backporting.md` + `references/review-feedback.md` |

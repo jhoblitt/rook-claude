@@ -16,7 +16,7 @@ target's changed files through its reference table and read every routed
 file under `${CLAUDE_PLUGIN_ROOT}/skills/rook-code-review/references/` —
 always including `verification.md`, `cross-references.md`, and
 `security.md`, plus `ci-triage.md` for PR targets. On a PR target the
-table's `any PR target` row routes two more, under
+table's PR-target rows route more: `threads.md`, and two under
 `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/` — backport
 eligibility and the weight a review comment carries are canon there, not
 here. That routed set is a floor (SKILL.md step 1 has the rule): where
