@@ -1,22 +1,20 @@
 {
- "generated": "2026-07-23",
+ "generated": "2026-09-09",
  "source": {
-  "git": "24mo origin/master per-area shortlog",
-  "reviews": "2247 merged PRs back to 2024-07-23 (rebucketed 2026-07-23: +build/design/discover, core broadened)",
-  "issues": "not mined in v1"
+  "git": "24mo origin/master per-area log (1193 counted of 1591 in window, 329 bot-excluded)",
+  "reviews": "2321 merged PRs back to 2024-09-09",
+  "issues": "2000 issues created back to 2022-06-29 (1836 unlabelled; commenters excluding the issue author, 24mo window)"
  },
  "roster": {
   "approvers": [
-   "BlaineEXE",
-   "galexrt",
+   "travisn",
    "jbw976",
-   "jhoblitt",
-   "leseb",
-   "parth-gr",
+   "BlaineEXE",
    "satoru-takeuchi",
-   "sp98",
    "subhamkrai",
-   "travisn"
+   "sp98",
+   "parth-gr",
+   "jhoblitt"
   ],
   "reviewers": [
    "Madhu-1",
@@ -41,88 +39,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 6,
-     "reviews": 213,
-     "score": 216.9,
-     "last_active": "2026-07"
+     "commits": 9,
+     "reviews": 253,
+     "issues": 0,
+     "score": 267.8,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 2,
-     "reviews": 102,
-     "score": 85.8,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 129,
+     "issues": 0,
+     "score": 104.2,
+     "last_active": "2026-08"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 3,
-     "reviews": 55,
-     "score": 44.2,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 10,
-     "reviews": 38,
-     "score": 41.5,
+     "commits": 4,
+     "reviews": 49,
+     "issues": 0,
+     "score": 39.2,
      "last_active": "2026-07"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 12,
-     "reviews": 35,
-     "score": 35.8,
-     "last_active": "2026-07"
+     "reviews": 38,
+     "issues": 0,
+     "score": 32.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 37,
+     "issues": 0,
+     "score": 35.0,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 3,
-     "reviews": 10,
-     "score": 15.9,
-     "last_active": "2026-07"
+     "commits": 6,
+     "reviews": 20,
+     "issues": 0,
+     "score": 39.0,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
-     "commits": 3,
-     "reviews": 10,
-     "score": 6.4,
-     "last_active": "2026-06"
+     "commits": 4,
+     "reviews": 8,
+     "issues": 0,
+     "score": 5.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "rewantsoni",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 9,
+     "issues": 0,
+     "score": 4.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "idryomov",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 7,
+     "issues": 0,
+     "score": 3.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 4,
+     "issues": 0,
+     "score": 8.2,
+     "last_active": "2026-09"
     },
     {
      "login": "OdedViner",
      "tier": "contributor",
-     "commits": 7,
+     "commits": 8,
      "reviews": 0,
-     "score": 4.5,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 5.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 2,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "blueprismo",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17971,
-     "title": "external: add watcher to the rns controler for watching csi and clien\u2026"
+     "number": 18308,
+     "title": "build(deps): bump the k8s-dependencies group with 5 updates"
     },
     {
-     "number": 17978,
-     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17896,
-     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+     "number": 18270,
+     "title": "operator: explicitly set root user for chown initContainer (backport #18018)"
     },
     {
-     "number": 17887,
-     "title": "csi: Add supported files for krbd QoS"
+     "number": 18018,
+     "title": "operator: explicitly set root user for chown initContainer"
     },
     {
-     "number": 17328,
-     "title": "CI: Check markdown links"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     }
    ]
   },
@@ -151,88 +220,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 365,
-     "score": 437.6,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 147,
-     "score": 184.4,
-     "last_active": "2026-07"
+     "commits": 15,
+     "reviews": 424,
+     "issues": 1,
+     "score": 522.2,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 153,
-     "score": 147.0,
-     "last_active": "2026-04"
+     "commits": 4,
+     "reviews": 189,
+     "issues": 0,
+     "score": 209.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 31,
+     "reviews": 150,
+     "issues": 0,
+     "score": 198.8,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 24,
-     "score": 39.6,
-     "last_active": "2026-07"
+     "commits": 13,
+     "reviews": 42,
+     "issues": 0,
+     "score": 80.8,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 60,
+     "reviews": 4,
+     "issues": 2,
+     "score": 40.2,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 34,
-     "score": 32.0,
-     "last_active": "2026-07"
+     "commits": 1,
+     "reviews": 33,
+     "issues": 0,
+     "score": 30.0,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 0,
-     "reviews": 23,
-     "score": 21.0,
+     "commits": 2,
+     "reviews": 18,
+     "issues": 0,
+     "score": 20.2,
      "last_active": "2026-07"
     },
     {
      "login": "sp98",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 20,
+     "commits": 3,
+     "reviews": 12,
+     "issues": 0,
      "score": 13.0,
-     "last_active": "2026-06"
+     "last_active": "2026-08"
     },
     {
      "login": "nixpanic",
      "tier": "contributor",
      "commits": 0,
-     "reviews": 5,
-     "score": 5.0,
+     "reviews": 9,
+     "issues": 0,
+     "score": 9.0,
      "last_active": "2026-03"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "consideRatio",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 3,
+     "issues": 0,
+     "score": 4.5,
+     "last_active": "2025-09"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 9,
+     "reviews": 0,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 6,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "malayparida2000",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 1,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 18026,
-     "title": "core: Update the go text module (backport #18024)"
+     "number": 18345,
+     "title": "build(deps): bump the github-dependencies group with 5 updates"
     },
     {
-     "number": 18027,
-     "title": "core: Update the go text module (backport #18024)"
+     "number": 18340,
+     "title": "build(deps): bump sigs.k8s.io/controller-runtime from 0.24.1 to 0.25.0 in the k8s-dependencies group across 1 directory"
     },
     {
-     "number": 17991,
-     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+     "number": 18308,
+     "title": "build(deps): bump the k8s-dependencies group with 5 updates"
     },
     {
-     "number": 18024,
-     "title": "core: Update the go text module"
+     "number": 18309,
+     "title": "build(deps): bump the github-dependencies group across 1 directory with 12 updates"
     },
     {
-     "number": 17989,
-     "title": "build: exclude helm dep archives from chart package prerequisites"
+     "number": 18192,
+     "title": "CI: Lint python scripts  with black and improve `make lint.quick` and `make lint`"
     }
    ]
   },
@@ -248,43 +388,111 @@
    ],
    "maintainers": [
     {
+     "login": "BlaineEXE",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 15,
+     "issues": 0,
+     "score": 20.5,
+     "last_active": "2026-08"
+    },
+    {
      "login": "travisn",
      "tier": "approver",
      "commits": 2,
      "reviews": 14,
-     "score": 18.4,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "BlaineEXE",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 11,
-     "score": 9.6,
-     "last_active": "2026-04"
+     "issues": 3,
+     "score": 24.2,
+     "last_active": "2026-09"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
      "commits": 0,
-     "reviews": 4,
-     "score": 8.0,
-     "last_active": "2026-07"
+     "reviews": 7,
+     "issues": 0,
+     "score": 14.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 11.0,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 2,
+     "commits": 4,
      "reviews": 1,
-     "score": 3.2,
+     "issues": 0,
+     "score": 5.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "anxkhn",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
      "last_active": "2026-07"
     },
     {
-     "login": "Madhu-1",
-     "tier": "reviewer",
-     "commits": 0,
-     "reviews": 4,
-     "score": 2.0,
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "dronenb",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "raaizik",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
      "last_active": "2026-07"
     },
     {
@@ -292,6 +500,7 @@
      "tier": "contributor",
      "commits": 1,
      "reviews": 0,
+     "issues": 0,
      "score": 1.0,
      "last_active": "2026-06"
     },
@@ -300,19 +509,24 @@
      "tier": "contributor",
      "commits": 1,
      "reviews": 0,
+     "issues": 0,
      "score": 1.0,
      "last_active": "2026-05"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 1,
-     "score": 1.0,
-     "last_active": "2026-07"
     }
    ],
    "recent_items": [
+    {
+     "number": 17985,
+     "title": "mgr: allow dashboard TLS certificate from a secret"
+    },
+    {
+     "number": 17579,
+     "title": "core: run go fix"
+    },
+    {
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
+    },
     {
      "number": 17963,
      "title": "mgr: use dashboard port 1024 as requested"
@@ -320,18 +534,6 @@
     {
      "number": 17567,
      "title": "core: rm unused consts (backport #17530)"
-    },
-    {
-     "number": 17530,
-     "title": "core: rm unused consts"
-    },
-    {
-     "number": 17550,
-     "title": "build: fix gosec and go vet lint errors for Go 1.26  (backport #17547)"
-    },
-    {
-     "number": 17547,
-     "title": "build: fix gosec and go vet lint errors for Go 1.26 "
     }
    ]
   },
@@ -349,88 +551,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 152,
-     "score": 175.0,
-     "last_active": "2026-07"
+     "commits": 8,
+     "reviews": 171,
+     "issues": 0,
+     "score": 214.2,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 101,
-     "score": 97.6,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 102,
+     "issues": 0,
+     "score": 84.2,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 1,
-     "reviews": 43,
-     "score": 38.0,
-     "last_active": "2026-07"
+     "commits": 18,
+     "reviews": 46,
+     "issues": 0,
+     "score": 45.2,
+     "last_active": "2026-09"
     },
     {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 25,
-     "score": 31.0,
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 5,
+     "reviews": 30,
+     "issues": 0,
+     "score": 25.8,
      "last_active": "2026-07"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 18,
-     "score": 29.6,
-     "last_active": "2026-07"
+     "commits": 4,
+     "reviews": 21,
+     "issues": 0,
+     "score": 41.2,
+     "last_active": "2026-09"
     },
     {
-     "login": "Madhu-1",
-     "tier": "reviewer",
-     "commits": 0,
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 6,
      "reviews": 20,
-     "score": 17.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 26.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 4,
+     "issues": 0,
+     "score": 2.2,
+     "last_active": "2026-02"
     },
     {
      "login": "sp98",
      "tier": "approver",
      "commits": 0,
      "reviews": 3,
+     "issues": 0,
      "score": 6.0,
-     "last_active": "2026-06"
+     "last_active": "2026-08"
     },
     {
-     "login": "nixpanic",
+     "login": "iPraveenParihar",
      "tier": "contributor",
      "commits": 0,
-     "reviews": 5,
-     "score": 5.0,
-     "last_active": "2026-03"
+     "reviews": 2,
+     "issues": 1,
+     "score": 4.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "dimm0",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "GanghyeonSeo",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "rubentsirunyan",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.8,
+     "last_active": "2025-09"
+    },
+    {
+     "login": "alienascension",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17960,
-     "title": "external: import script should create mon secret before rns"
+     "number": 18323,
+     "title": "external: revert, if admin creds is provided stop creating csi secret (backport #18317)"
     },
     {
-     "number": 17979,
-     "title": "external: resolve node secret names via annotations for external cluster"
+     "number": 18317,
+     "title": "external: revert, if admin creds is provided stop creating csi secret"
     },
     {
-     "number": 17978,
-     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+     "number": 18196,
+     "title": "Rook release 1.19 cephx key type"
     },
     {
-     "number": 17969,
-     "title": "external: add the controller publish secret for the ec sc"
+     "number": 18191,
+     "title": "Rook release 1.20 cephx key type"
     },
     {
-     "number": 17896,
-     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+     "number": 18189,
+     "title": "Add support for CephX key types"
     }
    ]
   },
@@ -450,88 +723,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 4,
-     "reviews": 84,
-     "score": 67.6,
-     "last_active": "2026-07"
+     "commits": 7,
+     "reviews": 105,
+     "issues": 0,
+     "score": 116.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 2,
-     "reviews": 36,
-     "score": 26.8,
-     "last_active": "2026-04"
-    },
-    {
-     "login": "jhoblitt",
-     "tier": "approver",
      "commits": 4,
-     "reviews": 3,
-     "score": 9.2,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "obnoxxx",
-     "tier": "contributor",
-     "commits": 2,
-     "reviews": 5,
-     "score": 8.9,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 2,
-     "reviews": 7,
-     "score": 8.4,
-     "last_active": "2026-07"
+     "reviews": 46,
+     "issues": 0,
+     "score": 46.5,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
-     "reviews": 12,
-     "score": 6.4,
-     "last_active": "2026-07"
+     "reviews": 14,
+     "issues": 0,
+     "score": 7.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 13,
+     "issues": 0,
+     "score": 19.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 6,
+     "reviews": 6,
+     "issues": 0,
+     "score": 17.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 8,
+     "issues": 0,
+     "score": 15.0,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 0,
-     "reviews": 7,
-     "score": 3.6,
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
      "last_active": "2026-07"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 3,
+     "issues": 0,
+     "score": 4.2,
+     "last_active": "2026-08"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
-     "commits": 3,
+     "commits": 2,
      "reviews": 2,
-     "score": 2.8,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "blueprismo",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Mahesh-Gunda-Maersk",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "patrostkowski",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2025-07"
+    },
+    {
+     "login": "Sunnatillo",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-06"
     }
    ],
    "recent_items": [
     {
-     "number": 17963,
-     "title": "mgr: use dashboard port 1024 as requested"
+     "number": 17985,
+     "title": "mgr: allow dashboard TLS certificate from a secret"
     },
     {
-     "number": 17849,
-     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17834,
-     "title": "docs: fix function comments to match their declaration names"
+     "number": 18277,
+     "title": "mgr: Unset the rook mgr module when disabled (backport #18276)"
     },
     {
-     "number": 17821,
-     "title": "core: use slices.Contains to simplify code"
+     "number": 18278,
+     "title": "mgr: Unset the rook mgr module when disabled (backport #18276)"
     },
     {
-     "number": 17694,
-     "title": "mgr: remove unused IsModuleInSpec function (backport #17669)"
+     "number": 18276,
+     "title": "mgr: Unset the rook mgr module when disabled"
     }
    ]
   },
@@ -551,88 +895,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 11,
-     "reviews": 168,
-     "score": 181.0,
-     "last_active": "2026-07"
+     "commits": 10,
+     "reviews": 207,
+     "issues": 0,
+     "score": 243.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 4,
-     "reviews": 65,
-     "score": 62.2,
-     "last_active": "2026-04"
+     "commits": 7,
+     "reviews": 80,
+     "issues": 0,
+     "score": 63.0,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 3,
-     "reviews": 33,
-     "score": 44.8,
-     "last_active": "2026-07"
+     "commits": 4,
+     "reviews": 37,
+     "issues": 0,
+     "score": 49.8,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
      "commits": 5,
-     "reviews": 29,
-     "score": 37.0,
-     "last_active": "2026-06"
+     "reviews": 32,
+     "issues": 0,
+     "score": 48.2,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 7,
+     "commits": 5,
      "reviews": 12,
-     "score": 17.9,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 14.0,
+     "last_active": "2026-09"
     },
     {
-     "login": "jhoblitt",
-     "tier": "approver",
-     "commits": 5,
-     "reviews": 4,
-     "score": 11.5,
-     "last_active": "2026-07"
+     "login": "haslersn",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 13,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 1,
      "reviews": 12,
-     "score": 8.9,
+     "issues": 0,
+     "score": 9.8,
      "last_active": "2026-07"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
      "commits": 2,
-     "reviews": 5,
-     "score": 8.9,
-     "last_active": "2026-07"
+     "reviews": 8,
+     "issues": 0,
+     "score": 15.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 7,
+     "reviews": 4,
+     "issues": 0,
+     "score": 13.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 2,
+     "issues": 0,
+     "score": 2.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "blueprismo",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Mahesh-Gunda-Maersk",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "patrostkowski",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2025-07"
     }
    ],
    "recent_items": [
     {
-     "number": 18016,
-     "title": "mon: fix data race on failedMonSchedule during scheduling (backport #17968)"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17968,
-     "title": "mon: fix data race on failedMonSchedule during scheduling"
+     "number": 18297,
+     "title": "mon: skip election strategy change when stretch mode already enabled (backport #18289)"
     },
     {
-     "number": 17921,
-     "title": "mon: update how hostname was set for drbd (backport #17689)"
+     "number": 18298,
+     "title": "mon: skip election strategy change when stretch mode already enabled (backport #18289)"
     },
     {
-     "number": 17689,
-     "title": "mon: update how hostname was set for drbd"
+     "number": 18289,
+     "title": "mon: skip election strategy change when stretch mode already enabled"
     },
     {
-     "number": 17849,
-     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+     "number": 18270,
+     "title": "operator: explicitly set root user for chown initContainer (backport #18018)"
     }
    ]
   },
@@ -652,87 +1067,158 @@
      "login": "travisn",
      "tier": "approver",
      "commits": 4,
-     "reviews": 63,
-     "score": 54.5,
-     "last_active": "2026-07"
+     "reviews": 77,
+     "issues": 0,
+     "score": 65.0,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 4,
-     "reviews": 47,
-     "score": 47.0,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 59,
+     "issues": 1,
+     "score": 55.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 15,
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
      "commits": 4,
      "reviews": 9,
-     "score": 16.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "parth-gr",
-     "tier": "approver",
-     "commits": 2,
-     "reviews": 13,
-     "score": 10.1,
-     "last_active": "2026-07"
+     "issues": 1,
+     "score": 11.0,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 4,
+     "commits": 5,
      "reviews": 6,
-     "score": 6.9,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 7.5,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
      "commits": 0,
      "reviews": 6,
-     "score": 5.0,
-     "last_active": "2026-06"
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-07"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
      "commits": 0,
      "reviews": 2,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "Mahesh-Gunda-Maersk",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "patrostkowski",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2025-07"
+    },
+    {
+     "login": "raaizik",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
      "score": 2.0,
      "last_active": "2026-07"
     },
     {
-     "login": "Madhu-1",
-     "tier": "reviewer",
-     "commits": 0,
-     "reviews": 3,
-     "score": 1.6,
-     "last_active": "2026-07"
+     "login": "cuiweixie",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-08"
+    },
+    {
+     "login": "daixihegu",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-06"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17821,
-     "title": "core: use slices.Contains to simplify code"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     },
     {
-     "number": 17598,
-     "title": "core: reference all containers in a spec by name instead of index (backport #17561)"
+     "number": 18196,
+     "title": "Rook release 1.19 cephx key type"
     },
     {
-     "number": 17561,
-     "title": "core: reference all containers in a spec by name instead of index"
+     "number": 18191,
+     "title": "Rook release 1.20 cephx key type"
     },
     {
-     "number": 17055,
-     "title": "build(deps): bump sigs.k8s.io/controller-runtime from 0.22.4 to 0.23.0 in the k8s-dependencies group (backport #16963)"
+     "number": 18189,
+     "title": "Add support for CephX key types"
     },
     {
-     "number": 17058,
-     "title": "test: fix unit test code to remove extra comma"
+     "number": 18059,
+     "title": "nfs: support custom NFS server port (backport #18029)"
     }
    ]
   },
@@ -754,88 +1240,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 9,
-     "reviews": 258,
-     "score": 268.6,
-     "last_active": "2026-07"
+     "commits": 8,
+     "reviews": 286,
+     "issues": 0,
+     "score": 308.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 7,
-     "reviews": 90,
-     "score": 88.2,
-     "last_active": "2026-04"
+     "commits": 9,
+     "reviews": 84,
+     "issues": 0,
+     "score": 87.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 17,
+     "reviews": 48,
+     "issues": 0,
+     "score": 67.2,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
      "commits": 3,
-     "reviews": 43,
-     "score": 51.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 10,
-     "reviews": 40,
-     "score": 46.6,
-     "last_active": "2026-06"
+     "reviews": 44,
+     "issues": 0,
+     "score": 48.5,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 8,
-     "reviews": 30,
-     "score": 30.8,
-     "last_active": "2026-07"
+     "commits": 7,
+     "reviews": 38,
+     "issues": 0,
+     "score": 30.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 20,
+     "reviews": 19,
+     "issues": 0,
+     "score": 50.5,
+     "last_active": "2026-09"
     },
     {
      "login": "satoru-takeuchi",
      "tier": "approver",
      "commits": 2,
-     "reviews": 23,
-     "score": 27.0,
+     "reviews": 25,
+     "issues": 0,
+     "score": 29.0,
      "last_active": "2026-02"
-    },
-    {
-     "login": "jhoblitt",
-     "tier": "approver",
-     "commits": 9,
-     "reviews": 12,
-     "score": 26.6,
-     "last_active": "2026-07"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 3,
-     "reviews": 11,
-     "score": 12.4,
+     "commits": 2,
+     "reviews": 13,
+     "issues": 0,
+     "score": 17.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 16,
+     "reviews": 3,
+     "issues": 0,
+     "score": 17.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 8,
+     "issues": 0,
+     "score": 4.5,
      "last_active": "2026-07"
+    },
+    {
+     "login": "ushitora-anqou",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "prazumovsky",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "Rakshith-R",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.8,
+     "last_active": "2025-05"
     }
    ],
    "recent_items": [
     {
-     "number": 18013,
-     "title": "osd: skip upgrades for OSDs pending migration when the last migration is incomplete"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 18011,
-     "title": "osd: archive crash on OSD removal"
+     "number": 18270,
+     "title": "operator: explicitly set root user for chown initContainer (backport #18018)"
     },
     {
-     "number": 17861,
-     "title": "osd-replacement-1: rename internal OSD migration field to migrateOSD"
+     "number": 18266,
+     "title": "osd: correct comments in the osd topology package"
     },
     {
-     "number": 17898,
-     "title": "core: replace Split in loops with more efficient SplitSeq"
+     "number": 18018,
+     "title": "operator: explicitly set root user for chown initContainer"
     },
     {
-     "number": 17876,
-     "title": "docs: fix typos and grammar in code comments (backport #17838)"
+     "number": 18187,
+     "title": "osd: support replacement for mixed pvc and host-based OSDs cluster"
     }
    ]
   },
@@ -857,88 +1414,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 23,
-     "reviews": 455,
-     "score": 521.0,
-     "last_active": "2026-07"
+     "commits": 24,
+     "reviews": 492,
+     "issues": 3,
+     "score": 599.8,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 40,
+     "commits": 39,
      "reviews": 276,
-     "score": 352.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 336.2,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 7,
-     "reviews": 188,
-     "score": 182.8,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 252,
+     "issues": 1,
+     "score": 246.5,
+     "last_active": "2026-08"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 46,
-     "reviews": 28,
-     "score": 81.8,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "obnoxxx",
-     "tier": "contributor",
-     "commits": 39,
-     "reviews": 32,
-     "score": 63.2,
-     "last_active": "2026-07"
+     "commits": 66,
+     "reviews": 41,
+     "issues": 1,
+     "score": 127.8,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 8,
-     "reviews": 39,
-     "score": 36.9,
-     "last_active": "2026-07"
+     "commits": 9,
+     "reviews": 46,
+     "issues": 0,
+     "score": 41.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 37,
+     "reviews": 29,
+     "issues": 3,
+     "score": 68.2,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 2,
-     "reviews": 26,
-     "score": 24.5,
+     "commits": 0,
+     "reviews": 32,
+     "issues": 0,
+     "score": 21.5,
      "last_active": "2026-07"
     },
     {
      "login": "sp98",
      "tier": "approver",
+     "commits": 3,
+     "reviews": 17,
+     "issues": 0,
+     "score": 12.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 4,
+     "reviews": 9,
+     "issues": 0,
+     "score": 9.2,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 10,
+     "reviews": 4,
+     "issues": 1,
+     "score": 12.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 2,
+     "issues": 0,
+     "score": 3.2,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
      "commits": 0,
-     "reviews": 27,
-     "score": 15.0,
-     "last_active": "2026-06"
+     "reviews": 2,
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Rakshith-R",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "taraasrita10",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 0,
+     "issues": 1,
+     "score": 4.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-07"
     }
    ],
    "recent_items": [
     {
-     "number": 18035,
-     "title": "Ci canary arm64 add v19 v20"
+     "number": 18357,
+     "title": "ci: upgrade the misspell action (backport #18339)"
     },
     {
-     "number": 17947,
-     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+     "number": 18333,
+     "title": "ci: update min k8s version to v1.32"
     },
     {
-     "number": 17974,
-     "title": "ci: Simplify canary-arm64 image selection to a matrix variable "
+     "number": 18344,
+     "title": "build(deps): bump helm/kind-action from 1.14.0 to 1.15.0"
     },
     {
-     "number": 18014,
-     "title": "ci: adding ceph v21 to the daily ci test image list"
+     "number": 18343,
+     "title": "build(deps): bump actions/setup-go from 6.4.0 to 7.0.0"
     },
     {
-     "number": 17999,
-     "title": "build(deps): bump github/codeql-action/upload-sarif from 4.37.0 to 4.37.1"
+     "number": 18342,
+     "title": "build(deps): bump docker/setup-qemu-action from 4.2.0 to 4.3.0"
     }
    ]
   },
@@ -964,88 +1592,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 13,
-     "reviews": 567,
-     "score": 546.5,
-     "last_active": "2026-07"
+     "commits": 36,
+     "reviews": 645,
+     "issues": 0,
+     "score": 668.8,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 5,
-     "reviews": 301,
-     "score": 283.1,
-     "last_active": "2026-04"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 8,
-     "reviews": 89,
-     "score": 93.0,
-     "last_active": "2026-07"
+     "commits": 14,
+     "reviews": 405,
+     "issues": 0,
+     "score": 364.0,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 11,
-     "reviews": 93,
-     "score": 89.6,
+     "commits": 19,
+     "reviews": 116,
+     "issues": 0,
+     "score": 104.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 18,
+     "reviews": 94,
+     "issues": 0,
+     "score": 102.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 21,
+     "reviews": 74,
+     "issues": 0,
+     "score": 98.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 12,
+     "reviews": 69,
+     "issues": 0,
+     "score": 46.2,
      "last_active": "2026-07"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 11,
-     "reviews": 39,
-     "score": 68.0,
-     "last_active": "2026-07"
+     "commits": 28,
+     "reviews": 48,
+     "issues": 0,
+     "score": 96.8,
+     "last_active": "2026-09"
     },
     {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 7,
-     "reviews": 60,
-     "score": 62.2,
-     "last_active": "2026-06"
-    },
-    {
-     "login": "Madhu-1",
+     "login": "arttor",
      "tier": "reviewer",
-     "commits": 4,
-     "reviews": 64,
-     "score": 50.2,
-     "last_active": "2026-07"
+     "commits": 19,
+     "reviews": 10,
+     "issues": 0,
+     "score": 21.5,
+     "last_active": "2026-08"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 3,
-     "reviews": 15,
-     "score": 14.4,
-     "last_active": "2026-07"
+     "commits": 6,
+     "reviews": 16,
+     "issues": 0,
+     "score": 20.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 10,
+     "issues": 0,
+     "score": 9.5,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 9,
+     "issues": 0,
+     "score": 9.0,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "idryomov",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 8,
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 15,
+     "reviews": 0,
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ushitora-anqou",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 7,
+     "issues": 0,
+     "score": 4.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17785,
-     "title": "fix(ceph): deduplicate external MGR endpoints in EndpointSlice"
+     "number": 18326,
+     "title": "core: remove crash collector and exporter daemons for deleted nodes (backport #18313)"
     },
     {
-     "number": 17980,
-     "title": "core: parse subvolumegroup bytes_quota reported as \"infinite\""
+     "number": 18313,
+     "title": "core: remove crash collector and exporter daemons for deleted nodes"
     },
     {
-     "number": 17959,
-     "title": "test: assert preferred anti-affinity count in testPodSpecPlacement"
+     "number": 17985,
+     "title": "mgr: allow dashboard TLS certificate from a secret"
     },
     {
-     "number": 17958,
-     "title": "test: assert retained capacity LastUpdated in TestCephStatus"
+     "number": 18299,
+     "title": "core: Mute health warnings in the cluster reconcile (backport #18295)"
     },
     {
-     "number": 17956,
-     "title": "test: assert cephfs CSI directory removal in cleanCSIDirs test"
+     "number": 17579,
+     "title": "core: run go fix"
     }
    ]
   },
@@ -1064,90 +1763,161 @@
    ],
    "maintainers": [
     {
-     "login": "travisn",
-     "tier": "approver",
-     "commits": 13,
-     "reviews": 387,
-     "score": 381.4,
-     "last_active": "2026-07"
-    },
-    {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 7,
-     "reviews": 360,
-     "score": 366.2,
-     "last_active": "2026-04"
+     "commits": 8,
+     "reviews": 446,
+     "issues": 0,
+     "score": 406.5,
+     "last_active": "2026-08"
     },
     {
-     "login": "subhamkrai",
+     "login": "travisn",
      "tier": "approver",
-     "commits": 21,
-     "reviews": 73,
-     "score": 103.6,
-     "last_active": "2026-07"
+     "commits": 9,
+     "reviews": 374,
+     "issues": 0,
+     "score": 361.8,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 10,
-     "reviews": 57,
-     "score": 60.4,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 15,
-     "reviews": 32,
-     "score": 42.8,
-     "last_active": "2026-06"
+     "commits": 9,
+     "reviews": 68,
+     "issues": 0,
+     "score": 71.5,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 5,
-     "reviews": 50,
-     "score": 36.8,
+     "commits": 4,
+     "reviews": 45,
+     "issues": 0,
+     "score": 25.5,
      "last_active": "2026-07"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 12,
+     "reviews": 41,
+     "issues": 0,
+     "score": 57.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 16,
+     "reviews": 38,
+     "issues": 0,
+     "score": 54.5,
+     "last_active": "2026-08"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 15,
-     "reviews": 19,
-     "score": 34.2,
-     "last_active": "2026-07"
+     "commits": 18,
+     "reviews": 23,
+     "issues": 0,
+     "score": 41.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 9,
+     "issues": 0,
+     "score": 9.0,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "idryomov",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 8,
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 12,
+     "reviews": 0,
+     "issues": 0,
+     "score": 5.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "rewantsoni",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 3.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 5,
+     "issues": 0,
+     "score": 7.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 5.5,
+     "last_active": "2026-09"
     },
     {
      "login": "OdedViner",
      "tier": "contributor",
-     "commits": 13,
+     "commits": 10,
      "reviews": 0,
-     "score": 9.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-08"
     }
    ],
    "recent_items": [
     {
-     "number": 18026,
-     "title": "core: Update the go text module (backport #18024)"
+     "number": 17985,
+     "title": "mgr: allow dashboard TLS certificate from a secret"
     },
     {
-     "number": 18027,
-     "title": "core: Update the go text module (backport #18024)"
+     "number": 18308,
+     "title": "build(deps): bump the k8s-dependencies group with 5 updates"
     },
     {
-     "number": 18024,
-     "title": "core: Update the go text module"
+     "number": 17952,
+     "title": "core: fix grammar and spelling in API comments"
     },
     {
-     "number": 17947,
-     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 18005,
-     "title": "docs: fix mirror Placement comments naming rgw pods (backport #17961)"
+     "number": 18234,
+     "title": "pool: report the built-in pool name in its validation error"
     }
    ]
   },
@@ -1169,88 +1939,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 15,
-     "reviews": 237,
-     "score": 234.9,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 18,
-     "reviews": 74,
-     "score": 77.8,
-     "last_active": "2026-07"
+     "commits": 14,
+     "reviews": 245,
+     "issues": 1,
+     "score": 235.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 4,
-     "reviews": 84,
-     "score": 69.1,
-     "last_active": "2026-04"
+     "commits": 6,
+     "reviews": 120,
+     "issues": 0,
+     "score": 79.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 11,
+     "reviews": 69,
+     "issues": 0,
+     "score": 57.8,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 19,
-     "reviews": 65,
-     "score": 57.5,
+     "commits": 15,
+     "reviews": 61,
+     "issues": 0,
+     "score": 50.5,
      "last_active": "2026-07"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 5,
-     "reviews": 24,
-     "score": 24.5,
-     "last_active": "2026-07"
+     "reviews": 29,
+     "issues": 0,
+     "score": 21.2,
+     "last_active": "2026-09"
     },
     {
-     "login": "jhoblitt",
-     "tier": "approver",
-     "commits": 3,
-     "reviews": 3,
-     "score": 7.5,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "iPraveenParihar",
+     "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 10,
-     "reviews": 0,
-     "score": 7.2,
-     "last_active": "2026-05"
+     "commits": 2,
+     "reviews": 6,
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-09"
     },
     {
      "login": "Rakshith-R",
      "tier": "contributor",
-     "commits": 0,
+     "commits": 1,
      "reviews": 6,
-     "score": 4.0,
+     "issues": 0,
+     "score": 4.2,
      "last_active": "2025-04"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 3,
+     "issues": 0,
+     "score": 9.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 8,
+     "reviews": 1,
+     "issues": 0,
+     "score": 5.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "MaienM",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 3.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 5,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.2,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "anxkhn",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-07"
     }
    ],
    "recent_items": [
     {
-     "number": 18007,
-     "title": "csi: do not log peer bootstrap token secret (backport #17965)"
+     "number": 18264,
+     "title": "Update Rook 1.19 to use CSI 3.16.3 for AES256K compatibility (backport #18261)"
     },
     {
-     "number": 17957,
-     "title": "csi: fix compareJSON to compare actual output"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17965,
-     "title": "csi: do not log peer bootstrap token secret"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     },
     {
-     "number": 17979,
-     "title": "external: resolve node secret names via annotations for external cluster"
+     "number": 18196,
+     "title": "Rook release 1.19 cephx key type"
     },
     {
-     "number": 17896,
-     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+     "number": 18191,
+     "title": "Rook release 1.20 cephx key type"
     }
    ]
   },
@@ -1269,88 +2110,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 111,
-     "score": 121.6,
-     "last_active": "2026-07"
+     "commits": 5,
+     "reviews": 156,
+     "issues": 0,
+     "score": 199.0,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 83,
-     "score": 119.0,
-     "last_active": "2026-04"
+     "commits": 4,
+     "reviews": 93,
+     "issues": 0,
+     "score": 155.2,
+     "last_active": "2026-08"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 46,
-     "score": 83.6,
-     "last_active": "2026-07"
+     "commits": 1,
+     "reviews": 60,
+     "issues": 0,
+     "score": 105.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 8,
+     "reviews": 25,
+     "issues": 0,
+     "score": 34.8,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 18,
-     "score": 23.6,
-     "last_active": "2026-07"
+     "commits": 4,
+     "reviews": 22,
+     "issues": 0,
+     "score": 26.8,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 0,
-     "reviews": 11,
-     "score": 15.6,
+     "reviews": 16,
+     "issues": 0,
+     "score": 10.5,
      "last_active": "2026-07"
-    },
-    {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 13,
-     "score": 11.0,
-     "last_active": "2026-06"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 9,
-     "score": 6.0,
-     "last_active": "2026-07"
+     "commits": 2,
+     "reviews": 10,
+     "issues": 0,
+     "score": 7.0,
+     "last_active": "2026-09"
     },
     {
-     "login": "Lykos153",
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 5,
+     "reviews": 3,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ushitora-anqou",
      "tier": "contributor",
      "commits": 0,
-     "reviews": 10,
-     "score": 5.0,
-     "last_active": "2024-12"
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "senolcolak",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 4,
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "leelavg",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 2,
+     "issues": 0,
+     "score": 3.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17931,
-     "title": "docs: fix 'an another' -> 'another' in ceph-nfs-ganesha design doc"
+     "number": 18315,
+     "title": "docs: add design for rook-ceph-metrics tls support"
     },
     {
-     "number": 17927,
-     "title": "CI: Check markdown links (backport #17328)"
+     "number": 18196,
+     "title": "Rook release 1.19 cephx key type"
     },
     {
-     "number": 17328,
-     "title": "CI: Check markdown links"
+     "number": 18191,
+     "title": "Rook release 1.20 cephx key type"
     },
     {
-     "number": 17850,
-     "title": "docs: fix typos and grammar in documentation and design docs (backport #17837)"
+     "number": 18189,
+     "title": "Add support for CephX key types"
     },
     {
-     "number": 17837,
-     "title": "docs: fix typos and grammar in documentation and design docs"
+     "number": 18096,
+     "title": "osd: scale back osd deployment when replacement is canceled"
     }
    ]
   },
@@ -1370,41 +2282,37 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 35,
-     "score": 26.0,
-     "last_active": "2026-07"
+     "commits": 2,
+     "reviews": 44,
+     "issues": 0,
+     "score": 42.0,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
      "commits": 0,
-     "reviews": 10,
-     "score": 6.4,
-     "last_active": "2026-04"
+     "reviews": 8,
+     "issues": 0,
+     "score": 7.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 5,
+     "issues": 0,
+     "score": 4.2,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 0,
-     "reviews": 5,
-     "score": 2.4,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "jhoblitt",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 1,
-     "score": 2.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 4,
-     "score": 2.0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 1.5,
      "last_active": "2026-07"
     },
     {
@@ -1412,27 +2320,83 @@
      "tier": "approver",
      "commits": 0,
      "reviews": 3,
-     "score": 1.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 1,
+     "issues": 0,
+     "score": 4.2,
+     "last_active": "2026-09"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
-     "commits": 0,
+     "commits": 1,
      "reviews": 1,
-     "score": 0.4,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "daixihegu",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-06"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 0,
-     "reviews": 1,
-     "score": 0.4,
-     "last_active": "2026-07"
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "prazumovsky",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-04"
     }
    ],
    "recent_items": [
+    {
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
+    },
+    {
+     "number": 17953,
+     "title": "Osd replacement impl"
+    },
     {
      "number": 17821,
      "title": "core: use slices.Contains to simplify code"
@@ -1444,14 +2408,6 @@
     {
      "number": 17561,
      "title": "core: reference all containers in a spec by name instead of index"
-    },
-    {
-     "number": 16276,
-     "title": "operator: delete ceph-volume logs to reduce discover daemon log size"
-    },
-    {
-     "number": 16107,
-     "title": "operator: add missing udev env to discover pod (backport #16105)"
     }
    ]
   },
@@ -1470,88 +2426,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 32,
-     "reviews": 871,
-     "score": 963.0,
-     "last_active": "2026-07"
+     "commits": 26,
+     "reviews": 730,
+     "issues": 7,
+     "score": 842.0,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 20,
-     "reviews": 491,
-     "score": 481.8,
-     "last_active": "2026-04"
+     "commits": 21,
+     "reviews": 359,
+     "issues": 1,
+     "score": 351.5,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 32,
-     "reviews": 128,
-     "score": 163.4,
-     "last_active": "2026-07"
+     "commits": 23,
+     "reviews": 105,
+     "issues": 3,
+     "score": 136.2,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 19,
-     "reviews": 100,
-     "score": 93.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "parth-gr",
-     "tier": "approver",
-     "commits": 19,
-     "reviews": 98,
-     "score": 93.0,
+     "commits": 11,
+     "reviews": 70,
+     "issues": 2,
+     "score": 53.5,
      "last_active": "2026-07"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 21,
-     "reviews": 48,
-     "score": 81.5,
-     "last_active": "2026-07"
+     "commits": 25,
+     "reviews": 60,
+     "issues": 0,
+     "score": 107.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 12,
+     "reviews": 52,
+     "issues": 1,
+     "score": 47.8,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
-     "commits": 12,
-     "reviews": 46,
-     "score": 55.5,
-     "last_active": "2026-06"
+     "commits": 8,
+     "reviews": 35,
+     "issues": 0,
+     "score": 55.0,
+     "last_active": "2026-08"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 19,
-     "reviews": 15,
-     "score": 24.2,
+     "commits": 17,
+     "reviews": 11,
+     "issues": 2,
+     "score": 16.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 5,
+     "reviews": 13,
+     "issues": 0,
+     "score": 13.8,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 12,
+     "reviews": 8,
+     "issues": 0,
+     "score": 13.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "haslersn",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 13,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 10,
+     "reviews": 4,
+     "issues": 0,
+     "score": 12.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 9,
+     "reviews": 4,
+     "issues": 0,
+     "score": 12.2,
      "last_active": "2026-07"
+    },
+    {
+     "login": "Rakshith-R",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 6,
+     "issues": 0,
+     "score": 5.8,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 18002,
-     "title": "docs: update node loss handling instructions (backport #17790)"
+     "number": 18333,
+     "title": "ci: update min k8s version to v1.32"
     },
     {
-     "number": 17947,
-     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+     "number": 18332,
+     "title": "docs: correct ceph version"
     },
     {
-     "number": 18005,
-     "title": "docs: fix mirror Placement comments naming rgw pods (backport #17961)"
+     "number": 18330,
+     "title": "ci: use latest k8s version v1.37 in the CI (backport #18327)"
     },
     {
-     "number": 17961,
-     "title": "docs: fix mirror Placement comments naming rgw pods"
+     "number": 18327,
+     "title": "ci: use latest k8s version v1.37 in the CI"
     },
     {
-     "number": 17790,
-     "title": "docs: update node loss handling instructions"
+     "number": 18321,
+     "title": "build: set release version to v1.20.7"
     }
    ]
   },
@@ -1574,87 +2601,158 @@
      "login": "travisn",
      "tier": "approver",
      "commits": 9,
-     "reviews": 162,
-     "score": 176.4,
-     "last_active": "2026-07"
+     "reviews": 199,
+     "issues": 1,
+     "score": 221.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 3,
-     "reviews": 66,
-     "score": 58.4,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 68,
+     "issues": 1,
+     "score": 54.2,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 10,
+     "commits": 9,
      "reviews": 34,
-     "score": 40.4,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 31.8,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 3,
-     "reviews": 32,
-     "score": 26.8,
-     "last_active": "2026-07"
+     "reviews": 35,
+     "issues": 0,
+     "score": 25.2,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 2,
-     "reviews": 21,
-     "score": 17.0,
+     "reviews": 23,
+     "issues": 0,
+     "score": 20.0,
      "last_active": "2026-07"
-    },
-    {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 5,
-     "reviews": 7,
-     "score": 6.0,
-     "last_active": "2026-06"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 3,
+     "commits": 4,
+     "reviews": 9,
+     "issues": 0,
+     "score": 14.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 4,
      "reviews": 5,
-     "score": 5.5,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 4.0,
+     "last_active": "2026-08"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
      "commits": 2,
      "reviews": 2,
+     "issues": 0,
      "score": 2.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "rewantsoni",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "blueprismo",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
      "last_active": "2026-07"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17896,
-     "title": "external: resolve provisioner secret names via annotations for extern\u2026"
+     "number": 18270,
+     "title": "operator: explicitly set root user for chown initContainer (backport #18018)"
     },
     {
-     "number": 17935,
-     "title": "file: reveal swallowed errors on cephfs reconciliation (backport #17920)"
+     "number": 18018,
+     "title": "operator: explicitly set root user for chown initContainer"
     },
     {
-     "number": 17934,
-     "title": "file: reveal swallowed errors on cephfs reconciliation (backport #17920)"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     },
     {
-     "number": 17920,
-     "title": "file: reveal swallowed errors on cephfs reconciliation"
+     "number": 18196,
+     "title": "Rook release 1.19 cephx key type"
     },
     {
-     "number": 17849,
-     "title": "docs: fix function comments to match their declaration names (backport #17834)"
+     "number": 18191,
+     "title": "Rook release 1.20 cephx key type"
     }
    ]
   },
@@ -1674,88 +2772,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 22,
-     "reviews": 666,
-     "score": 690.4,
-     "last_active": "2026-07"
+     "commits": 19,
+     "reviews": 424,
+     "issues": 7,
+     "score": 460.8,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 7,
-     "reviews": 414,
-     "score": 411.0,
-     "last_active": "2026-04"
+     "commits": 5,
+     "reviews": 159,
+     "issues": 1,
+     "score": 159.0,
+     "last_active": "2026-08"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 29,
-     "reviews": 93,
-     "score": 123.2,
-     "last_active": "2026-07"
+     "commits": 14,
+     "reviews": 68,
+     "issues": 1,
+     "score": 79.8,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
-     "commits": 19,
-     "reviews": 79,
-     "score": 67.2,
+     "commits": 11,
+     "reviews": 44,
+     "issues": 1,
+     "score": 37.8,
      "last_active": "2026-07"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 14,
-     "reviews": 69,
-     "score": 62.8,
-     "last_active": "2026-07"
+     "commits": 5,
+     "reviews": 40,
+     "issues": 2,
+     "score": 26.8,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 19,
-     "reviews": 34,
-     "score": 62.0,
-     "last_active": "2026-07"
+     "commits": 10,
+     "reviews": 31,
+     "issues": 0,
+     "score": 56.5,
+     "last_active": "2026-09"
     },
     {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 13,
-     "reviews": 28,
-     "score": 36.4,
-     "last_active": "2026-06"
+     "login": "haslersn",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 13,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "nixpanic",
+     "tier": "contributor",
+     "commits": 5,
+     "reviews": 9,
+     "issues": 0,
+     "score": 10.2,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "consideRatio",
+     "tier": "contributor",
+     "commits": 8,
+     "reviews": 5,
+     "issues": 0,
+     "score": 9.0,
+     "last_active": "2025-09"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 4,
-     "reviews": 10,
-     "score": 12.2,
+     "commits": 2,
+     "reviews": 8,
+     "issues": 2,
+     "score": 9.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 7,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 6,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 2,
+     "reviews": 5,
+     "issues": 0,
+     "score": 7.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ushitora-anqou",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 9,
+     "reviews": 0,
+     "issues": 0,
+     "score": 4.2,
      "last_active": "2026-07"
     }
    ],
    "recent_items": [
     {
-     "number": 17948,
-     "title": "monitoring: deduplicate pool growth prediction series (backport #17919)"
+     "number": 18321,
+     "title": "build: set release version to v1.20.7"
     },
     {
-     "number": 17947,
-     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+     "number": 18320,
+     "title": "build: set release version to v1.19.11"
     },
     {
-     "number": 17940,
-     "title": "object: option to update rgw caps with account"
+     "number": 18264,
+     "title": "Update Rook 1.19 to use CSI 3.16.3 for AES256K compatibility (backport #18261)"
     },
     {
-     "number": 17949,
-     "title": "helm: add multisite CR support to rook-ceph-cluster chart (backport #17917)"
+     "number": 17985,
+     "title": "mgr: allow dashboard TLS certificate from a secret"
     },
     {
-     "number": 17917,
-     "title": "helm: add multisite CR support to rook-ceph-cluster chart"
+     "number": 18252,
+     "title": "build: generate the toolbox script manifests from toolbox.sh (backport #18237)"
     }
    ]
   },
@@ -1777,88 +2946,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 1,
-     "reviews": 151,
-     "score": 182.2,
-     "last_active": "2026-07"
+     "commits": 4,
+     "reviews": 190,
+     "issues": 1,
+     "score": 240.2,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
      "commits": 0,
-     "reviews": 76,
-     "score": 67.6,
-     "last_active": "2026-04"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 1,
-     "reviews": 17,
-     "score": 26.0,
-     "last_active": "2026-07"
+     "reviews": 90,
+     "issues": 0,
+     "score": 93.0,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 21,
-     "score": 22.4,
-     "last_active": "2026-07"
+     "commits": 1,
+     "reviews": 23,
+     "issues": 1,
+     "score": 25.5,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 11,
-     "score": 19.6,
-     "last_active": "2026-07"
+     "commits": 5,
+     "reviews": 19,
+     "issues": 0,
+     "score": 39.8,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 18,
+     "issues": 0,
+     "score": 22.5,
+     "last_active": "2026-09"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 1,
-     "reviews": 6,
-     "score": 9.2,
-     "last_active": "2026-07"
+     "commits": 3,
+     "reviews": 9,
+     "issues": 0,
+     "score": 16.5,
+     "last_active": "2026-09"
     },
     {
-     "login": "consideRatio",
-     "tier": "contributor",
-     "commits": 0,
-     "reviews": 3,
-     "score": 3.0,
-     "last_active": "2025-09"
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 10,
+     "issues": 0,
+     "score": 14.5,
+     "last_active": "2026-08"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 0,
-     "reviews": 3,
-     "score": 2.0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 3.0,
      "last_active": "2026-07"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 2,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "consideRatio",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 3,
+     "issues": 0,
+     "score": 3.5,
+     "last_active": "2025-09"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 0,
+     "issues": 1,
+     "score": 1.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "adilGhaffarDev",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.8,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "blueprismo",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "chirs042-spec",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "dimm0",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17948,
-     "title": "monitoring: deduplicate pool growth prediction series (backport #17919)"
+     "number": 18326,
+     "title": "core: remove crash collector and exporter daemons for deleted nodes (backport #18313)"
     },
     {
-     "number": 17919,
-     "title": "monitoring: deduplicate pool growth prediction series"
+     "number": 18313,
+     "title": "core: remove crash collector and exporter daemons for deleted nodes"
     },
     {
-     "number": 17927,
-     "title": "CI: Check markdown links (backport #17328)"
+     "number": 18321,
+     "title": "build: set release version to v1.20.7"
     },
     {
-     "number": 17328,
-     "title": "CI: Check markdown links"
+     "number": 18320,
+     "title": "build: set release version to v1.19.11"
     },
     {
-     "number": 17916,
-     "title": "build: set the release version to v1.20.2"
+     "number": 17579,
+     "title": "core: run go fix"
     }
    ]
   },
@@ -1872,56 +3112,71 @@
     "network"
    ],
    "labels": [
-    "networking",
-    "multus"
+    "multus",
+    "networking"
    ],
    "maintainers": [
     {
-     "login": "travisn",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 48,
-     "score": 51.0,
-     "last_active": "2026-07"
-    },
-    {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 45,
-     "score": 47.6,
-     "last_active": "2026-04"
+     "commits": 3,
+     "reviews": 53,
+     "issues": 0,
+     "score": 68.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 52,
+     "issues": 0,
+     "score": 73.5,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 38,
-     "score": 45.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "obnoxxx",
-     "tier": "contributor",
-     "commits": 0,
-     "reviews": 9,
-     "score": 13.6,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "jhoblitt",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 7,
-     "score": 11.0,
-     "last_active": "2026-07"
+     "commits": 3,
+     "reviews": 35,
+     "issues": 0,
+     "score": 44.0,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
+     "reviews": 14,
+     "issues": 0,
+     "score": 12.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 11,
      "reviews": 8,
-     "score": 7.6,
+     "issues": 0,
+     "score": 22.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 10,
+     "issues": 0,
+     "score": 19.2,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 1.5,
      "last_active": "2026-07"
     },
     {
@@ -1929,38 +3184,76 @@
      "tier": "approver",
      "commits": 0,
      "reviews": 2,
+     "issues": 0,
      "score": 4.0,
-     "last_active": "2026-06"
+     "last_active": "2026-08"
     },
     {
-     "login": "Madhu-1",
-     "tier": "reviewer",
-     "commits": 0,
-     "reviews": 3,
-     "score": 2.4,
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "chimanjain",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
      "last_active": "2026-07"
+    },
+    {
+     "login": "immanuwell",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-05"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-02"
     }
    ],
    "recent_items": [
     {
-     "number": 17991,
-     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+     "number": 18344,
+     "title": "build(deps): bump helm/kind-action from 1.14.0 to 1.15.0"
     },
     {
-     "number": 17996,
-     "title": "build(deps): bump actions/setup-go from 6.5.0 to 7.0.0"
+     "number": 18312,
+     "title": "ci: build the rook image once per CI run (backport #18232)"
     },
     {
-     "number": 17903,
-     "title": "ci: convert integration and canary CI from minikube to kind (backport #17822)"
+     "number": 18232,
+     "title": "ci: build the rook image once per CI run"
     },
     {
-     "number": 17822,
-     "title": "ci: convert integration and canary CI from minikube to kind"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17876,
-     "title": "docs: fix typos and grammar in code comments (backport #17838)"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     }
    ]
   },
@@ -1980,87 +3273,158 @@
      "login": "travisn",
      "tier": "approver",
      "commits": 0,
-     "reviews": 50,
-     "score": 96.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "subhamkrai",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 19,
-     "score": 36.0,
-     "last_active": "2026-07"
+     "reviews": 72,
+     "issues": 1,
+     "score": 113.0,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 22,
-     "score": 27.0,
-     "last_active": "2026-04"
+     "commits": 2,
+     "reviews": 34,
+     "issues": 0,
+     "score": 40.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "subhamkrai",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 21,
+     "issues": 0,
+     "score": 29.0,
+     "last_active": "2026-09"
     },
     {
      "login": "nixpanic",
      "tier": "contributor",
-     "commits": 0,
-     "reviews": 11,
-     "score": 16.0,
+     "commits": 1,
+     "reviews": 17,
+     "issues": 2,
+     "score": 19.5,
      "last_active": "2026-03"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
+     "commits": 1,
+     "reviews": 7,
+     "issues": 0,
+     "score": 9.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "gadididi",
+     "tier": "contributor",
      "commits": 0,
-     "reviews": 3,
-     "score": 3.0,
-     "last_active": "2026-07"
+     "reviews": 7,
+     "issues": 0,
+     "score": 7.0,
+     "last_active": "2026-09"
     },
     {
      "login": "OdedViner",
      "tier": "contributor",
-     "commits": 0,
+     "commits": 8,
      "reviews": 1,
-     "score": 2.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-08"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
      "reviews": 2,
+     "issues": 0,
      "score": 2.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.8,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
      "last_active": "2026-07"
     },
     {
-     "login": "gadididi",
-     "tier": "contributor",
+     "login": "sp98",
+     "tier": "approver",
      "commits": 0,
-     "reviews": 2,
-     "score": 2.0,
-     "last_active": "unknown"
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "black-dragon74",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-03"
+    },
+    {
+     "login": "iPraveenParihar",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "malayparida2000",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-07"
+    },
+    {
+     "login": "Sunnatillo",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-06"
     }
    ],
    "recent_items": [
     {
-     "number": 17947,
-     "title": "nvmeof: use .nvmeof pool for gateway and remove pool field from CRD"
+     "number": 18308,
+     "title": "build(deps): bump the k8s-dependencies group with 5 updates"
     },
     {
-     "number": 17978,
-     "title": "build: Resolve kube code-generator version from the repo's k8s version"
+     "number": 18312,
+     "title": "ci: build the rook image once per CI run (backport #18232)"
     },
     {
-     "number": 17721,
-     "title": "nvmeof: fetch gateway image from ceph config when not in CR (backport #17701)"
+     "number": 18232,
+     "title": "ci: build the rook image once per CI run"
     },
     {
-     "number": 17701,
-     "title": "nvmeof: fetch gateway image from ceph config when not in CR"
+     "number": 18204,
+     "title": "nvmeof: delete gateway from Ceph on pod restart, scale-down, and CR deletion"
     },
     {
-     "number": 17668,
-     "title": "docs: add rook compatible ceph csi driver values (backport #17665)"
+     "number": 18243,
+     "title": "nvmeof: wait for metadata pool before deploying gw"
     }
    ]
   },
@@ -2085,56 +3449,81 @@
      "login": "BlaineEXE",
      "tier": "approver",
      "commits": 11,
-     "reviews": 341,
-     "score": 363.1,
-     "last_active": "2026-04"
+     "reviews": 401,
+     "issues": 4,
+     "score": 437.5,
+     "last_active": "2026-08"
     },
     {
      "login": "travisn",
      "tier": "approver",
      "commits": 7,
-     "reviews": 219,
-     "score": 219.5,
-     "last_active": "2026-07"
+     "reviews": 250,
+     "issues": 1,
+     "score": 249.2,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 33,
-     "reviews": 51,
-     "score": 94.4,
-     "last_active": "2026-07"
+     "commits": 36,
+     "reviews": 53,
+     "issues": 1,
+     "score": 96.8,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 5,
+     "reviews": 36,
+     "issues": 0,
+     "score": 31.2,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
      "commits": 6,
      "reviews": 28,
-     "score": 34.6,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "parth-gr",
-     "tier": "approver",
-     "commits": 3,
-     "reviews": 29,
-     "score": 26.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 29.2,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
-     "commits": 4,
-     "reviews": 14,
-     "score": 23.2,
-     "last_active": "2026-06"
+     "commits": 9,
+     "reviews": 22,
+     "issues": 0,
+     "score": 41.0,
+     "last_active": "2026-08"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
-     "commits": 20,
+     "commits": 19,
      "reviews": 6,
-     "score": 12.2,
+     "issues": 1,
+     "score": 9.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cbodley",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 8,
+     "issues": 0,
+     "score": 7.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 7,
+     "issues": 0,
+     "score": 5.5,
      "last_active": "2026-07"
     },
     {
@@ -2142,96 +3531,182 @@
      "tier": "contributor",
      "commits": 13,
      "reviews": 0,
-     "score": 10.5,
+     "issues": 2,
+     "score": 10.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 4,
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "yuvalif",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 7.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "ideepika",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.2,
+     "last_active": "2025-11"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 4,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "anxkhn",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 0,
+     "issues": 0,
+     "score": 3.0,
      "last_active": "2026-07"
     }
    ],
    "recent_items": [
     {
-     "number": 18004,
-     "title": "rgw: rgw account deletion should remove account from ceph (backport #17962)"
+     "number": 18188,
+     "title": "security: keep credential values out of object store log lines"
     },
     {
-     "number": 18022,
-     "title": "object: clobber bucket policy on modify instead of merging (backport #17643)"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 18025,
-     "title": "rgw: Fix an object store comment typo (backport #18023)"
+     "number": 18147,
+     "title": "rgw: force unboard account with purge data job"
     },
     {
-     "number": 18023,
-     "title": "rgw: Fix an object store comment typo"
+     "number": 18270,
+     "title": "operator: explicitly set root user for chown initContainer (backport #18018)"
     },
     {
-     "number": 18009,
-     "title": "object: return an error when reconciled rgw user has no keys"
+     "number": 18018,
+     "title": "operator: explicitly set root user for chown initContainer"
     }
    ]
   },
   "object-bucket-claims": {
    "paths": [],
    "keywords": [],
-   "labels": [],
+   "labels": [
+    "object-bucket-claims"
+   ],
    "maintainers": [
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 52,
-     "score": 42.0,
-     "last_active": "2026-04"
+     "commits": 1,
+     "reviews": 51,
+     "issues": 0,
+     "score": 38.2,
+     "last_active": "2026-08"
     },
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
+     "commits": 2,
      "reviews": 26,
-     "score": 21.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 21.2,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
+     "commits": 15,
      "reviews": 8,
-     "score": 13.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 18.5,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
      "reviews": 6,
-     "score": 6.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "sp98",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 3,
-     "score": 4.4,
-     "last_active": "2026-06"
+     "issues": 0,
+     "score": 3.0,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
      "commits": 0,
      "reviews": 5,
-     "score": 3.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 3.5,
+     "last_active": "2026-09"
     },
     {
      "login": "arttor",
      "tier": "reviewer",
      "commits": 0,
      "reviews": 3,
-     "score": 1.6,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "sp98",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 4.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 3,
+     "reviews": 0,
+     "issues": 0,
+     "score": 2.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "anxkhn",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
      "last_active": "2026-07"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-05"
     }
    ],
    "recent_items": [
+    {
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
+    },
     {
      "number": 17874,
      "title": "object: use passed context for S3 v2 API calls"
@@ -2247,10 +3722,6 @@
     {
      "number": 17609,
      "title": "object: remove AWS SDK v1 dependency (backport #17572)"
-    },
-    {
-     "number": 17572,
-     "title": "object: remove AWS SDK v1 dependency"
     }
    ]
   },
@@ -2268,69 +3739,148 @@
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 50,
-     "score": 43.6,
-     "last_active": "2026-04"
+     "commits": 1,
+     "reviews": 44,
+     "issues": 0,
+     "score": 35.2,
+     "last_active": "2026-08"
     },
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 39,
-     "score": 32.0,
-     "last_active": "2026-07"
+     "commits": 1,
+     "reviews": 40,
+     "issues": 0,
+     "score": 30.5,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 0,
-     "reviews": 11,
-     "score": 14.0,
-     "last_active": "2026-07"
-    },
-    {
-     "login": "obnoxxx",
-     "tier": "contributor",
-     "commits": 0,
-     "reviews": 5,
-     "score": 8.4,
-     "last_active": "2026-07"
+     "commits": 2,
+     "reviews": 12,
+     "issues": 0,
+     "score": 13.0,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
-     "reviews": 9,
-     "score": 7.6,
-     "last_active": "2026-07"
+     "reviews": 10,
+     "issues": 0,
+     "score": 5.0,
+     "last_active": "2026-09"
     },
     {
-     "login": "Lykos153",
+     "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 0,
-     "reviews": 10,
-     "score": 5.0,
-     "last_active": "2024-12"
+     "commits": 2,
+     "reviews": 4,
+     "issues": 0,
+     "score": 8.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "jhoblitt",
+     "tier": "approver",
+     "commits": 6,
+     "reviews": 1,
+     "issues": 0,
+     "score": 6.5,
+     "last_active": "2026-09"
     },
     {
      "login": "Madhu-1",
      "tier": "reviewer",
      "commits": 0,
-     "reviews": 5,
-     "score": 2.4,
+     "reviews": 3,
+     "issues": 0,
+     "score": 1.5,
      "last_active": "2026-07"
     },
     {
-     "login": "jhoblitt",
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "sp98",
      "tier": "approver",
      "commits": 0,
      "reviews": 1,
-     "score": 2.0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "Fumon",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-01"
+    },
+    {
+     "login": "malayparida2000",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
      "last_active": "2026-07"
+    },
+    {
+     "login": "prazumovsky",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "takirala",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-04"
     }
    ],
    "recent_items": [
+    {
+     "number": 18308,
+     "title": "build(deps): bump the k8s-dependencies group with 5 updates"
+    },
+    {
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
+    },
     {
      "number": 17978,
      "title": "build: Resolve kube code-generator version from the repo's k8s version"
@@ -2342,80 +3892,134 @@
     {
      "number": 17850,
      "title": "docs: fix typos and grammar in documentation and design docs (backport #17837)"
-    },
-    {
-     "number": 17837,
-     "title": "docs: fix typos and grammar in documentation and design docs"
-    },
-    {
-     "number": 17567,
-     "title": "core: rm unused consts (backport #17530)"
     }
    ]
   },
   "object-multisite": {
    "paths": [],
    "keywords": [],
-   "labels": [],
+   "labels": [
+    "object-multisite"
+   ],
    "maintainers": [
-    {
-     "login": "travisn",
-     "tier": "approver",
-     "commits": 0,
-     "reviews": 33,
-     "score": 42.0,
-     "last_active": "2026-07"
-    },
     {
      "login": "BlaineEXE",
      "tier": "approver",
      "commits": 0,
-     "reviews": 43,
-     "score": 38.0,
-     "last_active": "2026-04"
+     "reviews": 48,
+     "issues": 0,
+     "score": 32.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "travisn",
+     "tier": "approver",
+     "commits": 3,
+     "reviews": 44,
+     "issues": 0,
+     "score": 37.2,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 0,
+     "commits": 1,
      "reviews": 10,
-     "score": 15.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 11.5,
+     "last_active": "2026-09"
     },
     {
      "login": "parth-gr",
      "tier": "approver",
      "commits": 0,
      "reviews": 10,
-     "score": 8.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 5.0,
+     "last_active": "2026-09"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 0,
+     "commits": 6,
      "reviews": 4,
-     "score": 3.6,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 8.0,
+     "last_active": "2026-09"
     },
     {
      "login": "cbodley",
      "tier": "contributor",
      "commits": 0,
      "reviews": 3,
-     "score": 1.6,
-     "last_active": "unknown"
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "obnoxxx",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 3,
+     "issues": 0,
+     "score": 6.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 2,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-08"
     },
     {
      "login": "sp98",
      "tier": "approver",
      "commits": 0,
      "reviews": 1,
-     "score": 0.4,
-     "last_active": "2026-06"
+     "issues": 0,
+     "score": 0.5,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cuiweixie",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2025-08"
+    },
+    {
+     "login": "raaizik",
+     "tier": "contributor",
+     "commits": 1,
+     "reviews": 0,
+     "issues": 0,
+     "score": 0.2,
+     "last_active": "2026-07"
     }
    ],
    "recent_items": [
+    {
+     "number": 17579,
+     "title": "core: run go fix"
+    },
+    {
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
+    },
     {
      "number": 17876,
      "title": "docs: fix typos and grammar in code comments (backport #17838)"
@@ -2427,14 +4031,6 @@
     {
      "number": 17773,
      "title": "object: generate URL-safe realm access keys (backport #17710)"
-    },
-    {
-     "number": 17710,
-     "title": "object: generate URL-safe realm access keys"
-    },
-    {
-     "number": 17126,
-     "title": "rgw: force objectStore controller to wait until zone and sharedPools are (backport #17101)"
     }
    ]
   },
@@ -2453,88 +4049,159 @@
     {
      "login": "travisn",
      "tier": "approver",
-     "commits": 34,
-     "reviews": 202,
-     "score": 274.2,
-     "last_active": "2026-07"
+     "commits": 25,
+     "reviews": 218,
+     "issues": 0,
+     "score": 304.5,
+     "last_active": "2026-09"
     },
     {
      "login": "BlaineEXE",
      "tier": "approver",
-     "commits": 10,
+     "commits": 9,
      "reviews": 142,
-     "score": 167.6,
-     "last_active": "2026-04"
+     "issues": 0,
+     "score": 167.0,
+     "last_active": "2026-08"
     },
     {
      "login": "jhoblitt",
      "tier": "approver",
-     "commits": 69,
+     "commits": 57,
      "reviews": 34,
-     "score": 110.0,
-     "last_active": "2026-07"
+     "issues": 0,
+     "score": 104.5,
+     "last_active": "2026-09"
     },
     {
      "login": "subhamkrai",
      "tier": "approver",
-     "commits": 21,
-     "reviews": 40,
-     "score": 60.4,
+     "commits": 13,
+     "reviews": 38,
+     "issues": 0,
+     "score": 54.0,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "Madhu-1",
+     "tier": "reviewer",
+     "commits": 1,
+     "reviews": 15,
+     "issues": 0,
+     "score": 21.0,
      "last_active": "2026-07"
     },
     {
      "login": "obnoxxx",
      "tier": "contributor",
-     "commits": 13,
-     "reviews": 11,
-     "score": 25.2,
-     "last_active": "2026-07"
+     "commits": 2,
+     "reviews": 14,
+     "issues": 0,
+     "score": 27.0,
+     "last_active": "2026-09"
     },
     {
-     "login": "Madhu-1",
-     "tier": "reviewer",
-     "commits": 3,
-     "reviews": 14,
-     "score": 23.9,
-     "last_active": "2026-07"
+     "login": "parth-gr",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 12,
+     "issues": 0,
+     "score": 11.5,
+     "last_active": "2026-09"
     },
     {
      "login": "sp98",
      "tier": "approver",
      "commits": 1,
-     "reviews": 10,
+     "reviews": 11,
+     "issues": 0,
      "score": 20.2,
-     "last_active": "2026-06"
+     "last_active": "2026-08"
     },
     {
-     "login": "parth-gr",
-     "tier": "approver",
+     "login": "arttor",
+     "tier": "reviewer",
+     "commits": 3,
+     "reviews": 9,
+     "issues": 0,
+     "score": 12.8,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "ushitora-anqou",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 5,
+     "issues": 0,
+     "score": 2.5,
+     "last_active": "2026-09"
+    },
+    {
+     "login": "OdedViner",
+     "tier": "contributor",
+     "commits": 9,
+     "reviews": 0,
+     "issues": 0,
+     "score": 8.2,
+     "last_active": "2026-08"
+    },
+    {
+     "login": "cbarria",
+     "tier": "contributor",
      "commits": 5,
-     "reviews": 12,
-     "score": 14.5,
-     "last_active": "2026-07"
+     "reviews": 0,
+     "issues": 0,
+     "score": 1.2,
+     "last_active": "2025-05"
+    },
+    {
+     "login": "Rakshith-R",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.5,
+     "last_active": "2025-04"
+    },
+    {
+     "login": "satoru-takeuchi",
+     "tier": "approver",
+     "commits": 0,
+     "reviews": 2,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-02"
+    },
+    {
+     "login": "chesster88",
+     "tier": "contributor",
+     "commits": 0,
+     "reviews": 1,
+     "issues": 0,
+     "score": 1.0,
+     "last_active": "2026-09"
     }
    ],
    "recent_items": [
     {
-     "number": 17894,
-     "title": "test: convert the object bucket lifecycle suite to the shared store"
+     "number": 17579,
+     "title": "core: run go fix"
     },
     {
-     "number": 17991,
-     "title": "build(deps): Migrate YAML library from gopkg.in/yaml.v2 to go.yaml.in/yaml/v3"
+     "number": 18163,
+     "title": "ci: deploy network policies in integration tests"
     },
     {
-     "number": 17949,
-     "title": "helm: add multisite CR support to rook-ceph-cluster chart (backport #17917)"
+     "number": 18055,
+     "title": "test: add do-not-reconcile label smoke test"
     },
     {
-     "number": 17917,
-     "title": "helm: add multisite CR support to rook-ceph-cluster chart"
+     "number": 17951,
+     "title": "core: fix grammar and spelling in code comments"
     },
     {
-     "number": 17857,
-     "title": "test: build the smoke object store with the shared store fixture"
+     "number": 18214,
+     "title": "mgr: Disable the rook mgr module (backport #18213)"
     }
    ]
   }

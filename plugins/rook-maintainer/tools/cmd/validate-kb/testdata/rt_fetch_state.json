@@ -1,12 +1,23 @@
 {
   "repo": "rook/rook",
-  "pages_fetched": 90,
-  "counted": 2247,
-  "seen_total": 2312,
-  "oldest_mergedat": "2024-07-23T18:22:41+00:00",
-  "cutoff": "2024-07-23T00:00:00+00:00",
+  "pages_fetched": 48,
+  "counted": 2321,
+  "seen_total": 2400,
+  "oldest_mergedat": "2024-09-09T10:12:50+00:00",
+  "cutoff": "2024-09-08T17:06:20.196306+00:00",
   "cap": 4000,
-  "stop_reason": "reached the window cutoff",
+  "stop_reason": "full page entirely updatedAt-older than cutoff",
   "errors": [],
-  "truncations": []
+  "truncations": [
+    {
+      "number": 14585,
+      "kind": "reviews",
+      "mergedAt": "2024-09-05T16:56:03Z"
+    },
+    {
+      "number": 14435,
+      "kind": "reviews",
+      "mergedAt": "2024-08-20T18:14:22Z"
+    }
+  ]
 }
