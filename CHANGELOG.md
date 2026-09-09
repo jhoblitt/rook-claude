@@ -1,3 +1,41 @@
+## [0.25.0](https://github.com/jhoblitt/rook-claude/compare/v0.24.2...v0.25.0) (2026-09-09)
+
+### Features
+
+* **rook-triage:** add validate-kb --logins for the stage-2 grammar check ([3f36893](https://github.com/jhoblitt/rook-claude/commit/3f3689321c3cc5231ad5384cc32edb45d17f111d)), closes [#136](https://github.com/jhoblitt/rook-claude/issues/136)
+
+### Bug Fixes
+
+* **rook-triage:** fence rt-commits' JSON document on stdout ([8b405a7](https://github.com/jhoblitt/rook-claude/commit/8b405a71f6cb664690470a46ca0d182babf7da47)), closes [#116](https://github.com/jhoblitt/rook-claude/issues/116)
+* **rook-triage:** refuse to analyze a walk that counted nothing ([22c549b](https://github.com/jhoblitt/rook-claude/commit/22c549be034254758dc89dd3d485cde7e723a637)), closes [#127](https://github.com/jhoblitt/rook-claude/issues/127)
+
+### Performance Improvements
+
+* **rook-maintainer:** fingerprint each tool over its own packages ([68fb21d](https://github.com/jhoblitt/rook-claude/commit/68fb21d6147ce6bb74011342fb2b847ead4eac49)), closes [#132](https://github.com/jhoblitt/rook-claude/issues/132)
+* **rook-triage:** deep-fetch truncated PRs eight at a time ([975e92b](https://github.com/jhoblitt/rook-claude/commit/975e92b293760fd4d66231e280e72d4f2ec27159)), closes [#117](https://github.com/jhoblitt/rook-claude/issues/117)
+
+### Refactoring
+
+* **rook-triage:** cut rtanalyze's path sample through links.Truncate ([62a8cc7](https://github.com/jhoblitt/rook-claude/commit/62a8cc7b97d12ceeb6ab4b84fff510237e9cca0c)), closes [#135](https://github.com/jhoblitt/rook-claude/issues/135)
+* **rook-triage:** give the recency weights one home ([1cf0662](https://github.com/jhoblitt/rook-claude/commit/1cf0662568a7f03a3b01246be035efa87cf824c9)), closes [#123](https://github.com/jhoblitt/rook-claude/issues/123)
+
+### Documentation
+
+* **rook-triage:** describe every check validate-kb runs ([19b611f](https://github.com/jhoblitt/rook-claude/commit/19b611f8452529f2c217dac08e921f4da33b8049)), closes [#128](https://github.com/jhoblitt/rook-claude/issues/128)
+
+
+## What's Changed
+* fix(rook-triage): fence, bound and refuse what the refresh tools emit by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/140
+
+### Resolved issues
+
+* [#116](https://github.com/jhoblitt/rook-claude/issues/116) rt-commits --json prints the whole mined document to stdout unfenced
+* [#117](https://github.com/jhoblitt/rook-claude/issues/117) rt-fetch --deep-fetch paginates truncated PRs one at a time
+* [#127](https://github.com/jhoblitt/rook-claude/issues/127) rt-analyze GeneratedFrom: the null-oldest case renders "unknown" and no spec admits it
+* [#128](https://github.com/jhoblitt/rook-claude/issues/128) validate-kb's one-line description still says "pre-write gate on routing identities"
+* [#132](https://github.com/jhoblitt/rook-claude/issues/132) run.sh fingerprints every .go file, so adding one tool rebuilds all of them
+* [#135](https://github.com/jhoblitt/rook-claude/issues/135) rtanalyze's samplePaths cut duplicates links.truncate with a different policy
+
 ## [0.24.2](https://github.com/jhoblitt/rook-claude/compare/v0.24.1...v0.24.2) (2026-09-08)
 
 ### Bug Fixes
