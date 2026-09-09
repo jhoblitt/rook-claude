@@ -4,9 +4,9 @@
 //
 // It is the commit-side sibling of rtfetch/rtanalyze and shares their decisions
 // by CALLING them, not by restating them: the 25-area taxonomy is
-// rtanalyze.AreasForPaths, the recency weighting is rtanalyze.AgeDays on the
-// same 1.0/0.5/0.25 boundaries, the window is rtfetch.WindowCutoff, and the bot
-// rule is rtanalyze.IsBot. The one deliberate local delta is botIdentity, which
+// rtanalyze.AreasForPaths, the recency weighting is rtanalyze.RecencyWeight on
+// rtanalyze.AgeDays, the window is rtfetch.WindowCutoff, and the bot rule is
+// rtanalyze.IsBot. The one deliberate local delta is botIdentity, which
 // narrows that rule for the login-less identities only git log produces. It
 // fills the `commits` and `last_active` columns of kb-refresh.md's `maintainers`
 // schema; `tier` comes from CODE-OWNERS and `reviews` from rt-analyze, and
@@ -57,7 +57,7 @@ const (
 
 	// weightsNote travels in the provenance so a kb entry says on its face
 	// which decay produced it.
-	weightsNote = "1.0 <=182d, 0.5 <=365d, 0.25 older (by author date, relative to now)"
+	weightsNote = rtanalyze.RecencyWeightsNote + " (by author date, relative to now)"
 )
 
 // noreply matches the only address that carries a GitHub login.
@@ -269,13 +269,7 @@ func Render(doc Doc) ([]byte, error) {
 
 // weight is rtanalyze's recency decay, on the commit's author date.
 func weight(now, when time.Time) float64 {
-	switch age := rtanalyze.AgeDays(now, when); {
-	case age <= 182:
-		return 1.0
-	case age <= 365:
-		return 0.5
-	}
-	return 0.25
+	return rtanalyze.RecencyWeight(rtanalyze.AgeDays(now, when))
 }
 
 // botIdentity decides whether a git identity is a bot. rtanalyze.IsBot runs on

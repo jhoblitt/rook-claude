@@ -2,6 +2,7 @@ package rtanalyze
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -304,7 +305,7 @@ func TestBucketFlagsReportsTheGeneratedArtifactsClass(t *testing.T) {
 			{"path":"deploy/charts/rook-ceph/templates/resources.yaml"},
 			{"path":"Documentation/CRDs/specification.md"}]},
 		"reviews":{"nodes":[]}}`),
-		&State{StopReason: new("reached the window cutoff")},
+		windowState(),
 		Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow),
 			Roster: Lowered(ParseRoster("alice"))})
 	if err != nil {
@@ -403,7 +404,7 @@ func TestUntieredRosterEmitsNoRosterKey(t *testing.T) {
 	res, err := Analyze(prsFrom(t, `{"number":1,"title":"t","mergedAt":"2026-07-01T00:00:00Z",
 		"author":{"login":"alice"},"files":{"nodes":[{"path":"cmd/rook/main.go"}]},
 		"reviews":{"nodes":[]}}`),
-		&State{StopReason: new("reached the window cutoff")},
+		windowState(),
 		Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow),
 			Roster: Lowered(ParseRoster("alice,bob"))})
 	if err != nil {
@@ -550,6 +551,87 @@ func member(t *testing.T, o Obj, key string) any {
 	return nil
 }
 
+// The note is what a mined document's provenance says the decay was, so it and
+// the constants it describes are one statement: neither may move alone.
+func TestRecencyWeightsNoteStatesTheConstants(t *testing.T) {
+	want := fmt.Sprintf("%s <=%dd, %s <=%dd, %s older", pyFloat(RecencyFull), RecencyFullDays,
+		pyFloat(RecencyHalf), RecencyHalfDays, pyFloat(RecencyOld))
+	if RecencyWeightsNote != want {
+		t.Errorf("RecencyWeightsNote = %q, want %q", RecencyWeightsNote, want)
+	}
+}
+
+// Both boundaries are inclusive: a PR merged exactly RecencyFullDays ago still
+// counts full.
+func TestRecencyWeightBoundaries(t *testing.T) {
+	for _, tc := range []struct {
+		age  int
+		want float64
+	}{
+		{0, RecencyFull},
+		{RecencyFullDays, RecencyFull},
+		{RecencyFullDays + 1, RecencyHalf},
+		{RecencyHalfDays, RecencyHalf},
+		{RecencyHalfDays + 1, RecencyOld},
+	} {
+		if got := RecencyWeight(tc.age); got != tc.want {
+			t.Errorf("RecencyWeight(%d) = %v, want %v", tc.age, got, tc.want)
+		}
+	}
+}
+
+// windowState is the fetch record of a walk that counted something, which is
+// the only kind Analyze accepts.
+func windowState() *State {
+	return &State{
+		Counted:        new(json.Number("1")),
+		OldestMergedAt: new("2026-07-01T00:00:00+00:00"),
+		StopReason:     new("reached the window cutoff"),
+	}
+}
+
+func TestAnalyzeRefusesAWalkWithoutBounds(t *testing.T) {
+	prs := prsFrom(t, `{"number":1,"title":"t","mergedAt":"2026-07-01T00:00:00Z",
+		"author":{"login":"alice"},"files":{"nodes":[{"path":"pkg/operator/ceph/object/rgw.go"}]},
+		"reviews":{"nodes":[]}}`)
+	for name, st := range map[string]*State{
+		"absent oldest": {Counted: new(json.Number("0"))},
+		"empty oldest":  {Counted: new(json.Number("0")), OldestMergedAt: new("")},
+		"absent count":  {OldestMergedAt: new("2026-07-01T00:00:00+00:00")},
+	} {
+		t.Run(name, func(t *testing.T) {
+			opts := Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow)}
+			if _, err := Analyze(prs, st, opts); err == nil {
+				t.Fatal("Analyze wrote a document the provenance sentence cannot describe")
+			} else if !strings.Contains(err.Error(), "oldest_mergedat") {
+				t.Errorf("error = %v, want it to name the missing bounds", err)
+			}
+		})
+	}
+}
+
+// The sentence is the kb's source.reviews and validate-kb --state re-derives it
+// from the same file, so its exact shape is a contract; HasBounds is what keeps
+// the day in it from ever being a placeholder.
+func TestGeneratedFromNamesTheCountAndTheDay(t *testing.T) {
+	st := &State{Counted: new(json.Number("41")), OldestMergedAt: new("2024-06-01T09:00:00+00:00")}
+	if !HasBounds(st) {
+		t.Fatal("HasBounds rejected a state carrying both bounds")
+	}
+	if got, want := GeneratedFrom(st), "41 merged PRs back to 2024-06-01"; got != want {
+		t.Errorf("GeneratedFrom = %q, want %q", got, want)
+	}
+	for name, bad := range map[string]*State{
+		"absent oldest": {Counted: new(json.Number("41"))},
+		"empty oldest":  {Counted: new(json.Number("41")), OldestMergedAt: new("")},
+		"absent count":  {OldestMergedAt: new("2024-06-01T09:00:00+00:00")},
+	} {
+		if HasBounds(bad) {
+			t.Errorf("HasBounds accepted a state with an %s", name)
+		}
+	}
+}
+
 func prsFrom(t *testing.T, lines ...string) []*PR {
 	t.Helper()
 	out := make([]*PR, 0, len(lines))
@@ -572,7 +654,7 @@ func analyzeHostile(t *testing.T) *Result {
 		  "reviews":{"nodes":[{"author":{"login":"ev\nil](https://evil.example)"}}]}}`,
 		`{"number":2,"title":"misc","mergedAt":"2026-07-02T00:00:00Z","author":{"login":"alice"},
 		  "files":{"nodes":[{"path":"nowhere/\u200bpath\nall clear.txt"}]},"reviews":{"nodes":[]}}`,
-	), &State{StopReason: new("reached the window cutoff")}, Options{
+	), windowState(), Options{
 		OutPath: "rt_final.json",
 		Top:     15,
 		Now:     at(t, goldenNow),
@@ -621,7 +703,7 @@ func TestALongTitleIsBounded(t *testing.T) {
 	res, err := Analyze(prsFrom(t, `{"number":1,"title":"`+strings.Repeat("z", 5000)+`",
 		"mergedAt":"2026-07-01T00:00:00Z","author":{"login":"alice"},
 		"files":{"nodes":[{"path":"pkg/operator/ceph/object/rgw.go"}]},"reviews":{"nodes":[]}}`),
-		&State{StopReason: new("reached the window cutoff")},
+		windowState(),
 		Options{OutPath: "rt_final.json", Top: 15, Now: at(t, goldenNow)})
 	if err != nil {
 		t.Fatal(err)

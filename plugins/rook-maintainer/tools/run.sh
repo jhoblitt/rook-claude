@@ -62,9 +62,32 @@ bin="$data/$tool"
 # and BSD but not POSIX: when one is missing the pipeline fails (pipefail) or
 # reads zero bytes, and staleness falls back to the mtime test alone, which is
 # where it stood before.
+#
+# The sum covers this tool's own package set -- cmd/<tool> plus the module
+# packages it imports, which is what `go list -deps` knows -- so adding or
+# editing one tool no longer makes every other cached binary stale.
+#
+# When go list cannot answer -- no toolchain installed, or a tree that does not
+# parse -- srcfiles fails and staleness falls back to the mtime test, same as a
+# missing -print0. Summing the whole tree instead would be worse than useless
+# here: that sum can never equal a stamp written from one tool's packages, so
+# every cached binary would read as stale and a machine without Go would be
+# told to build rather than handed the binary it already has.
+srcfiles() {
+  local root d
+  local -a dirs=()
+  root=$(cd "$src" && pwd -P 2>/dev/null) || return 1
+  while IFS= read -r d; do
+    case "$d/" in "$root"/*) dirs+=("$d") ;; esac
+  done < <(cd "$src" && go list -deps -f '{{.Dir}}' "./cmd/$tool" 2>/dev/null)
+  [ ${#dirs[@]} -gt 0 ] || return 1
+  find "${dirs[@]}" -maxdepth 1 -name '*.go' -print0 2>/dev/null
+  printf '%s\0' "$src/go.mod"
+}
+
 srcsum() {
   local fp
-  fp=$(find "$src" \( -name '*.go' -o -name go.mod \) -print0 2>/dev/null |
+  fp=$(srcfiles |
     LC_ALL=C sort -z 2>/dev/null | xargs -0 cat 2>/dev/null | cksum) || return 1
   case "$fp" in
   *' 0') return 1 ;;

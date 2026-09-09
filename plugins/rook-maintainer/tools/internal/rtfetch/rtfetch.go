@@ -13,8 +13,7 @@
 //
 // Per-PR truncation (files > 100, reviews > 30) is flagged rather than
 // silently dropped; the miner turns the flags into `truncation` entries per the
-// two-tier contract, and DeepFetch resolves them by paginating those PRs one at
-// a time.
+// two-tier contract, and DeepFetch resolves them in a bounded concurrent pass.
 package rtfetch
 
 import (
@@ -29,6 +28,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/ghx"
@@ -44,6 +44,7 @@ const (
 	rateLimitFloor  = 200
 	maxRateLimitNap = time.Hour
 	deepPageSize    = 100
+	deepFetchWidth  = 8
 )
 
 // QueryFunc runs one GraphQL query and unmarshals its `data` object into out.
@@ -515,35 +516,30 @@ func (f *Fetcher) DeepFetch(ctx context.Context) error {
 	}
 
 	remaining := []Truncation{}
-	done := state.DeepFetched
-	if done == nil {
-		done = []Truncation{}
-	}
+	tasks := []deepTask{}
 	for _, t := range state.Truncations {
 		i, ok := index[t.Number]
 		if !ok {
 			remaining = append(remaining, t)
 			continue
 		}
-		total := 0
-		if t.Kind == "files" {
-			nodes, err := deepFetchField[FileNode](ctx, f, owner, name, t.Number, "files", "path")
-			if err != nil {
-				return err
-			}
-			prs[i].Files = Files{Nodes: nodes}
-			total = len(nodes)
-		} else {
-			nodes, err := deepFetchField[ReviewNode](ctx, f, owner, name, t.Number,
-				"reviews", "author { login } state")
-			if err != nil {
-				return err
-			}
-			prs[i].Reviews = Reviews{Nodes: nodes}
-			total = len(nodes)
-		}
-		done = append(done, t)
-		f.logf("deep-fetched PR #%d %s: %d total", t.Number, t.Kind, total)
+		tasks = append(tasks, deepTask{flag: t, at: i})
+	}
+
+	results, err := f.resolve(ctx, owner, name, tasks)
+	if err != nil {
+		return err
+	}
+
+	done := state.DeepFetched
+	if done == nil {
+		done = []Truncation{}
+	}
+	for k, res := range results {
+		task := tasks[k]
+		total := res.apply(&prs[task.at], task.flag.Kind)
+		done = append(done, task.flag)
+		f.logf("deep-fetched PR #%d %s: %d total", task.flag.Number, task.flag.Kind, total)
 	}
 
 	if err := writePRs(jsonlPath, prs); err != nil {
@@ -556,6 +552,105 @@ func (f *Fetcher) DeepFetch(ctx context.Context) error {
 	}
 	f.logf("deep-fetch: %d resolved, %d out-of-set left as flags", len(done), len(remaining))
 	return nil
+}
+
+// deepTask is one flagged connection to paginate, with the JSONL record it
+// patches.
+type deepTask struct {
+	flag Truncation
+	at   int
+}
+
+type deepResult struct {
+	files   []FileNode
+	reviews []ReviewNode
+	err     error
+}
+
+// apply replaces the connection the flag named, reporting how many nodes it
+// now holds.
+func (r deepResult) apply(pr *PR, kind string) int {
+	if kind == "files" {
+		pr.Files = Files{Nodes: r.files}
+		return len(r.files)
+	}
+	pr.Reviews = Reviews{Nodes: r.reviews}
+	return len(r.reviews)
+}
+
+// resolve paginates the flagged connections deepFetchWidth at a time, and
+// answers in task order however the fetches interleave: a goroutine touches
+// only its own result, and the caller applies them serially, so the rewritten
+// JSONL and the deep_fetched list read the same as a serial pass would write
+// them. The width also bounds how much of the GraphQL budget the pass can
+// spend at once, which is the only throttle it has — the deep query selects no
+// rateLimit block, so there is no per-goroutine nap here to stampede.
+//
+// The first failure stops the pass and cancels the fetches still in flight,
+// since DeepFetch discards every result once one is missing: each further page
+// buys a node set that will not be written, at up to ghx.DefaultTimeout apiece.
+// What is reported is that first REAL failure — the cancellation it triggers
+// makes the others fail too, and a canceled slot names a PR that was fine.
+func (f *Fetcher) resolve(ctx context.Context, owner, name string,
+	tasks []deepTask) ([]deepResult, error) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	results := make([]deepResult, len(tasks))
+	sem := make(chan struct{}, deepFetchWidth)
+	var (
+		mu      sync.Mutex
+		wg      sync.WaitGroup
+		failure error
+	)
+	failed := func() bool {
+		mu.Lock()
+		defer mu.Unlock()
+		return failure != nil
+	}
+	for i := range tasks {
+		if failed() {
+			break
+		}
+		sem <- struct{}{}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			defer func() { <-sem }()
+			results[i] = f.resolveOne(ctx, owner, name, tasks[i].flag)
+			if results[i].err == nil || errors.Is(results[i].err, context.Canceled) {
+				return
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			if failure == nil {
+				failure = results[i].err
+				cancel()
+			}
+		}()
+	}
+	wg.Wait()
+	if failure != nil {
+		return nil, failure
+	}
+	// Nothing here cancels while failure is nil, so a canceled slot means the
+	// caller's own context went away — still a pass that fetched nothing.
+	for _, res := range results {
+		if res.err != nil {
+			return nil, res.err
+		}
+	}
+	return results, nil
+}
+
+func (f *Fetcher) resolveOne(ctx context.Context, owner, name string, t Truncation) deepResult {
+	if t.Kind == "files" {
+		nodes, err := deepFetchField[FileNode](ctx, f, owner, name, t.Number, "files", "path")
+		return deepResult{files: nodes, err: err}
+	}
+	nodes, err := deepFetchField[ReviewNode](ctx, f, owner, name, t.Number,
+		"reviews", "author { login } state")
+	return deepResult{reviews: nodes, err: err}
 }
 
 func deepFetchField[T any](ctx context.Context, f *Fetcher, owner, name string,

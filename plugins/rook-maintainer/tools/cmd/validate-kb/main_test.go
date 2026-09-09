@@ -124,7 +124,7 @@ func TestReportFencesAndBoundsUntrustedText(t *testing.T) {
 
 	problems, n := validate(kb, crossFile{})
 	var out, errOut strings.Builder
-	if code := report(&out, &errOut, problems, n, 0); code != 1 {
+	if code := report(&out, &errOut, problems, n, 0, kbSource); code != 1 {
 		t.Fatalf("exit %d, want 1", code)
 	}
 	got := errOut.String()
@@ -348,14 +348,14 @@ func TestLoadCrossFileRejectsUnusableFiles(t *testing.T) {
 // not run those checks, and must not read as though it had.
 func TestSuccessLineNamesTheChecksThatRan(t *testing.T) {
 	var out, errOut strings.Builder
-	if code := report(&out, &errOut, nil, 4, 0); code != 0 {
+	if code := report(&out, &errOut, nil, 4, 0, kbSource); code != 0 {
 		t.Fatalf("exit %d, want 0", code)
 	}
 	if got := out.String(); got != "all 4 login(s) are routable\n" {
 		t.Errorf("out = %q", got)
 	}
 	out.Reset()
-	report(&out, &errOut, nil, 4, 3)
+	report(&out, &errOut, nil, 4, 3, kbSource)
 	if !strings.Contains(out.String(), "3 cross-file check(s) pass") {
 		t.Errorf("out = %q, want the cross-file checks named", out.String())
 	}
@@ -393,5 +393,125 @@ func TestRosterMustMatchCodeOwners(t *testing.T) {
 				t.Fatalf("problems = %v, want [%s]", problems, tc.want)
 			}
 		})
+	}
+}
+
+// loginList writes an identity list and returns its path.
+func loginList(t *testing.T, body string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "logins.json")
+	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+// Stage 2 holds a list, not a document, and the grammar it must pass is the one
+// the pre-write gate applies: a display name written through as a login is the
+// failure both are there to catch.
+func TestLoginsModeAppliesTheSameGrammar(t *testing.T) {
+	problems, n, err := validateLogins(loginList(t, `["alice-a","Oded Viner","bob","x/y"]`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 4 {
+		t.Errorf("counted %d logins, want 4", n)
+	}
+	if len(problems) != 2 {
+		t.Fatalf("problems = %v, want the two names", problems)
+	}
+	for i, want := range []string{"Oded Viner", "x/y"} {
+		if !strings.Contains(problems[i], want) {
+			t.Errorf("problem %d = %q, want it to name %q", i, problems[i], want)
+		}
+		if !strings.HasPrefix(problems[i], "logins[") {
+			t.Errorf("problem %q does not say where in the list it sits", problems[i])
+		}
+	}
+}
+
+func TestLoginsModeRejectsUnusableInput(t *testing.T) {
+	for _, body := range []string{"not json", `{"alice":1}`, `["alice",2]`, `[]`} {
+		if _, _, err := validateLogins(loginList(t, body)); err == nil {
+			t.Errorf("accepted %q as an identity list", body)
+		}
+	}
+	if _, _, err := validateLogins(filepath.Join(t.TempDir(), "absent.json")); err == nil {
+		t.Error("accepted a path that does not exist")
+	}
+}
+
+// capture swaps the process streams around a run() call, which is the only way
+// to see what the flag layer writes.
+func capture(t *testing.T, call func() int) (code int, stdout, stderr string) {
+	t.Helper()
+	dir := t.TempDir()
+	redirect := func(name string, stream **os.File) func() string {
+		path := filepath.Join(dir, name)
+		f, err := os.Create(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		saved := *stream
+		*stream = f
+		return func() string {
+			*stream = saved
+			if err := f.Close(); err != nil {
+				t.Fatal(err)
+			}
+			text, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return string(text)
+		}
+	}
+	out, errOut := redirect("stdout", &os.Stdout), redirect("stderr", &os.Stderr)
+	code = call()
+	return code, out(), errOut()
+}
+
+func TestLoginsModeExitStatus(t *testing.T) {
+	clean := loginList(t, `["alice-a","bob"]`)
+	code, stdout, stderr := capture(t, func() int { return run([]string{"--logins", clean}) })
+	if code != 0 {
+		t.Fatalf("exit = %d, want 0\n%s", code, stderr)
+	}
+	if !strings.Contains(stdout, "all 2 login(s) are routable") {
+		t.Errorf("stdout = %q", stdout)
+	}
+
+	dirty := loginList(t, `["Oded Viner"]`)
+	code, _, stderr = capture(t, func() int { return run([]string{"--logins", dirty}) })
+	if code != 1 {
+		t.Fatalf("exit = %d, want 1", code)
+	}
+	m := fenceRE.FindStringSubmatch(stderr)
+	if m == nil {
+		t.Fatalf("the problem list is not fenced:\n%s", stderr)
+	}
+	if !strings.Contains(m[2], "Oded Viner") {
+		t.Errorf("fenced body = %q", m[2])
+	}
+	if !strings.Contains(stderr, "the identity list") {
+		t.Errorf("the note does not say what was read:\n%s", stderr)
+	}
+}
+
+// --logins replaces the candidate, so it neither joins --kb nor stands beside
+// the three flags that compare one.
+func TestLoginsModeIsExclusive(t *testing.T) {
+	list := loginList(t, `["alice-a"]`)
+	for _, args := range [][]string{
+		nil,
+		{"--kb", snapshot, "--logins", list},
+		{"--logins", list, "--prev", snapshot},
+		{"--logins", list, "--code-owners", ownersFixture},
+		{"--logins", list, "--state", stateFixture},
+	} {
+		code, _, stderr := capture(t, func() int { return run(args) })
+		if code != 2 {
+			t.Errorf("run(%v) = %d, want a usage error\n%s", args, code, stderr)
+		}
 	}
 }

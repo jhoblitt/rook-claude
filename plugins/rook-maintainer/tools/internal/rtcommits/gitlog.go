@@ -41,7 +41,7 @@ var gitLogArgs = []string{
 // DefaultRef is the revision --repo mines. kb-refresh.md specifies the signal
 // as origin/master, and git log with no revision walks HEAD instead: on a clone
 // whose master trails its remote that silently drops the newest commits, the
-// ones the recency model weights 1.0.
+// ones the recency model weights heaviest.
 const DefaultRef = "origin/master"
 
 // GitLogCommand is the exact command line whose output --log consumes, mining

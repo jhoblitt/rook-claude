@@ -15,9 +15,9 @@
 // Roster: the CODE-OWNERS tiers as the file lists them, which is the kb's
 // `roster` key, read by routing's approver/reviewer split
 // (references/routing.md, Selection step 4).
-// Data: per-area top reviewers (recency-weighted: 1.0 <=6mo, 0.5 <=12mo, 0.25
-// older; bots and self-reviews excluded; counted per review event) + 5 most
-// recent items, plus authors_last_merged (YYYY-MM per author).
+// Data: per-area top reviewers (decayed by RecencyWeight; bots and self-reviews
+// excluded; counted per review event) + 5 most recent items, plus
+// authors_last_merged (YYYY-MM per author).
 // Flags: bucket-ambiguity (zero-match groups, >=6-area overmatch split
 // apis-driven vs cross-cutting) · truncation (scoped to counted PRs) ·
 // spec-boundary (fetch errors, unclean stop reason) · identity-unknown (top
@@ -42,6 +42,34 @@ import (
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/links"
 	"github.com/jhoblitt/rook-claude/plugins/rook-maintainer/tools/internal/untrusted"
 )
+
+// The recency decay both kb miners apply, and the most drift-prone number in
+// the package: a review or a commit counts RecencyFull while it is at most
+// RecencyFullDays old, RecencyHalf while at most RecencyHalfDays, RecencyOld
+// after that. RecencyWeight applies them and RecencyWeightsNote states them for
+// a mined document's provenance; rtcommits weights commits through both rather
+// than respelling either.
+const (
+	RecencyFullDays = 182
+	RecencyHalfDays = 365
+
+	RecencyFull = 1.0
+	RecencyHalf = 0.5
+	RecencyOld  = 0.25
+
+	RecencyWeightsNote = "1.0 <=182d, 0.5 <=365d, 0.25 older"
+)
+
+// RecencyWeight is the credit an item ageDays old carries.
+func RecencyWeight(ageDays int) float64 {
+	switch {
+	case ageDays <= RecencyFullDays:
+		return RecencyFull
+	case ageDays <= RecencyHalfDays:
+		return RecencyHalf
+	}
+	return RecencyOld
+}
 
 var allAreas = []string{
 	"object", "object-multisite", "object-cosi", "object-bucket-claims",
@@ -495,8 +523,8 @@ func ParseISO(s string) (time.Time, error) {
 }
 
 // AgeDays is (now - merged).days: whole days, floored toward minus infinity the
-// way timedelta normalization does. It is the input to the recency weighting
-// here and in rtcommits, which weights commits on the same boundaries.
+// way timedelta normalization does. It is RecencyWeight's input, here and in
+// rtcommits.
 func AgeDays(now, merged time.Time) int {
 	const secPerDay = 86400
 	sec := now.Unix() - merged.Unix()
@@ -586,9 +614,8 @@ type tally struct {
 }
 
 // tallyPRs walks the PRs once, bucketing each by changed path and accruing
-// recency-weighted review credit: 1.0 within 6 months of now, 0.5 within 12,
-// 0.25 beyond. Bots and self-reviews never count, and credit accrues per review
-// event rather than per reviewer.
+// review credit at RecencyWeight's decay. Bots and self-reviews never count,
+// and credit accrues per review event rather than per reviewer.
 func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 	t := &tally{
 		areas:       make(map[string]*areaState, len(allAreas)),
@@ -603,13 +630,7 @@ func tallyPRs(prs []*PR, now time.Time) (*tally, error) {
 		if err != nil {
 			return nil, fmt.Errorf("PR #%d mergedAt: %w", pr.Number, err)
 		}
-		w := 0.25
-		switch age := AgeDays(now, merged); {
-		case age <= 182:
-			w = 1.0
-		case age <= 365:
-			w = 0.5
-		}
+		w := RecencyWeight(AgeDays(now, merged))
 
 		author := ""
 		if pr.Author != nil {
@@ -773,8 +794,11 @@ func (t *tally) bucketFlags() []Flag {
 	return flags
 }
 
-// samplePaths shows up to 8 paths per unbucketed PR, capped at 1500 characters
-// so one pathological PR cannot bury the rest of the evidence.
+// maxSampleBytes bounds the evidence sample so one pathological PR cannot bury
+// the rest of the flags.
+const maxSampleBytes = 1500
+
+// samplePaths shows up to 8 paths per unbucketed PR, bounded to maxSampleBytes.
 func (t *tally) samplePaths(want map[int]bool) string {
 	sample := Obj{}
 	for _, z := range t.zeroMatch {
@@ -787,13 +811,7 @@ func (t *tally) samplePaths(want map[int]bool) string {
 		}
 		sample = append(sample, Member{Key: strconv.Itoa(z.number), Val: sanitizedAny(head)})
 	}
-	encoded := MarshalCompact(sample)
-	if len(encoded) > 1500 {
-		// The cap is a byte count and the paths in it are contributor-authored,
-		// so the cut can land inside a rune; drop the partial tail it leaves.
-		encoded = strings.ToValidUTF8(encoded[:1500], "")
-	}
-	return encoded
+	return links.Truncate(MarshalCompact(sample), maxSampleBytes)
 }
 
 // provenanceFlags turns the fetch layer's own record of its limits into flags.
@@ -968,8 +986,16 @@ func identityFlags(unknown []*unknownIdentity) []Flag {
 	return flags
 }
 
-// Analyze buckets prs into the area taxonomy and builds the miner contract.
+// Analyze buckets prs into the area taxonomy and builds the miner contract. A
+// walk without both bounds is refused: the provenance sentence kb-refresh.md's
+// schema fixes cannot be written without them, and an empty window is a failed
+// refresh rather than a document to hand an assembler.
 func Analyze(prs []*PR, st *State, opts Options) (*Result, error) {
+	if !HasBounds(st) {
+		return nil, fmt.Errorf("the fetch state records no window (counted=%s, "+
+			"oldest_mergedat=%q): the walk mined nothing to write a document from",
+			pyStrNumber(st.Counted), oldestDay(st))
+	}
 	t, err := tallyPRs(prs, opts.Now)
 	if err != nil {
 		return nil, err
@@ -1071,19 +1097,29 @@ func FlagArray(flags []Flag) []any {
 // writes it as the document's generated_from, the assembler carries it into
 // kb.json's source.reviews, and validate-kb --state re-derives it from the same
 // rt_fetch_state.json to check that what shipped still describes the walk.
+//
+// A state file without both bounds reaches neither of those paths — Analyze
+// refuses the walk and validate-kb refuses the file, both through HasBounds —
+// so the sentence a kb can carry always names a count and a day.
 func GeneratedFrom(st *State) string {
 	return fmt.Sprintf("%s merged PRs back to %s", pyStrNumber(st.Counted), oldestDay(st))
 }
 
+// HasBounds reports whether st carries the two bounds GeneratedFrom's sentence
+// names. An oldest_mergedat that is present but empty counts as absent: it
+// yields no day, and a sentence with no day is not the shape kb-refresh.md
+// specifies.
+func HasBounds(st *State) bool {
+	return st.Counted != nil && oldestDay(st) != ""
+}
+
+// oldestDay is the day part of oldest_mergedat, empty when the state carries
+// none. Callers gate on HasBounds rather than substituting a word for the day.
 func oldestDay(st *State) string {
-	oldest := ""
-	if st.OldestMergedAt != nil {
-		oldest = *st.OldestMergedAt
+	if st.OldestMergedAt == nil {
+		return ""
 	}
-	if day := strings.SplitN(oldest, "T", 2)[0]; day != "" {
-		return day
-	}
-	return "unknown"
+	return strings.SplitN(*st.OldestMergedAt, "T", 2)[0]
 }
 
 func flagCounts(flags []Flag) []countedType {

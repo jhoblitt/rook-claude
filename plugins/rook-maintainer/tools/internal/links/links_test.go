@@ -113,6 +113,18 @@ func TestSanitizeCutsOnARuneBoundary(t *testing.T) {
 	}
 }
 
+// Truncate is called with caps of its caller's own now, so its contract is
+// pinned apart from Sanitize's: the cut lands on a rune boundary at or below
+// the limit and carries the marker, and a string under the limit is untouched.
+func TestTruncate(t *testing.T) {
+	if got, want := Truncate(strings.Repeat("a", 8)+"€", 9), strings.Repeat("a", 8)+"..."; got != want {
+		t.Errorf("Truncate = %q, want %q", got, want)
+	}
+	if got := Truncate("€€", 10); got != "€€" {
+		t.Errorf("Truncate altered a string under the limit: %q", got)
+	}
+}
+
 func TestProbeRejectsBeforeAnyRequest(t *testing.T) {
 	p := NewProber(5, false)
 	tests := []struct {
