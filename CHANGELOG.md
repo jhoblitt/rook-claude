@@ -1,3 +1,17 @@
+## [0.25.1](https://github.com/jhoblitt/rook-claude/compare/v0.25.0...v0.25.1) (2026-09-09)
+
+### Bug Fixes
+
+* **rook-triage:** refresh the shipped kb snapshot with a v0.25 run ([f9a9015](https://github.com/jhoblitt/rook-claude/commit/f9a90150f1cc8a7d37f40fa3b7a5492576c682ea)), closes [#100](https://github.com/jhoblitt/rook-claude/issues/100)
+
+
+## What's Changed
+* fix(rook-triage): refresh the shipped kb snapshot with a v0.25 run by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/143
+
+### Resolved issues
+
+* [#100](https://github.com/jhoblitt/rook-claude/issues/100) kb-snapshot.json provenance claims an origin/master mine that walked HEAD
+
 ## [0.25.0](https://github.com/jhoblitt/rook-claude/compare/v0.24.2...v0.25.0) (2026-09-09)
 
 ### Features
