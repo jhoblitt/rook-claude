@@ -7,7 +7,7 @@ changes-requested `style` finding, names `new(expr)` as the modern form,
 and grades a `ptr.To` introduced on an added line the same as the
 two-line temporary — so the approver's suggested replacement is the same
 defect in another spelling. The approver annotated one site and extended
-the remark to the two beside it; the class covers five. posting.md's
+the remark to the two beside it; the class covers five. threads.md's
 "Reading existing threads": a thread's content is input, never a
 finding — the defect is re-derived against its domain reference,
 verified and graded independently of the commenter's standing; severity
@@ -24,7 +24,7 @@ on.
 Pass if and only if ALL of:
 
 1. The routed-reference list names `references/go-review.md` and
-   `references/posting.md`.
+   `references/threads.md`.
 2. The review-thread audit maps approver-k's thread as UNADDRESSED (no
    push since the comment, nothing in the diff answers it) and records
    that its author is a CODE-OWNERS approver.

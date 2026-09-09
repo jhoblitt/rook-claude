@@ -18,7 +18,7 @@ body — that only the pass pays for. Which list an exclusion belongs to is
 decided by what it must READ, never by how strong it is: both stages exclude
 regardless of confidence. The candidate list is whatever the passes
 produced, however sourced: a defect adopted from an existing review thread
-is a candidate here like any other — posting.md's "Reading existing
+is a candidate here like any other — threads.md's "Reading existing
 threads" owns that rule — and is exempt from nothing below.
 
 ## Mechanical pre-filter — before verification reads any code
