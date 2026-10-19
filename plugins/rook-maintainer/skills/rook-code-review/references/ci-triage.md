@@ -13,7 +13,9 @@ classified REAL.
 2. Classify each failure:
    - **REAL** — the PR's diff plausibly causes it: the failing test/lint
      touches changed code, the failure signature matches the change, or the
-     failure is deterministic across reruns.
+     failure is deterministic across reruns. A failure that unrelated PRs on
+     the same base share, signature for signature, is not caused by this PR
+     however often it repeats: classify it by its registry entry.
    - **KNOWN-FLAKE** — matches a documented class below AND is unrelated to
      the changed files.
    - **INFRA** — network/registry/runner failures: image pull timeouts,

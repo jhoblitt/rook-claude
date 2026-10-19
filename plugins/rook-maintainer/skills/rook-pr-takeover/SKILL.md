@@ -97,9 +97,8 @@ a local branch.
    commit."). Opening the supersede PR and closing the original are one
    coupled step — never leave both open.
 6. Watch CI on the superseding PR and fix what breaks — per rook-conventions
-   `references/watching-ci.md` — until green (retry known flakes, fix real failures, repush
-   after rebasing onto current master). The supersede is complete only when
-   CI is green, not at "PR opened."
+   `references/watching-ci.md` — until green. The supersede is complete
+   only when CI is green, not at "PR opened."
 
 ## Guardrails
 
