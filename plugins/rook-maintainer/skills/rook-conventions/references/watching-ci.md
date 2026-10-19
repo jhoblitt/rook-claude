@@ -10,8 +10,9 @@ only promised to watch.
 Triage each failing check by whether the PR plausibly caused it:
 plausibly-caused → diagnose and push a fix; unlikely-and-plausibly-flaky
 (match signatures against the shared registry, rook-code-review
-`references/known-flakes.md`) → restart the job, up to 3 times, and only then
-escalate it as a real failure.
+`references/known-flakes.md`) → restart the job, up to 3 times, and not at all
+when its registry entry says retries do not clear it; report what survives,
+classified by rook-code-review `references/ci-triage.md` step 2.
 
 Stop watching when: told to, CI is green, a fix needs a decision only the
 maintainer can make, or the only move left is repushing into a known-flaky
