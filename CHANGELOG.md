@@ -1,3 +1,13 @@
+## [0.25.3](https://github.com/jhoblitt/rook-claude/compare/v0.25.2...v0.25.3) (2026-10-19)
+
+### Documentation
+
+* **rook-code-review:** register the keystone csi-restart and multisite sync flakes ([e79fd00](https://github.com/jhoblitt/rook-claude/commit/e79fd0012be3090e56c4c1c6da6217d268f88b46))
+
+
+## What's Changed
+* docs(rook-code-review): register the keystone csi-restart and multisite sync flakes by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/151
+
 ## [0.25.2](https://github.com/jhoblitt/rook-claude/compare/v0.25.1...v0.25.2) (2026-09-09)
 
 ### Refactoring
