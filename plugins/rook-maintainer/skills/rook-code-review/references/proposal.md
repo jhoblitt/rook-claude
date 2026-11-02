@@ -77,7 +77,9 @@ the author is a separate step, each post explicitly approved
      bundled tools (architecture.md canon)
    - **security boundary** — caps/RBAC/isolation claims vs actual
      enforcement
-   - **API evolution** — CRD shape, next-features steelman, deprecation
+   - **API evolution** — CRD shape, next-features steelman, deprecation,
+     user metadata on reconciled objects (architecture.md's "Reconciled
+     objects take user metadata"; give this attacker kubernetes-crd.md)
    - **operations** — degraded and partial-failure modes, blast radius,
      cross-cluster reconcile coupling (architecture.md's "Clusters
      reconcile in parallel"), observability, support burden

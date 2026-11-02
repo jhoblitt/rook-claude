@@ -105,13 +105,14 @@ regardless of the contract's age** — a CR spec, example manifest, chart
 value, config file, or documentation page: the repo is public, so a live
 value ships wherever it sits.
 
-Severity: blocker, `security`. For (a), a CRD field's shape freezes on
-merge (kubernetes-crd.md: never change a field's type or JSON tag), so a
-plaintext shape becomes permanent; a chart value or operator config key
-ships the invitation — the first user who populates it puts a live value
-into world-readable stores, rook's operator config loader logs every
-changed key and value, and startup logs flags with redaction limited to
-`secret|keyring`. For (b), the diff ships a live credential.
+Severity for (a) and (b): blocker, `security`. For (a), a CRD field's
+shape freezes on merge (kubernetes-crd.md: never change a field's type
+or JSON tag), so a plaintext shape becomes permanent; a chart value or
+operator config key ships the invitation — the first user who populates
+it puts a live value into world-readable stores, rook's operator config
+loader logs every changed key and value, and startup logs flags with
+redaction limited to `secret|keyring`. For (b), the diff ships a live
+credential.
 
 Fix shape: for a newly declared field, a `*corev1.SecretKeySelector`,
 matching the `AccessKeyRef`/`SecretKeyRef` and
@@ -138,6 +139,23 @@ restriction, admission check, or controller check (architecture.md's
 security-claims-are-traced canon; `AllowUsersInNamespaces` below names
 the surface, not a rule).
 
+**(c) User metadata on a credential Secret is an outbound path.** A
+field that lets a CR's editors set labels or annotations on a Secret
+rook writes with credential material — kubernetes-crd.md's "User
+metadata on reconciled objects" asks for one — lets anyone who can edit
+the CR opt that Secret into a replication tool, which copies it into a
+namespace the editor can read without ever holding `get` on the source
+Secret. The field's godoc says so, as `SecretTemplate`'s does
+(`pkg/apis/ceph.rook.io/v1/types.go`); a field whose godoc is silent is
+`changes-requested` (`security`). Like (a), it applies to a field the
+diff adds, or whose reach the diff extends to a credential Secret.
+CephCluster `annotations.clusterMetadata`, which reaches the admin
+keyring Secret (`pkg/operator/ceph/config/keyring/admin.go`) under a
+godoc that is silent on this, is precedent that the class ships, never
+that a new instance is excused. Where tenants create the CR
+(`AllowUsersInNamespaces`), the report names who can edit it against
+who can read the Secret.
+
 ## Credential-finding precedence
 
 One site can satisfy both rules — a new chart value whose credential is
@@ -162,6 +180,11 @@ whose defect is the plaintext shape itself defers to the clause (a)
 finding; a design concern about a distinct decision on the same field —
 where the Secret should live, cross-namespace admission — stands on its
 own.
+
+Clause (c) is the only generator for a user-metadata path on a
+credential Secret: the "Auth surfaces" class's cross-namespace secret
+propagation below names the surface and raises no second finding on the
+same field.
 
 ## Vulnerability classes (rook-specific)
 
