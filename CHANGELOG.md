@@ -1,3 +1,18 @@
+## [0.26.0](https://github.com/jhoblitt/rook-claude/compare/v0.25.3...v0.26.0) (2026-11-02)
+
+### Features
+
+* **rook-code-review:** require a user metadata path on reconciled objects ([fff5bf6](https://github.com/jhoblitt/rook-claude/commit/fff5bf69903f64fb8f3d69d9714b82e14b23b55e)), closes [rook/rook#18459](https://github.com/rook/rook/issues/18459) [#148](https://github.com/jhoblitt/rook-claude/issues/148)
+
+
+## What's Changed
+* chore(deps): bump actions/setup-node from 7.0.0 to 7.1.0 by @dependabot[bot] in https://github.com/jhoblitt/rook-claude/pull/150
+* feat(rook-code-review): require a user metadata path on reconciled objects by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/153
+
+### Resolved issues
+
+* [#148](https://github.com/jhoblitt/rook-claude/issues/148) rook-code-review: require a custom labels/annotations path on every object rook reconciles
+
 ## [0.25.3](https://github.com/jhoblitt/rook-claude/compare/v0.25.2...v0.25.3) (2026-10-19)
 
 ### Documentation
