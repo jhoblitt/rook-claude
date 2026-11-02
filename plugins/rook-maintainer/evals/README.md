@@ -19,7 +19,10 @@ captured from rook/rook#18058, #18241, and #18242 (2026-09-03).
 exercised until it landed (2026-09-08). The user-metadata cases guard
 the "User metadata on reconciled objects" canon in kubernetes-crd.md,
 captured from a CODE-OWNERS approval of rook/rook#18459 that stated it
-for every resource rook reconciles (2026-11-02).
+for every resource rook reconciles (2026-11-02). The deletion-ordering
+cases guard the "Deletion ordering" canon in kubernetes-crd.md, captured
+from the realm and zone group teardown gap rook/rook#18452 addresses
+(2026-11-02).
 
 A case whose prompt asks for the routed-reference list from spine step
 1 requires the report opener rook-code-review `SKILL.md`'s Output format
@@ -83,8 +86,9 @@ input does not sit in its prompt: the comments it fences are a file
 under the case directory that the subject must read itself, which is
 what puts it in the position of pulling untrusted content in. The
 read-only default carries it — no tool grant, no toolchain, no network.
-The user-metadata cases are hermetic in the same way as the unset-field
-cases: a branch diff and commit message embedded in the prompt.
+The user-metadata and deletion-ordering cases are hermetic in the same
+way as the unset-field cases: a branch diff and commit message embedded
+in the prompt.
 
 | Case | Guards |
 |---|---|
@@ -105,6 +109,8 @@ cases: a branch diff and commit message embedded in the prompt.
 | `backport-feature-beats-docs` | A new CRD field that also touches `Documentation/` is NOT backport-eligible: feature beats the documentation row. The precision guard paired with `backport-docs-eligible`. |
 | `unset-field-unmanaged` | A new spec field written to Ceph only while set, with no stated rationale, yields a changes-requested finding whose fix shape is unset-or-justify — and the report states what removing the field leaves behind in Ceph. |
 | `unset-field-justified` | A creation-time-only pool hint whose commit message and godoc state the Ceph-cannot-express-it rationale has its unset behavior reported but NOT flagged — the anti-pontification guard paired with `unset-field-unmanaged`. |
+| `deletion-ordering-stranded` | A new kind whose deletion requeues forever once the zone group CR it reads is gone — with nothing blocking the zone group's deletion — is a blocker naming the bulk or namespace delete that strands its finalizer, never excused as an out-of-band admin mutation; the report states what deleting the pair together does. |
+| `deletion-ordering-blocked` | The same kind, with the zone group blocking on its sync policies, the policy releasing its finalizer when a missing zone group means it created nothing, and an integration test deleting the zone group ahead of its policy, draws no deletion-ordering finding at any severity, while the report still states what the pair's teardown does — the anti-pontification guard paired with `deletion-ordering-stranded`. |
 | `secret-non-credential-field` | Logging `spec.gateway.instances` yields no leak finding with security.md routed — the anti-pontification guard for the leak family, and the plain-CR-field false positive that prompted the canon. |
 | `secret-misnamed-field` | A pre-existing `Password` field whose godoc and `Enum` marker show it holds a mode is neither a leak when logged nor a field owed a Secret reference — the name-driven false-positive guard. |
 | `secret-name-safe` | Logging a Secret's `Name` and its `tls.crt` payload draws no finding: seeding is per field, never per object, and a served certificate is designed for disclosure. |
