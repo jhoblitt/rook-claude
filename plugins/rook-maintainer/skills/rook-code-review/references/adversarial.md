@@ -114,8 +114,7 @@ check the code survives it:
 - **Cleanup stranding**: what strands if external cleanup fails
   halfway (kubernetes-crd.md's "Finalizer ordering"), or if every
   resource the diff relates is deleted at once, in any order
-  (kubernetes-crd.md's "Deletion ordering", which owns those checks and
-  the grade)?
+  (deletion-ordering.md, which owns those checks and the grade)?
 - **Secrets/config rotation**: does the change cache credentials that
   rotation invalidates?
 - **RBAC**: every new API verb actually granted (gen-rbac output in diff)?

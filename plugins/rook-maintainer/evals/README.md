@@ -6,7 +6,7 @@ round (2026-07-27); the design-review cases guard the proposal-mode
 canon shipped with the design-review feature. The PR-description cases
 guard the description-shape canon, captured from the kubectl-rook-ceph
 PR 461 postmortem (2026-08-03). The unset-field cases guard the
-unset-semantics canon in kubernetes-crd.md, captured from a maintainer
+unset-semantics canon in unset-fields.md, captured from a maintainer
 field report (2026-08-10). The credential cases guard the
 credential-handling canon in security.md (spec:
 `docs/superpowers/specs/2026-08-11-credential-handling-design.md`),
@@ -17,10 +17,10 @@ the four rules that moved or landed in v0.19–v0.20 (PRs #90 and #93),
 captured from rook/rook#18058, #18241, and #18242 (2026-09-03).
 `fence-fresh-token` pins the untrusted-content fence rule, which no case
 exercised until it landed (2026-09-08). The user-metadata cases guard
-the "User metadata on reconciled objects" canon in kubernetes-crd.md,
+the "User metadata on reconciled objects" canon in user-metadata.md,
 captured from a CODE-OWNERS approval of rook/rook#18459 that stated it
 for every resource rook reconciles (2026-11-02). The deletion-ordering
-cases guard the "Deletion ordering" canon in kubernetes-crd.md, captured
+cases guard the "Deletion ordering" canon in deletion-ordering.md, captured
 from the realm and zone group teardown gap rook/rook#18452 addresses
 (2026-11-02). The credential-metadata cases guard clause (c) of
 security.md's "Credential storage contracts", user metadata on a
@@ -141,7 +141,7 @@ commit message embedded in the prompt.
 | `routing-brief-floor` | A gap sweep briefed with five references and told Go idiom is already covered reads `references/go-review.md` anyway — the routed set is a floor, the brief adds and never subtracts — lists it in `references_read`, names the omission, and returns the `ptr.To`-on-added-lines candidate the orchestrator's clean list denied; an empty sweep over the brief's five counted as coverage is the regression. |
 | `thread-rederived` | A CODE-OWNERS approver's "nit: can replace this with `ptr.To(true)`" is input, not a finding: the pointer-to-literal class is re-derived against go-review.md at changes-requested with `new(expr)` as the fix, swept across both files rather than the sites the approver annotated, and the report says the reference outgrades the thread. |
 | `cross-cluster-lock-window` | A package-level mutex widened to span `ceph osd getcrushmap`/`setcrushmap` round-trips and `crushtool` execs fires architecture.md's shared-state trigger on decision weight alone and is a blocker naming the cross-cluster wedge and a per-cluster key or CAS guard as the alternative — never waived because the lock fixes a real race or because `crushRuleMutex` already ships. |
-| `user-metadata-missing` | A new ConfigMap the object store controller rewrites every reconcile, with fixed labels and no user path, is a changes-requested finding under kubernetes-crd.md's user-metadata check whose fix is a declared labels/annotations path applied every reconcile, with rook's own labels kept reserved — never a blocker on its own. |
+| `user-metadata-missing` | A new ConfigMap the object store controller rewrites every reconcile, with fixed labels and no user path, is a changes-requested finding under user-metadata.md's check whose fix is a declared labels/annotations path applied every reconcile, with rook's own labels kept reserved — never a blocker on its own. |
 | `user-metadata-untouched` | A data-only change to the existing CephObjectStoreAccount root-user Secret, whose labels the diff does not write, draws no user-metadata finding at any severity — the scope guard paired with `user-metadata-missing`. |
 | `credential-metadata-silent` | A new CephObjectStoreAccount `secretTemplate` whose user-metadata mechanics are sound, but whose godoc never says that anyone who can edit the CR can hand the root user's credentials to a replication tool, is a changes-requested `security` finding under security.md's clause (c), anchored on `pkg/apis/ceph.rook.io/v1/types.go` with that godoc sentence as the fix — never a blocker, never a `house-rule` user-metadata finding, and never excused because the replication tool or the CR's editors are out-of-band. |
 | `credential-metadata-documented` | The same field, its godoc carrying the disclosure sentence CephObjectStoreUser's `SecretTemplate` does, draws no `security` finding and no user-metadata finding — no further wording, RBAC change, or removal demanded — the anti-pontification guard paired with `credential-metadata-silent`. |

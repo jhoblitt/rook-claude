@@ -156,10 +156,9 @@ For each fired trigger, reconstruct the decision before judging it:
   the shipped form of the class; precedent that it exists in-tree, never
   that a new instance is excused.
 - **Reconciled objects take user metadata.** Users can declare their
-  own labels and annotations on what rook reconciles. kubernetes-crd.md's
-  "User metadata on reconciled objects" owns the rule, its scope, and
-  its code-time grade; at design time a gap is a `design` finding under
-  the contract below.
+  own labels and annotations on what rook reconciles. user-metadata.md
+  owns the rule, its scope, and its code-time grade; at design time a
+  gap is a `design` finding under the contract below.
 
 ## Design-finding contract
 
