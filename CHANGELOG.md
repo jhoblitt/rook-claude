@@ -1,3 +1,17 @@
+## [0.27.0](https://github.com/jhoblitt/rook-claude/compare/v0.26.0...v0.27.0) (2026-11-03)
+
+### Features
+
+* **rook-code-review:** check deletion ordering across related resources ([a30026d](https://github.com/jhoblitt/rook-claude/commit/a30026d2bfaba321f4eb6a0d076fe52b24ce31a0)), closes [rook/rook#18452](https://github.com/rook/rook/issues/18452) [#149](https://github.com/jhoblitt/rook-claude/issues/149)
+
+
+## What's Changed
+* feat(rook-code-review): check deletion ordering across related resources by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/152
+
+### Resolved issues
+
+* [#149](https://github.com/jhoblitt/rook-claude/issues/149) rook-code-review: check deletion ordering and finalizers for every Kubernetes resource a diff touches
+
 ## [0.26.0](https://github.com/jhoblitt/rook-claude/compare/v0.25.3...v0.26.0) (2026-11-02)
 
 ### Features
