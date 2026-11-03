@@ -67,8 +67,8 @@ CR, an example manifest. See docs-sync.md "Chart parity".
   resources; remove it LAST after external cleanup succeeds; deletion
   reconciles must tolerate half-created state and re-entry. A step between
   "external resource created" and "finalizer added" is a leak window —
-  blocker. Tearing down a set of related resources together is "Deletion
-  ordering" below.
+  blocker. Tearing down a set of related resources together is
+  deletion-ordering.md.
 - **Requeue semantics**: returning an error both logs and requeues with
   backoff — returning `{Requeue: true}` AND an error is a smell; immediate
   self-requeue loops (hot-loop) are findings; `WaitForRequeueIfXxx` patterns
@@ -100,167 +100,21 @@ CR, an example manifest. See docs-sync.md "Chart parity".
   introduces-only bound, and the fix shapes; this bullet is awareness
   only and raises no findings.
 
-## User metadata on reconciled objects
+## Checks routed from here
 
-Every Kubernetes object the operator creates and keeps reconciled —
-Secret, ConfigMap, Service, workload, Job — gives users a declared way
-to add their own labels and annotations. Replication and backup tools
-(Reflector, kubernetes-replicator, Kyverno generate policies, kubed)
-select objects by them, and a reconcile that rewrites the object drops
-anything added by hand, so the CR is the only place users can declare
-it. travisn's approving review of the CephObjectStoreUser Secret
-metadata design (rook/rook#18459) states the rule for every resource
-rook reconciles, not only that Secret.
+Three checks live in references of their own and are read only when the
+diff fires them. A check the diff fires joins the routed set (SKILL.md
+step 1); read every fired one in a single batch. Each file's own
+opening states its exact scope:
 
-Run this when the diff adds such an object, or changes how an existing
-one's labels or annotations are written. An object the diff neither
-adds nor changes the labels or annotations of is out of scope, and so
-is a design's non-goal deferring one, as the CephObjectStoreUser design
-deferred the CephObjectStoreAccount root-user Secret. Check:
-
-- **Path:** an existing CephCluster `LabelsSpec`/`AnnotationsSpec` key
-  (`spec.labels`, `spec.annotations`, keyed by component — `mon`,
-  `osd`, `clusterMetadata`), or a per-CR template field shaped like
-  CephObjectStoreUser's `spec.secretTemplate` (`SecretTemplate`,
-  `pkg/apis/ceph.rook.io/v1/types.go`).
-- **Applied every reconcile**, including reconciles that rewrite the
-  object.
-- **Reserved keys:** labels and annotations rook sets or acts on stay
-  rook's, and user metadata cannot override them. Admission rejects
-  them, as `SecretTemplate`'s CEL rules reject the `do_not_reconcile`
-  label, the `cephx-keyring` annotation, and `rook.io`-prefixed keys, or
-  user metadata goes on after rook's own through `ApplyToObjectMeta`,
-  which skips keys already set — never through
-  `OverwriteApplyToObjectMeta`.
-- **Removal:** removing an entry from the CR removes it from the
-  object. The entries are spec fields, so "Unset-field semantics" below
-  owns the grade and the reasons that excuse keeping one. What is
-  particular to metadata: merging the CR's entries into the live
-  object's metadata never removes one, so the reconcile rebuilds the
-  metadata from rook's keys and the CR's, or tracks what it applied.
-- **Credential Secrets:** on a Secret carrying credential material,
-  the path is also an outbound disclosure route. security.md's
-  "Credential storage contracts" clause (c) owns that check and its
-  grade; this bullet is awareness only and raises no findings.
-
-A missing path, or metadata not reapplied every reconcile, is
-`changes-requested` (`house-rule`) and never a blocker alone. User
-metadata that can override a key rook acts on is graded as the `bug` it
-causes — `do_not_reconcile` stops rook reconciling the object, and a
-label a selector matches breaks what selects it.
-
-## Unset-field semantics
-
-For EVERY spec field the diff adds or whose handling it changes, answer:
-what does reconcile do after the field is REMOVED from the CR? The
-codebase mixes two behaviors:
-
-- **Unmanaged** — applied only while set (`if spec.Foo != nil { apply }`,
-  no else): on removal the last-applied value persists in Ceph, and
-  cluster state depends on CR history.
-- **Unset** — the reconciler clears the Ceph property (or restores its
-  default) when the field is absent: the current CR alone describes the
-  cluster.
-
-Maintainer direction is toward unset — it is deterministic. The review
-contract:
-
-- The report STATES the unset behavior of every such field — in the
-  finding when flagged, under audited-and-clean otherwise. The analysis
-  feeds a case-by-case maintainer decision; never omit it because the
-  unmanaged pattern is already common in the codebase.
-- Silently unmanaged — no rationale in commit message, godoc, or PR —
-  is `changes-requested` (never blocker alone); fix shape: clear the
-  property when the field is nil, or state why it must stay unmanaged.
-- A stated rationale stands when it names one of the accepted reasons:
-  unsetting would change behavior existing users depend on, or
-  Ceph/go-ceph cannot express the clear (creation-time-only hints,
-  irreversible operations) — then report the analysis and file no unset
-  finding. Whether such a field should also be immutable (XValidation
-  `self == oldSelf`, Field design above) is a design question, never an
-  unset finding.
-- Where "not set" must differ from the zero value, the field is a
-  pointer (Serialized compatibility above) and the reconciler must not
-  conflate absent with zero.
-
-## Deletion ordering
-
-When a set of related resources is deleted, teardown must converge in
-an order where nothing is stranded. Run this whenever the diff touches a
-reconciler's deletion path, adds a CRD kind, or adds a reference from
-one resource to another: a spec field naming another CR, a Secret or
-ConfigMap reference, an owner reference, a selector. For each kind
-involved, built-in kinds included:
-
-1. **Reference graph.** Which resources reference this one, and which
-   does it reference? A referent that a dependent reads during its own
-   deletion either blocks its deletion until the dependent is gone — the
-   dependency blocking `design/ceph/resource-dependencies.md` sets out,
-   a finalizer plus a `pkg/util/dependents` check reported through
-   `reporting.ReportDeletionBlockedDueToDependents` — or the dependent
-   tolerates its absence and still cleans up.
-2. **Bulk delete converges.** Deleting the whole set at once, in any
-   order (`kubectl delete -f`, namespace deletion), finishes with no
-   stuck finalizer and no cleanup silently skipped. Bulk delete is how
-   users remove these sets, so it is ordinary teardown, never the
-   out-of-band admin mutation verification.md excludes.
-3. **No cycles.** The blocking graph is acyclic. CephCluster is its
-   root: it blocks on the kinds `cephClusterDependentListKinds` lists
-   (`pkg/operator/ceph/cluster/dependents.go`), so nothing it waits for
-   may wait on it. A kind the diff adds joins that list, or the diff
-   says why CephCluster deletion need not wait for it.
-4. **Escape hatches.** Deletion still completes when the CephCluster is
-   gone, or is being deleted with a destructive cleanup policy —
-   `opcontroller.IsReadyToReconcile` reports both as
-   `cephClusterExists == false` — so a finalizer cannot wedge namespace
-   teardown.
-5. **Upgrade.** A finalizer added to an existing kind reaches objects
-   created before the upgrade, not only new ones. An object already
-   terminating when the new operator starts never gets it: the API
-   server forbids a new finalizer once `deletionTimestamp` is set
-   (`ValidateObjectMetaAccessorUpdate` in k8s.io/apimachinery
-   `pkg/api/validation/objectmeta.go`), so its deletion path must finish
-   without it. Nor does a new block retire a dependent's tolerance of
-   an absent referent: one the old operator let go first is already
-   gone.
-6. **Tests.** New blocking behaviour is covered by an integration test,
-   not only by unit tests of the dependents lookup: it deletes the
-   referent while a dependent exists, checks the referent waits, then
-   deletes the dependent and checks both are gone — the shape of
-   `tests/integration/object/dependents`.
-
-The review contract:
-
-- The report STATES what deleting the set together does for every kind
-  involved — in the finding when flagged, under audited-and-clean
-  otherwise.
-- Deletion that cannot finish is a blocker (`bug`): a dependent that
-  waits on a referent bulk delete can remove first, a blocking cycle, a
-  finalizer with no escape hatch, a deletion path that needs a finalizer
-  an upgraded or already-terminating object lacks. A nil dereference of
-  an absent referent is the panic class, also a blocker.
-- A dependent that tolerates an absent referent by skipping its own
-  cleanup is `changes-requested` (`bug`) unless a comment, godoc, or
-  commit message names what the skip leaves behind and why that is
-  safe, and the reviewer verifies that reason against the code rather
-  than taking it on the author's word; a log line saying cleanup was
-  skipped is not that reason. Fix shape: block the referent's deletion
-  on its dependents, or clean up without the referent, or name the
-  leftover and why it is safe.
-- A new kind left off `cephClusterDependentListKinds` with no stated
-  reason is `changes-requested` (`bug`): CephCluster deletion does not
-  wait for it.
-- New blocking behaviour with no integration test of the shape item 6
-  describes is `changes-requested` (`test-coverage`).
-- Guards in place of an ordering are precedent that the class ships,
-  never that a new instance is excused. rook/rook#18452 is the
-  archetype: deleting a realm, zone group, zone and object store
-  together could remove the realm and zone group CRs first, leaving the
-  zone and object store controllers looking up CRs already gone. Rook
-  grew nil and NotFound escapes for that — `deleteStore` in
-  `pkg/operator/ceph/object/rgw.go`, the zone controller's
-  missing-zone-group branch, which releases the finalizer without
-  deleting the zone's pools — instead of an ordering.
+- user-metadata.md — the diff adds an object the operator keeps
+  reconciled, or changes how one's labels or annotations are written.
+- unset-fields.md — the diff adds a spec field or changes how one is
+  handled.
+- deletion-ordering.md — the diff touches a deletion path, adds a CRD
+  kind, or adds a reference from one resource to another: a spec field
+  naming another CR, a Secret or ConfigMap reference, an owner
+  reference, a selector.
 
 ## Version and upgrade awareness
 

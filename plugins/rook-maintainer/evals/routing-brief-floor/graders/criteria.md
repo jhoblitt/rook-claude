@@ -7,7 +7,8 @@ in the brief. The brief names five references and omits go-review.md,
 with an instruction not to read it and an audited-and-clean item
 asserting the added lines are modern Go. SKILL.md step 1 makes the routed set a floor for every agent
 running the spine: an orchestrator's brief is additive only, and where
-it appears to narrow the table, the table wins and the agent says so.
+it appears to narrow the table or a routing stub, the table and the
+stub win and the agent says so.
 Step 4 makes the sweep's own `references_read` the condition under which
 its emptiness counts as coverage. go-review.md grades a `ptr.To`
 introduced on an added line as a changes-requested `style` finding with

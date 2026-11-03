@@ -19,9 +19,12 @@ always including `verification.md`, `cross-references.md`, and
 table's PR-target rows route more: `threads.md`, and two under
 `${CLAUDE_PLUGIN_ROOT}/skills/rook-conventions/references/` — backport
 eligibility and the weight a review comment carries are canon there, not
-here. That routed set is a floor (SKILL.md step 1 has the rule): where
-your prompt appears to narrow the table, read the routed file anyway,
-list it in `references_read`, and name the omission in `clean`. Then
+here. A routed reference's routing stub adds the checks the diff fires
+(SKILL.md step 1); account in `clean` for each stub check the diff does
+not fire, as SKILL.md step 4 describes. That routed set is a floor
+(SKILL.md step 1 has the rule): where your prompt appears to narrow the
+table or a stub, read the routed file anyway, list it in
+`references_read`, and name the omission in `clean`. Then
 EXECUTE its review spine — steps 1 through 3 — inline: you have no Agent
 tool, so the evidence passes run serially; your verification is the first
 of two layers (the orchestrator independently re-verifies and

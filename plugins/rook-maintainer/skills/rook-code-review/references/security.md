@@ -5,8 +5,9 @@ signals about where the change comes from and what surfaces it touches. Keep
 them separate in the report; the second is NEVER an accusation — it is a
 prioritization signal for human scrutiny. The credential canon below defines
 the terms the vulnerability pass uses, and is the sole generator of
-credential findings: the pointers in `kubernetes-crd.md` and
-`ceph-object.md` create awareness, never findings.
+credential findings: the pointers in `kubernetes-crd.md`,
+`user-metadata.md` and `ceph-object.md` create awareness, never
+findings.
 
 ## What counts as a secret
 
@@ -98,7 +99,7 @@ Applies to a storage contract the diff INTRODUCES — a new field, an
 existing generic field the diff repurposes to carry a credential, or a
 new credential-bearing key in an existing map. Not to a legacy contract
 the diff merely touches — the same "adds or whose handling it changes"
-line kubernetes-crd.md draws for unset-field semantics.
+line unset-fields.md draws.
 
 **(b) A literal credential value committed to the tree is a finding
 regardless of the contract's age** — a CR spec, example manifest, chart
@@ -141,20 +142,20 @@ the surface, not a rule).
 
 **(c) User metadata on a credential Secret is an outbound path.** A
 field that lets a CR's editors set labels or annotations on a Secret
-rook writes with credential material — kubernetes-crd.md's "User
-metadata on reconciled objects" asks for one — lets anyone who can edit
-the CR opt that Secret into a replication tool, which copies it into a
-namespace the editor can read without ever holding `get` on the source
-Secret. The field's godoc says so, as `SecretTemplate`'s does
-(`pkg/apis/ceph.rook.io/v1/types.go`); a field whose godoc is silent is
-`changes-requested` (`security`). Like (a), it applies to a field the
-diff adds, or whose reach the diff extends to a credential Secret.
-CephCluster `annotations.clusterMetadata`, which reaches the admin
-keyring Secret (`pkg/operator/ceph/config/keyring/admin.go`) under a
-godoc that is silent on this, is precedent that the class ships, never
-that a new instance is excused. Where tenants create the CR
-(`AllowUsersInNamespaces`), the report names who can edit it against
-who can read the Secret.
+rook writes with credential material — user-metadata.md asks for one —
+lets anyone who can edit the CR opt that Secret into a replication tool,
+which copies it into a namespace the editor can read without ever
+holding `get` on the source Secret. The field's godoc says so, as
+`SecretTemplate`'s does (`pkg/apis/ceph.rook.io/v1/types.go`); a field
+whose godoc is silent is `changes-requested` (`security`). Like (a), it
+applies to a field the diff adds, or whose reach the diff extends to a
+credential Secret. CephCluster `annotations.clusterMetadata`, which
+reaches the admin keyring Secret
+(`pkg/operator/ceph/config/keyring/admin.go`) under a godoc that is
+silent on this, is precedent that the class ships, never that a new
+instance is excused. Where tenants create the CR
+(`AllowUsersInNamespaces`), the report names who can edit it against who
+can read the Secret.
 
 ## Credential-finding precedence
 

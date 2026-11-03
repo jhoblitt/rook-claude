@@ -94,8 +94,9 @@ subject_prompt() {
 		  $PLUGIN_ROOT
 
 		For a code-review case that means $PLUGIN_ROOT/skills/rook-code-review/SKILL.md
-		first, then the reference files its own routing table directs you to under
-		that skill's references/ directory, always including verification.md. Route
+		first, then the reference files its own routing table and routing stubs direct
+		you to under that skill's references/ directory, always including
+		verification.md. Route
 		honestly from what the target actually touches.
 
 		HARD RULE: do not read any graders/ directory, any other eval case, or

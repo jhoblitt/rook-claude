@@ -13,7 +13,8 @@ Pass if and only if ALL of:
 
 1. The report's opening list of routed references read includes
    `references/kubernetes-crd.md`, which the `pkg/operator/**` change
-   routes and which holds the user-metadata check.
+   routes, and `references/user-metadata.md`, which its routing stub
+   sends a new reconciled object to.
 2. The missing user labels/annotations path on the new ConfigMap is a
    finding at changes-requested severity, anchored to
    `pkg/operator/ceph/object/endpoints.go` with the full repo-relative

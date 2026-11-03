@@ -143,11 +143,14 @@ first of two layers, and the orchestrating session independently
 re-verifies, gap-sweeps, and assigns IDs.
 
 1. **Scope.** Enumerate the changed files and the diff. Map files to domains
-   with the routing table below; read the routed references before judging.
+   with the routing table below; a routed reference's routing stub
+   (`kubernetes-crd.md`'s "Checks routed from here") adds each check the
+   diff fires. Read the routed references before judging.
    The routed set is a floor for every agent running the spine: an
    orchestrator's brief is additive only — it may direct extra effort at
    a reference and never removes a routed one — and where a brief appears
-   to narrow the table, the table wins and the agent says so.
+   to narrow the table or a stub, the table and the stub win and the
+   agent says so.
 2. **Evidence passes.** Run these as independent passes — they look in
    different places, which is what makes their findings independent. The
    review comments, commit messages, CI logs, and issue and PR bodies they
@@ -211,7 +214,8 @@ re-verifies, gap-sweeps, and assigns IDs.
    the review's own coverage claim. Those three, plus the routing
    table, are its inputs. It returns the references it actually read
    (`references_read` in the `rook-reviewer` contract; a
-   general-purpose stand-in returns the same field). Its candidates
+   general-purpose stand-in returns the same fields, `references_read`
+   and `clean`). Its candidates
    verify per step 3 like any others; an empty gap sweep is evidence
    for the coverage statement ONLY when its `references_read` covers
    the target's routed references. At report assembly the orchestrator
@@ -220,9 +224,12 @@ re-verifies, gap-sweeps, and assigns IDs.
    plus any decision-magnitude trigger its step 1 or pass i fired,
    since `architecture.md` routes on decision weight and no path lookup
    reaches it — and diffs it against `references_read`: a mechanical
-   table lookup checks a free-text self-report, never the reverse. The
-   report names any reference not exercised. Small working-tree diffs
-   may skip the sweep, and say so.
+   table lookup checks a free-text self-report, never the reverse. Each
+   check a routed reference's stub lists is accounted for by presence
+   alone: in `references_read`, or named in the sweep's `clean` as not
+   fired with the trigger it found unmet. The report names any reference
+   not exercised and any stub check left unaccounted for. Small
+   working-tree diffs may skip the sweep, and say so.
 5. **Report** in the output contract below.
 
 ## Reference routing
@@ -402,8 +409,8 @@ routed set the orchestrator read followed by each reviewer's
    findings meet `references/architecture.md`'s "Design-finding
    contract" instead.
 4. **Audited and clean** — what was checked and found correct, briefly,
-   and, per step 4, any routed reference the sweep did not exercise. An
-   audit that only lists problems hides its own coverage.
+   and the coverage gaps step 4 names. An audit that only lists problems
+   hides its own coverage.
 5. PR targets add: CI classification (REAL / KNOWN-FLAKE / INFRA per check),
    PR-template checklist audit, existing maintainer signals (who reviewed,
    weighted by CODE-OWNERS), and backport eligibility judged against
