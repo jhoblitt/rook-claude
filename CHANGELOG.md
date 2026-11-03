@@ -1,3 +1,14 @@
+## [0.27.1](https://github.com/jhoblitt/rook-claude/compare/v0.27.0...v0.27.1) (2026-11-03)
+
+### Refactoring
+
+* **rook-code-review:** route the judgment-triggered CRD checks from a stub ([9bdaa7e](https://github.com/jhoblitt/rook-claude/commit/9bdaa7e0144d3127927b8867909ce7bd1389c67c))
+
+
+## What's Changed
+* test(rook-code-review): pin the credential-Secret metadata clause with an eval pair by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/154
+* refactor(rook-code-review): route the judgment-triggered CRD checks from a stub by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/155
+
 ## [0.27.0](https://github.com/jhoblitt/rook-claude/compare/v0.26.0...v0.27.0) (2026-11-03)
 
 ### Features
