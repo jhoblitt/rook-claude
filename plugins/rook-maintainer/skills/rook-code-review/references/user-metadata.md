@@ -14,7 +14,9 @@ Run this when the diff adds such an object, or changes how an existing
 one's labels or annotations are written. An object the diff neither
 adds nor changes the labels or annotations of is out of scope, and so
 is a design's non-goal deferring one, as the CephObjectStoreUser design
-deferred the CephObjectStoreAccount root-user Secret. Check:
+deferred the CephObjectStoreAccount root-user Secret. An unfixed sibling
+of a fix in this domain is verification.md's instead, "Anchors outside the
+diff". Check:
 
 - **Path:** an existing CephCluster `LabelsSpec`/`AnnotationsSpec` key
   (`spec.labels`, `spec.annotations`, keyed by component — `mon`,

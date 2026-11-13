@@ -9,9 +9,12 @@ maintainer trust. Nothing reaches the report without passing this file.
 The mechanical pre-filter below runs FIRST, over the candidate list, before
 verification reads any code: before a verifier agent is dispatched in a
 fan-out review, and before the second pass begins inline. Its tests read the
-candidate's anchor, the candidate's own text, and the diff — never the code —
+candidate's anchor, the candidate's own text, the diff, and — for the
+unfixed-sibling test — the review's REAL/FABRICATED label; never the code —
 so nothing it drops may cost an agent whose verdict the drop would then
-discard. The refutation pass runs on what survives, and the judgment
+discard. That label is the one pass a makes (SKILL.md, "The review
+spine"); only a candidate claiming an unfixed sibling waits for it.
+The refutation pass runs on what survives, and the judgment
 exclusions apply to that pass's verdicts, because each of them needs
 something read — the code, the surrounding package, `.golangci.yaml`, the PR
 body — that only the pass pays for. Which list an exclusion belongs to is
@@ -28,9 +31,29 @@ Drop from the candidate list. No code read, no agent spent:
 - **Anchors outside the diff.** A candidate whose `file:line` is not a line
   this change modified is pre-existing; if it is serious, mention it once in
   the summary body rather than as a finding. It reaches the refutation pass
-  only when the candidate ITSELF claims the change makes the issue worse or
-  copies it into new code — that claim is in the candidate's text, so routing
-  on it stays mechanical, and the pass then verifies the claim like any other.
+  in two cases only, both routed on the candidate's OWN claim (the second
+  also on the review's label) — that claim is in its text, so routing stays
+  mechanical, and the pass then verifies
+  the claim like any other. First, the candidate claims the change makes the
+  issue worse or copies it into new code; it is graded like any defect the
+  change made, even when it is also a sibling. Second, an **unfixed
+  sibling**: the change claims to fix a defect the review labelled REAL, and
+  the candidate claims the same defect still occurs through a path the fix
+  leaves uncovered, citing the hunk that fixes it. Whether it is the same
+  defect is refutation question 2's
+  to decide: the same root cause failing the same way — for a taint defect,
+  the same tainted value or untrusted input reaching the same class of
+  channel or sink; a different defect that merely sits nearby stays
+  pre-existing. The fix's own claim makes that path the change's business:
+  a sibling that survives refutation and the judgment exclusions is a
+  finding in the fixed defect's domain (a security fix's unfixed sibling is
+  `security`), at changes-requested whatever grade the domain reference
+  gives that defect class — merging the change does not ship the sibling,
+  which is already on master. Each sibling is anchored at its own path.
+  When the fix patched one caller of a helper whose defect it left in
+  place, architecture.md's class finding for that helper, when the design
+  pass raises one, stands beside the sibling findings: it names the fix,
+  they name the paths it must cover.
 - **Generated-path anchors.** A candidate anchored inside a generated file —
   `docs-sync.md` "The generated set" — points at output nobody edits;
   the fix, if there is one, is in the source plus a regen. A candidate whose
@@ -53,7 +76,9 @@ For each candidate the pre-filter left, attempt to REFUTE it — do not attempt
 to confirm it. Re-read the code assuming the author was right and you
 misread. In fan-out reviews (large diffs, pre-pr panels) this is an
 independent agent per finding (or per small group of related findings) that
-receives the finding and the code, not the reviewer's reasoning. Inline
+receives the finding and the code — plus, for an unfixed-sibling candidate,
+the fixing hunk the candidate cites, never the change's own prose about it
+— not the reviewer's reasoning. Inline
 (small diffs), it is a distinct second pass over each candidate; state in the
 report that verification was inline.
 
@@ -61,14 +86,16 @@ The verifier answers:
 
 1. Does the defect actually exist on the claimed path? (Trace the real code,
    not the diff hunk. Check callers/callees the finding depends on.)
-2. Is it NEW in this change, or pre-existing?
+2. Is it NEW in this change, pre-existing, or an unfixed sibling of the
+   defect the change fixes ("Anchors outside the diff")?
 3. Does anything else already handle it (a guard upstream, a predicate that
    guarantees the invariant, a linter/CI gate)?
 4. Does the concrete failure scenario hold together end to end?
 
 ## Confidence rubric (0–100)
 
-- **0–24** — false positive; misreading; pre-existing and untouched;
+- **0–24** — false positive; misreading; pre-existing and untouched (an
+  unfixed sibling is not that case — "Anchors outside the diff");
   speculative ("could", "might" with no concrete path).
 - **25–49** — plausible but unverified inference; the failure path was not
   traced to completion.
