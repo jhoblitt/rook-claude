@@ -44,7 +44,8 @@ For each fired trigger, reconstruct the decision before judging it:
    the invariant? A call-site patch for a helper's defect fixes one
    caller and leaves the class — the class is the finding (rook 18071's
    silently-skipped `updateObjProperty` is the archetype: "handled" at
-   every caller, wrong at the source).
+   every caller, wrong at the source). Its unfixed siblings are
+   verification.md's ("Anchors outside the diff").
 2. **Alternatives.** Name the 2–3 shapes a maintainer would weigh: do
    nothing, fix at a different layer, reuse the existing mechanism, fix
    upstream (Ceph/go-ceph) instead of working around it. If the chosen

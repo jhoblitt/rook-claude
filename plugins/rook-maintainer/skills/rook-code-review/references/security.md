@@ -7,7 +7,10 @@ prioritization signal for human scrutiny. The credential canon below defines
 the terms the vulnerability pass uses, and is the sole generator of
 credential findings: the pointers in `kubernetes-crd.md`,
 `user-metadata.md` and `ceph-object.md` create awareness, never
-findings.
+findings. The one other route is an unfixed sibling of a credential fix,
+which verification.md's "Anchors outside the diff" brings into scope and
+grades whatever clauses (a) and (c) below say about what the diff
+introduces.
 
 ## What counts as a secret
 
