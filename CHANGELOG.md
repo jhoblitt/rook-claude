@@ -1,3 +1,13 @@
+## [0.28.0](https://github.com/jhoblitt/rook-claude/compare/v0.27.1...v0.28.0) (2026-11-16)
+
+### Features
+
+* **rook-code-review:** flag unfixed siblings of a fixed defect ([e56f614](https://github.com/jhoblitt/rook-claude/commit/e56f614b08acdfcf28bfe407f8f86f72d1ee3146))
+
+
+## What's Changed
+* feat(rook-code-review): flag unfixed siblings of a fixed defect by @jhoblitt in https://github.com/jhoblitt/rook-claude/pull/157
+
 ## [0.27.1](https://github.com/jhoblitt/rook-claude/compare/v0.27.0...v0.27.1) (2026-11-03)
 
 ### Refactoring
